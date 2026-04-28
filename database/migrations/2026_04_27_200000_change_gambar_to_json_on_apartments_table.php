@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('apartments', function (Blueprint $table) {
+            // Change gambar column to JSON for multiple images
+            $table->json('gambar')->nullable()->change();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('apartments', function (Blueprint $table) {
+            $table->string('gambar')->nullable()->change();
+        });
+    }
+};
