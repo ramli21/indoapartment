@@ -19,7 +19,7 @@
 
             <!-- Form Card -->
             <div class="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                <form action="{{ route('apartments.owner.store') }}" method="POST" enctype="multipart/form-data"
+                <form action="{{ route('admin.apartments.owner.store') }}" method="POST" enctype="multipart/form-data"
                     class="space-y-8">
                     @csrf
 

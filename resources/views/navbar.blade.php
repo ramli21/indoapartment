@@ -19,7 +19,7 @@
             <div class="hidden lg:flex items-center gap-1">
                 <a href="#"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Home</a>
-                <a href="{{ route('apartments.index') }}"
+                <a href="{{ route('admin.apartments.index') }}"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Apartemen</a>
                 <a href="#"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Tentang
@@ -41,7 +41,7 @@
                 </div>
                 @auth
                     @if (auth()->user()->is_admin)
-                        <a href="{{ route('apartments.index') }}"
+                        <a href="{{ route('admin.apartments.index') }}"
                             class="nav-dashboard-link hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl transition-colors border {{ $isHome ? 'bg-white/10 backdrop-blur-sm text-white/90 hover:bg-white/20 border-white/20' : 'bg-slate-50/80 backdrop-blur-sm text-slate-700 hover:bg-white border-slate-200/50' }}">
                             <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                             Dashboard
@@ -75,7 +75,7 @@
             <div class="max-w-7xl mx-auto px-4 py-4 space-y-1">
                 <a href="#"
                     class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Hotel</a>
-                <a href="{{ route('apartments.index') }}"
+                <a href="{{ route('admin.apartments.index') }}"
                     class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Apartemen</a>
                 <a href="#"
                     class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Villa</a>

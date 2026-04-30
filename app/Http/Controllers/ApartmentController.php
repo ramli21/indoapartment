@@ -18,6 +18,80 @@ class ApartmentController extends Controller
         return view('admin.apartments.index', compact('apartments', 'total', 'tersedia', 'terisi', 'perawatan'));
     }
 
+    public function listApartments(Request $request)
+    {
+        // Get unique values for filters
+        $towers = Apartment::whereNotNull('nama_tower')
+            ->where('nama_tower', '!=', '')
+            ->distinct()
+            ->pluck('nama_tower')
+            ->sort()
+            ->values();
+
+        $tipes = Apartment::whereNotNull('tipe')
+            ->where('tipe', '!=', '')
+            ->distinct()
+            ->pluck('tipe')
+            ->sort()
+            ->values();
+
+        // Build query with filters
+        $query = Apartment::where('status', 'Tersedia'); // Only show available apartments
+
+        // Filter by search keyword
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('alamat', 'like', "%{$search}%")
+                    ->orWhere('nama_tower', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by tower
+        if ($request->filled('tower')) {
+            $query->where('nama_tower', $request->tower);
+        }
+
+        // Filter by tipe
+        if ($request->filled('tipe')) {
+            $query->where('tipe', $request->tipe);
+        }
+
+        // Filter by price range
+        if ($request->filled('harga_min')) {
+            $query->where('harga_per_malam', '>=', (float) $request->harga_min);
+        }
+        if ($request->filled('harga_max')) {
+            $query->where('harga_per_malam', '<=', (float) $request->harga_max);
+        }
+
+        // Filter by guests
+        if ($request->filled('tamu')) {
+            $query->where('tamu_dewasa', '>=', (int) $request->tamu);
+        }
+
+        // Sort
+        $sort = $request->get('sort', 'terbaru');
+        switch ($sort) {
+            case 'harga_rendah':
+                $query->orderBy('harga_per_malam', 'asc');
+                break;
+            case 'harga_tinggi':
+                $query->orderBy('harga_per_malam', 'desc');
+                break;
+            case 'luas_besar':
+                $query->orderBy('luas', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+        }
+
+        $apartments = $query->paginate(12)->withQueryString();
+
+        return view('list-apartments', compact('apartments', 'towers', 'tipes'));
+    }
+
     public function create()
     {
         return view('admin.apartments.create');
@@ -172,7 +246,9 @@ class ApartmentController extends Controller
             // Delete old images
             if ($apartment->gambar && is_array($apartment->gambar)) {
                 foreach ($apartment->gambar as $oldImage) {
-                    Storage::disk('public')->delete($oldImage);
+                    if (Storage::disk('public')->exists($oldImage)) {
+                        Storage::disk('public')->delete($oldImage);
+                    }
                 }
             }
             $validated['gambar'] = $images;
@@ -187,7 +263,9 @@ class ApartmentController extends Controller
     {
         if ($apartment->gambar && is_array($apartment->gambar)) {
             foreach ($apartment->gambar as $image) {
-                Storage::disk('public')->delete($image);
+                if (Storage::disk('public')->exists($image)) {
+                    Storage::disk('public')->delete($image);
+                }
             }
         }
         $apartment->delete();

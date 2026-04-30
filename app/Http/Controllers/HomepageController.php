@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Apartment;
 
 class HomepageController extends Controller
 {
-    public function index() {
-        return view('index');
+    public function index()
+    {
+        $newest = Apartment::orderBy('created_at', 'desc')
+            ->take(8)
+            ->get();
+
+        return view('index', ['newestApartments' => $newest]);
     }
 
-    public function contact() {
-        return "Ini adalah halaman kontak saya.";
+    public function aboutUs()
+    {
+        return "Ini adalah halaman tentang kami.";
     }
 }
-
-
-// AuthController
-//     login - form
-//     login - action
-//     register - form
-//     register - action

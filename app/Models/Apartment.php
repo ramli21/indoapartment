@@ -37,13 +37,10 @@ class Apartment extends Model
         'owner_bank_name'
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'fasilitas' => 'array',
-            'gambar' => 'array',
-            'luas' => 'decimal:2',
-            'harga_per_malam' => 'decimal:2',
-        ];
-    }
+    protected $casts = [
+        'fasilitas' => 'array',
+        'gambar' => 'array',
+        'luas' => 'decimal:2',
+        'harga_per_malam' => 'decimal:2',
+    ];
 }

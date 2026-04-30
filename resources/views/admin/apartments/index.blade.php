@@ -9,7 +9,7 @@
                     <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand">Daftar Apartemen</h1>
                     <p class="text-slate-500 mt-1">Kelola data apartemen Anda</p>
                 </div>
-                <a href="{{ route('apartments.create') }}"
+                <a href="{{ route('admin.apartments.create') }}"
                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors shadow-lg shadow-brand/20">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                     Tambah Apartemen
@@ -205,17 +205,17 @@
                                         <!-- Aksi -->
                                         <td class="px-5 py-4">
                                             <div class="flex items-center justify-end gap-1.5">
-                                                <a href="{{ route('apartments.show', $apartment) }}"
+                                                <a href="{{ route('admin.apartments.show', $apartment) }}"
                                                     class="p-2 text-brand bg-brand/5 hover:bg-brand/10 rounded-lg transition-colors"
                                                     title="Detail">
                                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                                 </a>
-                                                <a href="{{ route('apartments.edit', $apartment) }}"
+                                                <a href="{{ route('admin.apartments.edit', $apartment) }}"
                                                     class="p-2 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                                                     title="Edit">
                                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                                 </a>
-                                                <form action="{{ route('apartments.destroy', $apartment) }}"
+                                                <form action="{{ route('admin.apartments.destroy', $apartment) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Yakin ingin menghapus apartemen ini?')">
                                                     @csrf
@@ -242,7 +242,7 @@
                     </div>
                     <h3 class="text-lg font-medium text-slate-700 mb-1">Belum ada apartemen</h3>
                     <p class="text-sm text-slate-500 mb-6">Mulai tambahkan data apartemen pertama Anda</p>
-                    <a href="{{ route('apartments.create') }}"
+                    <a href="{{ route('admin.apartments.create') }}"
                         class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         Tambah Apartemen

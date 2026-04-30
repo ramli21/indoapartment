@@ -5,7 +5,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <!-- Header -->
             <div class="mb-8">
-                <a href="{{ route('apartments.index') }}"
+                <a href="{{ route('admin.apartments.index') }}"
                     class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors mb-4">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
                     Kembali ke Daftar
@@ -69,12 +69,12 @@
                                     <span class="text-sm">{{ $apartment->alamat }}</span>
                                 </div>
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <a href="{{ route('apartments.edit', $apartment) }}"
+                                    <a href="{{ route('admin.apartments.edit', $apartment) }}"
                                         class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors">
                                         <i data-lucide="pencil" class="w-4 h-4"></i>
                                         Edit
                                     </a>
-                                    <form action="{{ route('apartments.destroy', $apartment) }}" method="POST"
+                                    <form action="{{ route('admin.apartments.destroy', $apartment) }}" method="POST"
                                         onsubmit="return confirm('Yakin ingin menghapus apartemen ini?')">
                                         @csrf
                                         @method('DELETE')

@@ -12,10 +12,10 @@
             <div class="text-center mb-8">
                 <h1
                     class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-white tracking-tight leading-tight mb-4">
-                    Temukan Hotel<br class="hidden sm:block"> Impianmu
+                    Temukan Apartemen<br class="hidden sm:block"> Impianmu
                 </h1>
-                <p class="text-white/70 text-base sm:text-lg max-w-xl mx-auto">Jelajahi ribuan hotel, villa, dan
-                    penginapan terbaik di seluruh dunia dengan harga terjangkau</p>
+                <p class="text-white/70 text-base sm:text-lg max-w-xl mx-auto">Jelajahi pilihan apartemen dan
+                    penginapan terbaik di bandung dengan harga terjangkau</p>
             </div>
 
             <!-- Search Bar -->
@@ -654,6 +654,57 @@
                         <p class="text-[11px] text-slate-400 mt-0.5">8,760+</p>
                     </div>
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newest Apartments -->
+    <section class="py-16 md:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-end justify-between mb-8">
+                <div>
+                    <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Terbaru</span>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-1">Apartemen Terbaru</h2>
+                </div>
+                <a href="#"
+                    class="hidden sm:flex items-center gap-1 text-sm font-medium text-brand hover:underline">
+                    Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                @if (isset($newestApartments) && $newestApartments->count())
+                    @foreach ($newestApartments as $apt)
+                        @php
+                            $img =
+                                is_array($apt->gambar) && count($apt->gambar)
+                                    ? $apt->gambar[0]
+                                    : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
+                        @endphp
+                        <a href="#"
+                            class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+                            <div class="relative overflow-hidden aspect-[4/3]">
+                                <img src="{{ $img }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                    alt="{{ $apt->judul }}">
+                            </div>
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span
+                                        class="text-xs text-slate-400">{{ $apt->nama_tower ?? ($apt->alamat ?? '—') }}</span>
+                                    <span class="text-xs text-slate-500">Rp
+                                        {{ number_format((float) $apt->harga_per_malam, 0, ',', '.') }}</span>
+                                </div>
+                                <h3 class="font-semibold text-slate-800 line-clamp-1 group-hover:text-brand">
+                                    {{ $apt->judul }}</h3>
+                                <p class="text-[12px] text-slate-500 mt-2 line-clamp-2">
+                                    {{ \Illuminate\Support\Str::limit($apt->deskripsi, 80) }}</p>
+                            </div>
+                        </a>
+                    @endforeach
+                @else
+                    <p class="text-sm text-slate-500">Belum ada apartemen terbaru untuk ditampilkan.</p>
+                @endif
             </div>
         </div>
     </section>
