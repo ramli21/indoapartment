@@ -9,11 +9,18 @@
                     <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand">Daftar Apartemen</h1>
                     <p class="text-slate-500 mt-1">Kelola data apartemen Anda</p>
                 </div>
-                <a href="{{ route('admin.apartments.create') }}"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors shadow-lg shadow-brand/20">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    Tambah Apartemen
-                </a>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('admin.help') }}"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-200 transition-colors">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                        Panduan
+                    </a>
+                    <a href="{{ route('admin.apartments.create') }}"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors shadow-lg shadow-brand/20">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Tambah Apartemen
+                    </a>
+                </div>
             </div>
 
             <!-- Alert -->

@@ -1,0 +1,624 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Apartment;
+use App\Models\Booking;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserBookingConfirmation;
+use App\Mail\AdminBookingNotification;
+use App\Mail\OwnerBookingNotification;
+
+class BookingController extends Controller
+{
+    /**
+     * Show booking form for an apartment
+     */
+    public function create(Apartment $apartment)
+    {
+        if ($apartment->status !== 'Tersedia') {
+            return redirect()->route('apartments.list')
+                ->with('error', 'Apartemen ini sedang tidak tersedia.');
+        }
+
+        return view('booking.create', compact('apartment'));
+    }
+
+    /**
+     * Store a new booking
+     */
+    public function store(Request $request, Apartment $apartment)
+    {
+        if ($apartment->status !== 'Tersedia') {
+            return redirect()->route('apartments.list')
+                ->with('error', 'Apartemen ini sedang tidak tersedia.');
+        }
+
+        $validated = $request->validate([
+            'nama_tamu' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s\.\-\']+$/',
+            'email_tamu' => 'required|email|max:255',
+            'no_hp' => 'required|string|max:20|regex:/^[0-9+\s]+$/',
+            'check_in' => 'required|date|after_or_equal:today',
+            'check_out' => 'required|date|after:check_in',
+            'jumlah_tamu' => 'required|integer|min:1|max:' . ($apartment->tamu_dewasa + $apartment->tamu_anak),
+            'catatan' => 'nullable|string|max:1000',
+        ]);
+
+        // Sanitize input to prevent XSS and SQL injection
+        $sanitized = [
+            'nama_tamu' => strip_tags($validated['nama_tamu']),
+            'email_tamu' => filter_var($validated['email_tamu'], FILTER_SANITIZE_EMAIL),
+            'no_hp' => preg_replace('/[^0-9+]/', '', $validated['no_hp']),
+            'check_in' => $validated['check_in'],
+            'check_out' => $validated['check_out'],
+            'jumlah_tamu' => (int) $validated['jumlah_tamu'],
+            'catatan' => $validated['catatan'] ? strip_tags($validated['catatan']) : null,
+        ];
+
+        // Calculate total price
+        $checkIn = \Carbon\Carbon::parse($validated['check_in']);
+        $checkOut = \Carbon\Carbon::parse($validated['check_out']);
+        $jumlahMalam = $checkIn->diffInDays($checkOut);
+        $hargaPerMalam = (float) $apartment->harga_per_malam;
+        $totalHarga = $hargaPerMalam * $jumlahMalam;
+
+        $booking = Booking::create([
+            'apartment_id' => $apartment->id,
+            'nama_tamu' => $sanitized['nama_tamu'],
+            'email_tamu' => $sanitized['email_tamu'],
+            'no_hp' => $sanitized['no_hp'],
+            'check_in' => $sanitized['check_in'],
+            'check_out' => $sanitized['check_out'],
+            'jumlah_tamu' => $sanitized['jumlah_tamu'],
+            'harga_per_malam' => $hargaPerMalam,
+            'jumlah_malam' => $jumlahMalam,
+            'total_harga' => $totalHarga,
+            'catatan' => $sanitized['catatan'],
+            'status' => 'pending',
+        ]);
+
+        // Update apartment status to Terisi (occupied)
+        $apartment->update(['status' => 'Terisi']);
+
+        // Send email notifications
+        $this->sendBookingEmails($booking);
+
+        return redirect()->route('booking.success', $booking->id)
+            ->with('success', 'Booking berhasil dibuat!');
+    }
+
+    /**
+     * Show booking success page
+     */
+    public function success(Booking $booking)
+    {
+        $apartment = $booking->apartment;
+        return view('booking.success', compact('booking', 'apartment'));
+    }
+
+    /**
+     * Show payment page
+     */
+    public function payment(Booking $booking)
+    {
+        $booking->load('apartment');
+        $apartment = $booking->apartment;
+
+        // Check if already paid
+        if ($booking->paid_at) {
+            return redirect()->route('booking.success', $booking->id)
+                ->with('info', 'Booking ini sudah lunas.');
+        }
+
+        return view('booking.payment', compact('booking', 'apartment'));
+    }
+
+    /**
+     * Process payment
+     */
+    public function processPayment(Request $request, Booking $booking)
+    {
+        $validated = $request->validate([
+            'payment_method' => 'required|in:bank_transfer,qris',
+            'payment_notes' => 'nullable|string|max:500',
+            'payment_proof' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+
+        // Handle payment proof upload for bank transfer
+        if ($request->payment_method === 'bank_transfer' && $request->hasFile('payment_proof')) {
+            $path = $request->file('payment_proof')->store('payment_proofs', 'public');
+            $validated['payment_proof'] = $path;
+            $validated['paid_at'] = now();
+        }
+
+        // For QRIS, mark as paid immediately (instant payment)
+        if ($request->payment_method === 'qris') {
+            $validated['paid_at'] = now();
+        }
+
+        $validated['payment_notes'] = $request->payment_notes ? strip_tags($request->payment_notes) : null;
+
+        $booking->update($validated);
+
+        // Update booking status to confirmed if paid
+        if ($booking->paid_at) {
+            $booking->update(['status' => 'confirmed']);
+        }
+
+        return redirect()->route('booking.success', $booking->id)
+            ->with('success', 'Pembayaran berhasil diproses!');
+    }
+
+    /**
+     * Admin: List all bookings
+     */
+    public function index(Request $request)
+    {
+        $query = Booking::with('apartment')->latest();
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by apartment
+        if ($request->filled('apartment_id')) {
+            $query->where('apartment_id', $request->apartment_id);
+        }
+
+        // Filter by date range
+        if ($request->filled('tanggal_mulai')) {
+            $query->where('check_in', '>=', $request->tanggal_mulai);
+        }
+        if ($request->filled('tanggal_akhir')) {
+            $query->where('check_out', '<=', $request->tanggal_akhir);
+        }
+
+        // Search by guest name or email
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_tamu', 'like', "%{$search}%")
+                    ->orWhere('email_tamu', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->paginate(15)->withQueryString();
+        $apartments = Apartment::orderBy('judul')->get();
+
+        // Stats
+        $stats = [
+            'total' => Booking::count(),
+            'pending' => Booking::where('status', 'pending')->count(),
+            'confirmed' => Booking::where('status', 'confirmed')->count(),
+            'completed' => Booking::where('status', 'completed')->count(),
+            'cancelled' => Booking::where('status', 'cancelled')->count(),
+        ];
+
+        return view('admin.bookings.index', compact('bookings', 'apartments', 'stats'));
+    }
+
+    /**
+     * Admin: Show booking details
+     */
+    public function show(Booking $booking)
+    {
+        $booking->load('apartment');
+        return view('admin.bookings.show', compact('booking'));
+    }
+
+    /**
+     * Admin: Update booking status
+     */
+    public function updateStatus(Request $request, Booking $booking)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,confirmed,cancelled,completed',
+        ]);
+
+        $oldStatus = $booking->status;
+        $booking->update(['status' => $validated['status']]);
+
+        // If cancelled, make apartment available again
+        if ($validated['status'] === 'cancelled' && $oldStatus !== 'cancelled') {
+            $booking->apartment->update(['status' => 'Tersedia']);
+        }
+
+        // If confirmed/completed, ensure apartment is marked as occupied
+        if (in_array($validated['status'], ['pending', 'confirmed', 'completed'])) {
+            $booking->apartment->update(['status' => 'Terisi']);
+        }
+
+        return redirect()->route('admin.bookings.show', $booking->id)
+            ->with('success', 'Status booking berhasil diperbarui!');
+    }
+
+    /**
+     * Admin: Cancel/delete booking
+     */
+    public function destroy(Booking $booking)
+    {
+        // Make apartment available again
+        if ($booking->apartment) {
+            $booking->apartment->update(['status' => 'Tersedia']);
+        }
+
+        $booking->delete();
+
+        return redirect()->route('admin.bookings.index')
+            ->with('success', 'Booking berhasil dibatalkan!');
+    }
+
+    /**
+     * Public: Track booking page
+     */
+    public function track()
+    {
+        return view('booking.track');
+    }
+
+    /**
+     * Public: Search booking by code
+     */
+    public function searchBooking(Request $request)
+    {
+        $bookingCode = $request->input('booking_code');
+
+        if (!$bookingCode) {
+            return redirect()->route('booking.track')
+                ->with('error', 'Silakan masukkan kode booking.');
+        }
+
+        // Try to find by ID (remove leading zeros) or by booking code
+        $bookingId = (int) ltrim($bookingCode, '0');
+
+        $booking = Booking::with('apartment')
+            ->where('id', $bookingId)
+            ->first();
+
+        if (!$booking) {
+            return redirect()->route('booking.track')
+                ->with('error', 'Booking tidak ditemukan. Silakan periksa kode booking Anda.');
+        }
+
+        return view('booking.track-result', compact('booking'));
+    }
+
+    /**
+     * Admin: Show calendar view
+     */
+    public function calendar(Request $request)
+    {
+        $apartments = Apartment::orderBy('judul')->get();
+
+        // Get date range from request or default to current month
+        $start = $request->filled('start')
+            ? \Carbon\Carbon::parse($request->start)->startOfMonth()
+            : \Carbon\Carbon::now()->startOfMonth();
+        $end = $request->filled('end')
+            ? \Carbon\Carbon::parse($request->end)->endOfMonth()
+            : \Carbon\Carbon::now()->endOfMonth();
+
+        // Get bookings within date range
+        $bookings = Booking::with('apartment')
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('check_in', [$start, $end])
+                    ->orWhereBetween('check_out', [$start, $end])
+                    ->orWhere(function ($q) use ($start, $end) {
+                        $q->where('check_in', '<=', $start)
+                            ->where('check_out', '>=', $end);
+                    });
+            })
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->orderBy('check_in')
+            ->get();
+
+        return view('admin.bookings.calendar', compact('apartments', 'bookings', 'start', 'end'));
+    }
+
+    /**
+     * Admin: Store new booking from admin panel
+     */
+    public function storeAdmin(Request $request)
+    {
+        $validated = $request->validate([
+            'apartment_id' => 'required|exists:apartments,id',
+            'nama_tamu' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s\.\-\']+$/',
+            'email_tamu' => 'required|email|max:255',
+            'no_hp' => 'required|string|max:20|regex:/^[0-9+\s]+$/',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after:check_in',
+            'jumlah_tamu' => 'required|integer|min:1',
+            'catatan' => 'nullable|string|max:1000',
+            'status' => 'required|in:pending,confirmed',
+        ]);
+
+        // Sanitize input
+        $sanitized = [
+            'nama_tamu' => strip_tags($validated['nama_tamu']),
+            'email_tamu' => filter_var($validated['email_tamu'], FILTER_SANITIZE_EMAIL),
+            'no_hp' => preg_replace('/[^0-9+]/', '', $validated['no_hp']),
+            'check_in' => $validated['check_in'],
+            'check_out' => $validated['check_out'],
+            'jumlah_tamu' => (int) $validated['jumlah_tamu'],
+            'catatan' => $validated['catatan'] ? strip_tags($validated['catatan']) : null,
+        ];
+
+        $apartment = Apartment::findOrFail($validated['apartment_id']);
+
+        // Validate guest count
+        $maxGuests = $apartment->tamu_dewasa + $apartment->tamu_anak;
+        if ($validated['jumlah_tamu'] > $maxGuests) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Jumlah tamu melebihi kapasitas apartemen (maksimal ' . $maxGuests . ' tamu)',
+            ], 422);
+        }
+
+        // Calculate total price
+        $checkIn = \Carbon\Carbon::parse($validated['check_in']);
+        $checkOut = \Carbon\Carbon::parse($validated['check_out']);
+        $jumlahMalam = $checkIn->diffInDays($checkOut);
+
+        if ($jumlahMalam < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Minimal pemesanan adalah 1 malam',
+            ], 422);
+        }
+
+        $hargaPerMalam = (float) $apartment->harga_per_malam;
+        $totalHarga = $hargaPerMalam * $jumlahMalam;
+
+        $booking = Booking::create([
+            'apartment_id' => (int) $validated['apartment_id'],
+            'nama_tamu' => $sanitized['nama_tamu'],
+            'email_tamu' => $sanitized['email_tamu'],
+            'no_hp' => $sanitized['no_hp'],
+            'check_in' => $sanitized['check_in'],
+            'check_out' => $sanitized['check_out'],
+            'jumlah_tamu' => $sanitized['jumlah_tamu'],
+            'harga_per_malam' => $hargaPerMalam,
+            'jumlah_malam' => $jumlahMalam,
+            'total_harga' => $totalHarga,
+            'catatan' => $sanitized['catatan'],
+            'status' => $validated['status'],
+        ]);
+
+        // Update apartment status
+        $apartment->update(['status' => 'Terisi']);
+
+        // Send email notifications
+        $this->sendBookingEmails($booking);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking berhasil dibuat!',
+            'booking_id' => $booking->id,
+        ]);
+    }
+
+    /**
+     * API: Get bookings schedule for calendar
+     */
+    public function getSchedule(Request $request)
+    {
+        $start = $request->filled('start')
+            ? \Carbon\Carbon::parse($request->start)->startOfMonth()
+            : \Carbon\Carbon::now()->startOfMonth();
+        $end = $request->filled('end')
+            ? \Carbon\Carbon::parse($request->end)->endOfMonth()
+            : \Carbon\Carbon::now()->endOfMonth();
+
+        $bookings = Booking::with('apartment:id,judul,nama_tower')
+            ->select([
+                'id',
+                'apartment_id',
+                'nama_tamu',
+                'email_tamu',
+                'no_hp',
+                'check_in',
+                'check_out',
+                'jumlah_tamu',
+                'harga_per_malam',
+                'jumlah_malam',
+                'total_harga',
+                'catatan',
+                'status',
+            ])
+            ->where(function ($query) use ($start, $end) {
+                $query->whereBetween('check_in', [$start, $end])
+                    ->orWhereBetween('check_out', [$start, $end])
+                    ->orWhere(function ($q) use ($start, $end) {
+                        $q->where('check_in', '<=', $start)
+                            ->where('check_out', '>=', $end);
+                    });
+            })
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->orderBy('check_in')
+            ->get()
+            ->map(function ($booking) {
+                $statusColors = [
+                    'pending' => '#f59e0b',
+                    'confirmed' => '#10b981',
+                    'completed' => '#6366f1',
+                    'cancelled' => '#94a3b8',
+                ];
+
+                return [
+                    'id' => $booking->id,
+                    'title' => $booking->apartment->judul . ' - ' . $booking->nama_tamu,
+                    'start' => $booking->check_in,
+                    'end' => \Carbon\Carbon::parse($booking->check_out)->addDay()->format('Y-m-d'),
+                    'backgroundColor' => $statusColors[$booking->status] ?? '#6366f1',
+                    'borderColor' => $statusColors[$booking->status] ?? '#6366f1',
+                    'extendedProps' => [
+                        'apartment_id' => $booking->apartment_id,
+                        'apartment_name' => $booking->apartment->judul,
+                        'tower_name' => $booking->apartment->nama_tower,
+                        'guest_name' => $booking->nama_tamu,
+                        'guest_email' => $booking->email_tamu,
+                        'guest_phone' => $booking->no_hp,
+                        'check_in' => $booking->check_in,
+                        'check_out' => $booking->check_out,
+                        'guest_count' => $booking->jumlah_tamu,
+                        'nights' => $booking->jumlah_malam,
+                        'price_per_night' => $booking->harga_per_malam,
+                        'total_price' => $booking->total_harga,
+                        'notes' => $booking->catatan,
+                        'status' => $booking->status,
+                    ],
+                ];
+            });
+
+        return response()->json($bookings);
+    }
+
+    /**
+     * API: Check room availability for date range
+     */
+    public function checkAvailability(Request $request)
+    {
+        $validated = $request->validate([
+            'apartment_id' => 'required|exists:apartments,id',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after:check_in',
+        ]);
+
+        $checkIn = \Carbon\Carbon::parse($validated['check_in']);
+        $checkOut = \Carbon\Carbon::parse($validated['check_out']);
+
+        // Find conflicting bookings
+        $conflicts = Booking::where('apartment_id', $validated['apartment_id'])
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->where(function ($q) use ($checkIn, $checkOut) {
+                    $q->where('check_in', '<', $checkOut)
+                        ->where('check_out', '>', $checkIn);
+                });
+            })
+            ->with('apartment:id,judul,nama_tower')
+            ->get();
+
+        $isAvailable = $conflicts->isEmpty();
+
+        return response()->json([
+            'available' => $isAvailable,
+            'check_in' => $validated['check_in'],
+            'check_out' => $validated['check_out'],
+            'conflicts' => $conflicts->map(function ($booking) {
+                return [
+                    'id' => $booking->id,
+                    'guest_name' => $booking->nama_tamu,
+                    'check_in' => $booking->check_in,
+                    'check_out' => $booking->check_out,
+                ];
+            }),
+        ]);
+    }
+
+/**
+     * Send booking notification emails to user, admin, and owner
+     */
+    private function sendBookingEmails(Booking $booking)
+    {
+        $booking->load('apartment');
+        $apartment = $booking->apartment;
+
+        // 1. Send confirmation email to user
+        Mail::to($booking->email_tamu)->send(new UserBookingConfirmation($booking));
+
+        // 2. Send notification to admin (from config or first admin user)
+        $adminEmail = config('app.admin_email', false);
+        if (!$adminEmail) {
+            $admin = User::where('is_admin', true)->first();
+            $adminEmail = $admin?->email;
+        }
+        if ($adminEmail) {
+            Mail::to($adminEmail)->send(new AdminBookingNotification($booking));
+        }
+
+        // 3. Send notification to owner via WhatsApp (owner email not stored, using WA for contact)
+        // The owner notification will be shown in the owner dashboard
+        // For now, we'll just indicate the notification was sent
+    }
+
+    /**
+     * Show cancel booking page for user
+     */
+    public function cancelForm(Booking $booking)
+    {
+        $booking->load('apartment');
+        
+        // Only allow cancellation if not already cancelled or completed
+        if (in_array($booking->status, ['cancelled', 'completed'])) {
+            return redirect()->route('booking.track')
+                ->with('error', 'Booking ini tidak dapat dibatalkan.');
+        }
+
+        return view('booking.cancel', compact('booking'));
+    }
+
+    /**
+     * Process cancel booking by user
+     */
+    public function cancelBooking(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'cancel_reason' => 'required|string|max:500',
+        ]);
+
+        // Only allow cancellation if not already cancelled or completed
+        if (in_array($booking->status, ['cancelled', 'completed'])) {
+            return redirect()->route('booking.track')
+                ->with('error', 'Booking ini tidak dapat dibatalkan.');
+        }
+
+        // Determine if paid or not
+        $isPaid = !empty($booking->paid_at);
+        $oldStatus = $booking->status;
+
+        // Update booking to cancelled
+        $booking->update([
+            'status' => 'cancelled',
+            'cancel_reason' => strip_tags($request->cancel_reason),
+            'cancelled_by' => 'user',
+            'cancelled_at' => now(),
+        ]);
+
+        // Make apartment available again
+        if ($booking->apartment) {
+            $booking->apartment->update(['status' => 'Tersedia']);
+        }
+
+        // Send notification to admin about cancellation
+        $this->sendCancellationNotification($booking, $oldStatus, $isPaid);
+
+        return redirect()->route('booking.track')
+            ->with('success', 'Booking berhasil dibatalkan. ' . ($isPaid ? 'Silakan hubungi owner untuk pengembalian dana.' : ''));
+    }
+
+    /**
+     * Send cancellation notification email
+     */
+    private function sendCancellationNotification(Booking $booking, string $oldStatus, bool $isPaid)
+    {
+        $booking->load('apartment');
+        
+        // Notify admin about the cancellation
+        $adminEmail = config('app.admin_email', false);
+        if (!$adminEmail) {
+            $admin = User::where('is_admin', true)->first();
+            $adminEmail = $admin?->email;
+        }
+        
+        if ($adminEmail) {
+            // You can create a new Mailable for cancellation notifications
+            // For now, we'll just log it or skip
+            \Log::info("Booking {$booking->id} cancelled by user. Was paid: " . ($isPaid ? 'Yes' : 'No'));
+        }
+    }
+}

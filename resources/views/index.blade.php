@@ -123,8 +123,59 @@
         </div>
     </section>
 
-    <!-- Popular Destinations -->
+    <!-- Newest Apartments -->
     <section class="py-16 md:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-end justify-between mb-8">
+                <div>
+                    <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Terbaru</span>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-1">Apartemen Terbaru</h2>
+                </div>
+                <a href="{{ route('apartments.list') }}"
+                    class="hidden sm:flex items-center gap-1 text-sm font-medium text-brand hover:underline">
+                    Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                @if (isset($newestApartments) && $newestApartments->count())
+                    @foreach ($newestApartments as $apt)
+                        @php
+                            $img =
+                                is_array($apt->gambar) && count($apt->gambar)
+                                    ? $apt->gambar[0]
+                                    : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
+                        @endphp
+                        <a href="{{ route('booking.create', $apt) }}"
+                            class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+                            <div class="relative overflow-hidden aspect-[4/3]">
+                                <img src="{{ $img }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                    alt="{{ $apt->judul }}">
+                            </div>
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span
+                                        class="text-xs text-slate-400">{{ $apt->nama_tower ?? ($apt->alamat ?? '—') }}</span>
+                                    <span class="text-xs text-slate-500">Rp
+                                        {{ number_format((float) $apt->harga_per_malam, 0, ',', '.') }}</span>
+                                </div>
+                                <h3 class="font-semibold text-slate-800 line-clamp-1 group-hover:text-brand">
+                                    {{ $apt->judul }}</h3>
+                                <p class="text-[12px] text-slate-500 mt-2 line-clamp-2">
+                                    {{ \Illuminate\Support\Str::limit($apt->deskripsi, 80) }}</p>
+                            </div>
+                        </a>
+                    @endforeach
+                @else
+                    <p class="text-sm text-slate-500">Belum ada apartemen terbaru untuk ditampilkan.</p>
+                @endif
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations -->
+    {{-- <section class="py-16 md:py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex items-end justify-between mb-8">
                 <div>
@@ -205,7 +256,7 @@
                 </a>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Promo Banner -->
     <section class="py-12 bg-slate-50">
@@ -244,7 +295,7 @@
     </section>
 
     <!-- Hotel Deals -->
-    <section class="py-16 md:py-20 bg-white">
+    {{-- <section class="py-16 md:py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex items-end justify-between mb-8">
                 <div>
@@ -528,7 +579,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Why Choose Us -->
     <section class="py-16 md:py-20 bg-brand">
@@ -580,7 +631,7 @@
     </section>
 
     <!-- Explore by Type -->
-    <section class="py-16 md:py-20 bg-slate-50">
+    {{-- <section class="py-16 md:py-20 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="text-center mb-12">
                 <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Kategori</span>
@@ -656,58 +707,7 @@
                 </a>
             </div>
         </div>
-    </section>
-
-    <!-- Newest Apartments -->
-    <section class="py-16 md:py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="flex items-end justify-between mb-8">
-                <div>
-                    <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Terbaru</span>
-                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-1">Apartemen Terbaru</h2>
-                </div>
-                <a href="#"
-                    class="hidden sm:flex items-center gap-1 text-sm font-medium text-brand hover:underline">
-                    Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                @if (isset($newestApartments) && $newestApartments->count())
-                    @foreach ($newestApartments as $apt)
-                        @php
-                            $img =
-                                is_array($apt->gambar) && count($apt->gambar)
-                                    ? $apt->gambar[0]
-                                    : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
-                        @endphp
-                        <a href="#"
-                            class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">
-                            <div class="relative overflow-hidden aspect-[4/3]">
-                                <img src="{{ $img }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                    alt="{{ $apt->judul }}">
-                            </div>
-                            <div class="p-4">
-                                <div class="flex items-center justify-between mb-1">
-                                    <span
-                                        class="text-xs text-slate-400">{{ $apt->nama_tower ?? ($apt->alamat ?? '—') }}</span>
-                                    <span class="text-xs text-slate-500">Rp
-                                        {{ number_format((float) $apt->harga_per_malam, 0, ',', '.') }}</span>
-                                </div>
-                                <h3 class="font-semibold text-slate-800 line-clamp-1 group-hover:text-brand">
-                                    {{ $apt->judul }}</h3>
-                                <p class="text-[12px] text-slate-500 mt-2 line-clamp-2">
-                                    {{ \Illuminate\Support\Str::limit($apt->deskripsi, 80) }}</p>
-                            </div>
-                        </a>
-                    @endforeach
-                @else
-                    <p class="text-sm text-slate-500">Belum ada apartemen terbaru untuk ditampilkan.</p>
-                @endif
-            </div>
-        </div>
-    </section>
+    </section> --}}
 
     <!-- Testimonials -->
     <section class="py-16 md:py-20 bg-white">
@@ -783,7 +783,7 @@
     </section>
 
     <!-- App Download CTA -->
-    <section class="py-16 md:py-20 bg-slate-50 overflow-hidden">
+    {{-- <section class="py-16 md:py-20 bg-slate-50 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="relative rounded-3xl bg-brand overflow-hidden">
                 <div class="absolute inset-0 opacity-10">
@@ -863,10 +863,97 @@
                 </div>
             </div>
         </div>
+    </section> --}}
+
+    <!-- Contact Us Section -->
+    <section class="py-16 md:py-20 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <div>
+                    <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Hubungi Kami</span>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-2 mb-4">Ada Pertanyaan?</h2>
+                    <p class="text-slate-500 mb-8">Tim kami siap membantu Anda 24/7. Hubungi kami untuk informasi
+                        apartemen, pemesanan, atau pertanyaan lainnya.</p>
+
+                    <div class="space-y-4">
+                        <a href="{{ route('inquiry.create') }}"
+                            class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hover:bg-brand/5 transition-colors group">
+                            <div
+                                class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center group-hover:bg-brand/20 transition-colors">
+                                <i data-lucide="message-circle" class="w-6 h-6 text-brand"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-slate-800">Chat Kami</h3>
+                                <p class="text-sm text-slate-500">Respons cepat untuk Anda</p>
+                            </div>
+                            <i data-lucide="arrow-right"
+                                class="w-5 h-5 text-slate-300 ml-auto group-hover:text-brand transition-colors"></i>
+                        </a>
+
+                        <a href="tel:+6281234567890"
+                            class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hover:bg-brand/5 transition-colors group">
+                            <div
+                                class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center group-hover:bg-brand/20 transition-colors">
+                                <i data-lucide="phone" class="w-6 h-6 text-brand"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-slate-800">Telepon</h3>
+                                <p class="text-sm text-slate-500">+62 812 3456 7890</p>
+                            </div>
+                            <i data-lucide="arrow-right"
+                                class="w-5 h-5 text-slate-300 ml-auto group-hover:text-brand transition-colors"></i>
+                        </a>
+
+                        <a href="mailto:info@indoapart.com"
+                            class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hover:bg-brand/5 transition-colors group">
+                            <div
+                                class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center group-hover:bg-brand/20 transition-colors">
+                                <i data-lucide="mail" class="w-6 h-6 text-brand"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-slate-800">Email</h3>
+                                <p class="text-sm text-slate-500">info@indoapart.com</p>
+                            </div>
+                            <i data-lucide="arrow-right"
+                                class="w-5 h-5 text-slate-300 ml-auto group-hover:text-brand transition-colors"></i>
+                        </a>
+
+                        <a href="{{ route('inquiry.create') }}"
+                            class="flex items-center gap-4 p-4 bg-brand rounded-xl hover:bg-brand-light transition-colors group">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i data-lucide="send" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-white">Kirim Pesan</h3>
+                                <p class="text-sm text-white/70">Isi formulir kontak</p>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 text-white/70 ml-auto"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hidden md:block relative">
+                    <img src="https://picsum.photos/seed/contact-support/600/700" alt="Customer Service"
+                        class="w-full rounded-2xl object-cover">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl">
+                    </div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <span class="text-sm font-medium text-slate-700">Online 24/7</span>
+                            </div>
+                            <p class="text-sm text-slate-600">Tim customer service kami siap membantu Anda kapan saja.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Newsletter -->
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-slate-50">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center">
             <i data-lucide="mail" class="w-10 h-10 text-brand/30 mx-auto mb-4"></i>
             <h2 class="text-2xl font-serif font-semibold text-slate-800 mb-2">Dapatkan Penawaran Eksklusif</h2>

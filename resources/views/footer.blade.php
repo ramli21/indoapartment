@@ -62,7 +62,7 @@
                 <ul class="space-y-2.5">
                     {{-- <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Hotel</a>
                     </li> --}}
-                    <li><a href="#"
+                    <li><a href="{{ route('apartments.list') }}"
                             class="text-slate-400 text-sm hover:text-white transition-colors">Apartemen</a></li>
                     {{-- <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Villa</a>
                     </li>
@@ -75,13 +75,15 @@
             <div>
                 <h4 class="text-sm font-semibold text-white mb-4">Bantuan</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Pusat
+                    <li><a href="{{ route('help') }}"
+                            class="text-slate-400 text-sm hover:text-white transition-colors">Pusat
                             Bantuan</a></li>
-                    <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Cara
-                            Booking</a></li>
+                    <li><a href="{{ route('booking.track') }}"
+                            class="text-slate-400 text-sm hover:text-white transition-colors">Lacak Booking</a></li>
                     <li><a href="#"
                             class="text-slate-400 text-sm hover:text-white transition-colors">Pembatalan</a></li>
-                    <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Hubungi
+                    <li><a href="{{ route('inquiry.create') }}"
+                            class="text-slate-400 text-sm hover:text-white transition-colors">Hubungi
                             Kami</a></li>
                 </ul>
             </div>

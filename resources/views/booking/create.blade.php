@@ -1,0 +1,296 @@
+@extends('layout')
+
+@section('content')
+    <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+                <a href="{{ route('apartments.list') }}"
+                    class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Kembali ke Daftar
+                </a>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Apartment Details -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+                        <!-- Hero Image -->
+                        <div class="relative h-64 sm:h-80 bg-slate-100">
+                            @if ($apartment->gambar && is_array($apartment->gambar) && count($apartment->gambar) > 0)
+                                <img src="{{ asset('storage/' . $apartment->gambar[0]) }}" alt="{{ $apartment->judul }}"
+                                    class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                    <i data-lucide="image-off" class="w-16 h-16"></i>
+                                </div>
+                            @endif
+                            <div class="absolute top-4 left-4">
+                                <span
+                                    class="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-sm font-medium text-brand rounded-lg shadow-sm">
+                                    {{ $apartment->tipe }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-6 sm:p-8">
+                            <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand mb-2">
+                                {{ $apartment->judul }}</h1>
+                            <div class="flex items-center gap-1.5 text-slate-500 mb-4">
+                                <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i>
+                                <span class="text-sm">{{ $apartment->alamat }}</span>
+                            </div>
+
+                            <!-- Price -->
+                            @if ($apartment->harga_per_malam)
+                                <div class="flex items-baseline gap-2 mb-6 p-4 bg-brand/5 rounded-xl">
+                                    <span class="text-2xl font-bold text-brand">Rp
+                                        {{ number_format($apartment->harga_per_malam, 0, ',', '.') }}</span>
+                                    <span class="text-sm text-slate-500">/ malam</span>
+                                </div>
+                            @endif
+
+                            <!-- Description -->
+                            @if ($apartment->deskripsi)
+                                <div class="mb-6">
+                                    <h3 class="text-sm font-medium text-slate-700 mb-2">Deskripsi</h3>
+                                    <p class="text-sm text-slate-600 leading-relaxed">{{ $apartment->deskripsi }}</p>
+                                </div>
+                            @endif
+
+                            <!-- Info Grid -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                                <div class="p-3 bg-slate-50 rounded-xl text-center">
+                                    <i data-lucide="maximize" class="w-5 h-5 text-brand mx-auto mb-1"></i>
+                                    <div class="text-xs text-slate-500">Luas</div>
+                                    <div class="text-sm font-semibold text-slate-800">{{ $apartment->luas }} m²</div>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl text-center">
+                                    <i data-lucide="building" class="w-5 h-5 text-brand mx-auto mb-1"></i>
+                                    <div class="text-xs text-slate-500">Tower</div>
+                                    <div class="text-sm font-semibold text-slate-800">{{ $apartment->nama_tower }}</div>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl text-center">
+                                    <i data-lucide="door-open" class="w-5 h-5 text-brand mx-auto mb-1"></i>
+                                    <div class="text-xs text-slate-500">Kamar</div>
+                                    <div class="text-sm font-semibold text-slate-800">{{ $apartment->nomor_kamar }}</div>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl text-center">
+                                    <i data-lucide="users" class="w-5 h-5 text-brand mx-auto mb-1"></i>
+                                    <div class="text-xs text-slate-500">Kapasitas</div>
+                                    <div class="text-sm font-semibold text-slate-800">
+                                        {{ $apartment->tamu_dewasa + $apartment->tamu_anak }} Tamu</div>
+                                </div>
+                            </div>
+
+                            <!-- Fasilitas -->
+                            @if ($apartment->fasilitas && count($apartment->fasilitas) > 0)
+                                <div class="mb-6">
+                                    <h3 class="text-sm font-medium text-slate-700 mb-3">Fasilitas</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach ($apartment->fasilitas as $fasilitas)
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-accent/20 text-brand text-sm font-medium rounded-full">
+                                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                                {{ $fasilitas }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Tata Tertib -->
+                            @if ($apartment->tata_tertib)
+                                <div class="p-5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <h3 class="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
+                                        <i data-lucide="scroll-text" class="w-4 h-4 text-brand"></i>
+                                        Tata Tertib
+                                    </h3>
+                                    <div class="text-sm text-slate-600 whitespace-pre-line">{{ $apartment->tata_tertib }}
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Form -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm sticky top-24">
+                        <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="calendar-check" class="w-5 h-5 text-brand"></i>
+                            Formulir Booking
+                        </h2>
+
+                        <form action="{{ route('booking.store', $apartment->id) }}" method="POST" id="bookingForm">
+                            @csrf
+
+                            <!-- Name -->
+                            <div class="mb-4">
+                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                    Nama Tamu
+                                </label>
+                                <input type="text" name="nama_tamu" required
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
+                                    placeholder="Nama lengkap">
+                                @error('nama_tamu')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-4">
+                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                    Email
+                                </label>
+                                <input type="email" name="email_tamu" required
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
+                                    placeholder="email@example.com">
+                                @error('email_tamu')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="mb-4">
+                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                    No. WhatsApp
+                                </label>
+                                <input type="tel" name="no_hp" required
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
+                                    placeholder="0812 3456 7890">
+                                @error('no_hp')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Dates -->
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                        Check-in
+                                    </label>
+                                    <input type="date" name="check_in" id="checkIn" required
+                                        class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
+                                    @error('check_in')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                        Check-out
+                                    </label>
+                                    <input type="date" name="check_out" id="checkOut" required
+                                        class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
+                                    @error('check_out')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Guests -->
+                            <div class="mb-4">
+                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                    Jumlah Tamu (Max: {{ $apartment->tamu_dewasa + $apartment->tamu_anak }})
+                                </label>
+                                <select name="jumlah_tamu" required
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
+                                    @for ($i = 1; $i <= $apartment->tamu_dewasa + $apartment->tamu_anak; $i++)
+                                        <option value="{{ $i }}">{{ $i }} Tamu</option>
+                                    @endfor
+                                </select>
+                                @error('jumlah_tamu')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="mb-5">
+                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                    Catatan (Opsional)
+                                </label>
+                                <textarea name="catatan" rows="3"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm resize-none"
+                                    placeholder="Permintaan khusus..."></textarea>
+                                @error('catatan')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Price Summary -->
+                            <div class="mb-5 p-4 bg-brand/5 rounded-xl border border-brand/10">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600">Harga per malam</span>
+                                    <span class="text-slate-800">Rp
+                                        {{ number_format($apartment->harga_per_malam, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600">Jumlah malam</span>
+                                    <span class="text-slate-800" id="jumlahMalam">0 malam</span>
+                                </div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600">Total</span>
+                                    <span class="text-slate-800" id="totalHarga">Rp 0</span>
+                                </div>
+                            </div>
+
+                            <!-- Submit -->
+                            <button type="submit"
+                                class="w-full bg-brand text-white py-3 rounded-xl font-medium hover:bg-brand-light transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                                Booking Sekarang
+                            </button>
+
+                            <p class="text-xs text-slate-400 text-center mt-3">
+                                Dengan booking, Anda setuju dengan syarat & ketentuan
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkInInput = document.getElementById('checkIn');
+            const checkOutInput = document.getElementById('checkOut');
+            const jumlahMalamDisplay = document.getElementById('jumlahMalam');
+            const totalHargaDisplay = document.getElementById('totalHarga');
+            const hargaPerMalam = {{ (float) $apartment->harga_per_malam }};
+
+            // Set min date to today
+            const today = new Date().toISOString().split('T')[0];
+            checkInInput.min = today;
+            checkOutInput.min = today;
+
+            function calculatePrice() {
+                const checkIn = new Date(checkInInput.value);
+                const checkOut = new Date(checkOutInput.value);
+
+                if (checkInInput.value && checkOutInput.value && checkOut > checkIn) {
+                    const diffTime = checkOut - checkIn;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const total = diffDays * hargaPerMalam;
+
+                    jumlahMalamDisplay.textContent = diffDays + ' malam';
+                    totalHargaDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+                } else {
+                    jumlahMalamDisplay.textContent = '0 malam';
+                    totalHargaDisplay.textContent = 'Rp 0';
+                }
+            }
+
+            checkInInput.addEventListener('change', function() {
+                // Set min check-out date to check-in date + 1
+                const checkInDate = new Date(this.value);
+                checkOutInput.min = checkInDate.toISOString().split('T')[0];
+                calculatePrice();
+            });
+
+            checkOutInput.addEventListener('change', calculatePrice);
+        });
+    </script>
+@endsection
