@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserBookingConfirmation;
 use App\Mail\AdminBookingNotification;
 use App\Mail\OwnerBookingNotification;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -47,6 +48,19 @@ class BookingController extends Controller
             'catatan' => 'nullable|string|max:1000',
         ]);
 
+        // Check for overlapping bookings (only pending/confirmed block)
+        $overlapping = Booking::where('apartment_id', $apartment->id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->where(function ($q) use ($validated) {
+                $q->where('check_in', '<', $validated['check_out'])
+                  ->where('check_out', '>', $validated['check_in']);
+            })
+            ->exists();
+
+        if ($overlapping) {
+            return back()->withErrors(['check_in' => 'Rentang tanggal sudah dibooking. Silakan pilih tanggal lain (check-in 14:00, check-out 12:00).']);
+        }
+
         // Sanitize input to prevent XSS and SQL injection
         $sanitized = [
             'nama_tamu' => strip_tags($validated['nama_tamu']),
@@ -65,7 +79,13 @@ class BookingController extends Controller
         $hargaPerMalam = (float) $apartment->harga_per_malam;
         $totalHarga = $hargaPerMalam * $jumlahMalam;
 
+        // Generate unique 6-char alphanumeric booking code
+        do {
+            $bookingCode = strtoupper(Str::random(6));
+        } while (Booking::where('booking_code', $bookingCode)->exists());
+
         $booking = Booking::create([
+            'booking_code' => $bookingCode,
             'apartment_id' => $apartment->id,
             'nama_tamu' => $sanitized['nama_tamu'],
             'email_tamu' => $sanitized['email_tamu'],
@@ -86,15 +106,16 @@ class BookingController extends Controller
         // Send email notifications
         $this->sendBookingEmails($booking);
 
-        return redirect()->route('booking.success', $booking->id)
-            ->with('success', 'Booking berhasil dibuat!');
+        return redirect()->route('booking.success', $booking->booking_code)
+            ->with('success', 'Booking berhasil dibuat! Kode booking Anda: ' . $booking->booking_code);
     }
 
     /**
      * Show booking success page
      */
-    public function success(Booking $booking)
+    public function success($booking_code)
     {
+        $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
         $apartment = $booking->apartment;
         return view('booking.success', compact('booking', 'apartment'));
     }
@@ -102,14 +123,15 @@ class BookingController extends Controller
     /**
      * Show payment page
      */
-    public function payment(Booking $booking)
+    public function payment($booking_code)
     {
+        $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
         $booking->load('apartment');
         $apartment = $booking->apartment;
 
         // Check if already paid
         if ($booking->paid_at) {
-            return redirect()->route('booking.success', $booking->id)
+            return redirect()->route('booking.success', ['booking_code' => $booking->booking_code])
                 ->with('info', 'Booking ini sudah lunas.');
         }
 
@@ -119,8 +141,10 @@ class BookingController extends Controller
     /**
      * Process payment
      */
-    public function processPayment(Request $request, Booking $booking)
+    public function processPayment(Request $request, $booking_code)
     {
+        $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
+
         $validated = $request->validate([
             'payment_method' => 'required|in:bank_transfer,qris',
             'payment_notes' => 'nullable|string|max:500',
@@ -148,7 +172,7 @@ class BookingController extends Controller
             $booking->update(['status' => 'confirmed']);
         }
 
-        return redirect()->route('booking.success', $booking->id)
+        return redirect()->route('booking.success', ['booking_code' => $booking->booking_code])
             ->with('success', 'Pembayaran berhasil diproses!');
     }
 
@@ -549,8 +573,9 @@ class BookingController extends Controller
     /**
      * Show cancel booking page for user
      */
-    public function cancelForm(Booking $booking)
+    public function cancelForm($booking_code)
     {
+        $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
         $booking->load('apartment');
         
         // Only allow cancellation if not already cancelled or completed
@@ -565,8 +590,10 @@ class BookingController extends Controller
     /**
      * Process cancel booking by user
      */
-    public function cancelBooking(Request $request, Booking $booking)
+    public function cancelBooking(Request $request, $booking_code)
     {
+        $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
+
         $request->validate([
             'cancel_reason' => 'required|string|max:500',
         ]);
@@ -598,7 +625,7 @@ class BookingController extends Controller
         $this->sendCancellationNotification($booking, $oldStatus, $isPaid);
 
         return redirect()->route('booking.track')
-            ->with('success', 'Booking berhasil dibatalkan. ' . ($isPaid ? 'Silakan hubungi owner untuk pengembalian dana.' : ''));
+            ->with('success', 'Booking berhasil dibatalkan. ' . ($isPaid ? 'Silakan hubungi owner untuk pengembalian dana.' : ''));    
     }
 
     /**

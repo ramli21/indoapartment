@@ -87,7 +87,7 @@ class ApartmentController extends Controller
                 $query->orderBy('created_at', 'desc');
         }
 
-        $apartments = $query->paginate(12)->withQueryString();
+        $apartments = $query->paginate(12)->appends(request()->query());
 
         return view('list-apartments', compact('apartments', 'towers', 'tipes'));
     }

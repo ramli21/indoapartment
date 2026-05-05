@@ -16,17 +16,43 @@
                 <!-- Apartment Details -->
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
-                        <!-- Hero Image -->
-                        <div class="relative h-64 sm:h-80 bg-slate-100">
+                        <!-- Image Slider -->
+                        <div class="relative">
                             @if ($apartment->gambar && is_array($apartment->gambar) && count($apartment->gambar) > 0)
-                                <img src="{{ asset('storage/' . $apartment->gambar[0]) }}" alt="{{ $apartment->judul }}"
-                                    class="w-full h-full object-cover">
+                                <div id="imageSlider" class="relative h-64 sm:h-80 overflow-hidden rounded-t-2xl">
+                                    @foreach ($apartment->gambar as $index => $image)
+                                        <img src="{{ asset('storage/' . $image) }}" data-index="{{ $index }}"
+                                            class="slider-img absolute inset-0 w-full h-full object-cover cursor-zoom-in transition-opacity duration-500 opacity-0"
+                                            style="{{ $index === 0 ? 'opacity: 1;' : '' }}"
+                                            alt="{{ $apartment->judul }} - Gambar {{ $index + 1 }}" loading="lazy">
+                                    @endforeach
+                                    <!-- Navigation Arrows + Dots -->
+                                    <!-- Left Arrow -->
+                                    <button id="prevSlide"
+                                        class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg z-20 transition-all duration-200 slider-nav">
+                                        <i data-lucide="chevron-left" class="w-6 h-6 text-slate-700"></i>
+                                    </button>
+                                    <!-- Right Arrow -->
+                                    <button id="nextSlide"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg z-20 transition-all duration-200 slider-nav">
+                                        <i data-lucide="chevron-right" class="w-6 h-6 text-slate-700"></i>
+                                    </button>
+                                    <!-- Navigation Dots -->
+                                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                                        @foreach ($apartment->gambar as $index => $image)
+                                            <button
+                                                class="slider-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white transition-all duration-200 {{ $index === 0 ? 'bg-white' : '' }}"
+                                                onclick="goToSlide({{ $index }})"></button>
+                                        @endforeach
+                                    </div>
+                                </div>
                             @else
-                                <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                    <i data-lucide="image-off" class="w-16 h-16"></i>
+                                <div
+                                    class="w-full h-64 sm:h-80 bg-slate-100 flex items-center justify-center rounded-t-2xl">
+                                    <i data-lucide="image-off" class="w-16 h-16 text-slate-300"></i>
                                 </div>
                             @endif
-                            <div class="absolute top-4 left-4">
+                            <div class="absolute top-4 left-4 z-10">
                                 <span
                                     class="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-sm font-medium text-brand rounded-lg shadow-sm">
                                     {{ $apartment->tipe }}
@@ -124,7 +150,7 @@
                             Formulir Booking
                         </h2>
 
-                        <form action="{{ route('booking.store', $apartment->id) }}" method="POST" id="bookingForm">
+                        <form action="{{ route('booking.store', $apartment->slug) }}" method="POST" id="bookingForm">
                             @csrf
 
                             <!-- Name -->
@@ -255,6 +281,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Image slider init - make images global (safe init)
+            window.apartmentImages = @json($apartment->gambar ?? []);
+            if (window.initSlider && window.apartmentImages.length > 0) {
+                window.initSlider();
+            }
+
+            // Booking calculator
             const checkInInput = document.getElementById('checkIn');
             const checkOutInput = document.getElementById('checkOut');
             const jumlahMalamDisplay = document.getElementById('jumlahMalam');
@@ -284,7 +317,6 @@
             }
 
             checkInInput.addEventListener('change', function() {
-                // Set min check-out date to check-in date + 1
                 const checkInDate = new Date(this.value);
                 checkOutInput.min = checkInDate.toISOString().split('T')[0];
                 calculatePrice();
@@ -293,4 +325,5 @@
             checkOutInput.addEventListener('change', calculatePrice);
         });
     </script>
+    <script src="{{ asset('js/image-slider.js') }}"></script>
 @endsection

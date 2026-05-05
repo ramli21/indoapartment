@@ -21,7 +21,7 @@ class AdminBookingNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Booking Baru - Apartemen ' . $this->booking->apartment->judul . ' - #' . str_pad($this->booking->id, 4, '0', STR_PAD_LEFT),
+            subject: 'Booking Baru - Apartemen ' . $this->booking->apartment->judul . ' - #' . $this->booking->booking_code,
         );
     }
 

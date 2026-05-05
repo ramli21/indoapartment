@@ -16,17 +16,17 @@ Route::get('/bantuan', function () {
 // Public Booking Routes
 Route::get('/booking/{apartment}/create', [BookingController::class, 'create'])->name('booking.create');
 Route::post('/booking/{apartment}/store', [BookingController::class, 'store'])->name('booking.store');
-Route::get('/booking/{booking}/success', [BookingController::class, 'success'])->name('booking.success');
-Route::get('/booking/{booking}/payment', [BookingController::class, 'payment'])->name('booking.payment');
-Route::post('/booking/{booking}/payment', [BookingController::class, 'processPayment'])->name('booking.processPayment');
+Route::get('/booking/{booking:booking_code}/success', [BookingController::class, 'success'])->name('booking.success');
+Route::get('/booking/{booking:booking_code}/payment', [BookingController::class, 'payment'])->name('booking.payment');
+Route::post('/booking/{booking:booking_code}/payment', [BookingController::class, 'processPayment'])->name('booking.processPayment');
 
 // Public Track Booking Route (no login required)
 Route::get('/lacak-booking', [BookingController::class, 'track'])->name('booking.track');
 Route::post('/lacak-booking', [BookingController::class, 'searchBooking'])->name('booking.search');
 
 // Public Cancel Booking Route (no login required)
-Route::get('/booking/{booking}/cancel', [BookingController::class, 'cancelForm'])->name('booking.cancel');
-Route::post('/booking/{booking}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
+Route::get('/booking/{booking:booking_code}/cancel', [BookingController::class, 'cancelForm'])->name('booking.cancel');
+Route::post('/booking/{booking:booking_code}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
 
 // Public Inquiry Routes
 Route::get('/hubungi-kami', [InquiryController::class, 'create'])->name('inquiry.create');

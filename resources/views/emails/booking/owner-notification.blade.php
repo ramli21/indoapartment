@@ -101,7 +101,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Kode Booking</span>
-                    <span class="detail-value">#{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</span>
+                    <span class="detail-value">#{{ $booking->booking_code }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Apartemen</span>
@@ -134,11 +134,11 @@
                 </div>
 
                 <div class="info-box">
-                    <p>📱 Tamu akan menghubungi Anda melalui WhatsApp untuk koordinasi lebih lanjut.</p>
+                    <p>📱 Admin akan menghubungi Anda melalui WhatsApp untuk koordinasi lebih lanjut.</p>
                 </div>
 
                 <p style="margin-top: 20px; color: #64748b; font-size: 14px;">
-                    Silakan tunggu kontak dari tamu atau hubungi mereka jika ada perubahan jadwal.
+                    Silakan tunggu kontak dari admin atau hubungi admin jika ada perubahan jadwal.
                 </p>
             </div>
             <div class="footer">

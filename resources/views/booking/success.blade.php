@@ -13,8 +13,7 @@
                 <p class="text-slate-500 mb-8">Nomor booking Anda:</p>
 
                 <div class="inline-block bg-brand/5 border border-brand/10 px-6 py-3 rounded-xl mb-8">
-                    <span
-                        class="text-2xl font-bold text-brand tracking-wider">#{{ str_pad($booking->id, 6, '0', STR_PAD_LEFT) }}</span>
+                    <span class="text-2xl font-bold text-brand tracking-wider">#{{ $booking->booking_code }}</span>
                 </div>
 
                 <!-- Booking Details -->
@@ -75,7 +74,7 @@
                 </div>
 
                 <!-- Owner Contact -->
-                <div class="text-left bg-brand/5 border border-brand/10 rounded-xl p-5 mb-6">
+                {{-- <div class="text-left bg-brand/5 border border-brand/10 rounded-xl p-5 mb-6">
                     <h3 class="text-sm font-medium text-brand mb-3 flex items-center gap-2">
                         <i data-lucide="user" class="w-4 h-4"></i>
                         Hubungi Owner
@@ -103,12 +102,12 @@
                             <span class="text-slate-700 font-mono">{{ $apartment->owner_rekening }}</span>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Actions -->
                 <div class="flex flex-col sm:flex-row gap-3">
                     @if (!$booking->paid_at)
-                        <a href="{{ route('booking.payment', $booking->id) }}"
+                        <a href="{{ route('booking.payment', $booking->booking_code) }}"
                             class="flex-1 px-4 py-3 bg-brand text-white rounded-xl font-medium hover:bg-brand-light transition-colors flex items-center justify-center gap-2">
                             <i data-lucide="credit-card" class="w-4 h-4"></i>
                             Bayar Sekarang

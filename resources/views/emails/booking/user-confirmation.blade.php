@@ -126,7 +126,7 @@
 
                 <div class="booking-code">
                     <p style="margin: 0 0 5px 0; color: #64748b; font-size: 14px;">Kode Booking</p>
-                    <span>#{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</span>
+                    <span>#{{ $booking->booking_code }}</span>
                 </div>
 
                 <div class="detail-row">

@@ -171,13 +171,13 @@
                                 @php
                                     $img =
                                         is_array($apartment->gambar) && count($apartment->gambar) > 0
-                                            ? $apartment->gambar[0]
+                                            ? asset('storage/' . $apartment->gambar[0])
                                             : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
                                 @endphp
                                 <a href="{{ route('booking.create', $apartment) }}"
                                     class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">
                                     <div class="relative overflow-hidden aspect-[4/3]">
-                                        <img src="{{ $img }}"
+                                        <img src="{{ $img }}" loading="lazy"
                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                             alt="{{ $apartment->judul }}">
                                         <div class="absolute top-3 left-3">

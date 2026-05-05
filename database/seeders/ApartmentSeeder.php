@@ -13,22 +13,11 @@ class ApartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        // Pastikan direktori apartments ada
+// Pastikan direktori apartments ada
         Storage::disk('public')->makeDirectory('apartments');
+        Storage::disk('public')->makeDirectory('apartments/demo_apartments');
 
-        // Base64 placeholder PNG 200x150 (warna-warni)
-        $placeholders = [
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-            'iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAABHNCSVQICAgIfAhkiAAAAElJREFUeJzt0EENwDAQwEDT//fsQdOQIpK/W9bMzBzJ7u4+3X2a+0z3me4z3We6z3Sf6T7Tfab7TPeZ7jPdZ7rPdJ/pPtN9pvtM95nu+2c+0wcf0tM5KgAAAABJRU5ErkJggg==',
-        ];
+
 
         // Data dummy 10 apartment
         $apartments = [
@@ -271,15 +260,19 @@ class ApartmentSeeder extends Seeder
         ];
 
         foreach ($apartments as $index => $data) {
-            // Buat file gambar dummy (1-3 gambar per apartemen)
-            $numImages = rand(1, 3);
+            // Copy 5 demo images for this apartment
+            $demoImages = Storage::disk('public')->files('demo');
+            $startIndex = $index * 4;
             $images = [];
-            for ($i = 0; $i < $numImages; $i++) {
-                $filename = "apartments/apartment_{$index}_{$i}.png";
-                // Buat gambar PNG dummy berwarna menggunakan base64
-                $colorIndex = ($index + $i) % count($placeholders);
-                Storage::disk('public')->put($filename, base64_decode($placeholders[$colorIndex]));
-                $images[] = $filename;
+            for ($i = 0; $i < 4; $i++) {
+                $demoImageIndex = $startIndex + $i;
+                if (isset($demoImages[$demoImageIndex])) {
+                    $originalPath = $demoImages[$demoImageIndex];
+                    $extension = pathinfo($originalPath, PATHINFO_EXTENSION);
+                    $newFilename = "apartments/demo_apartment_{$index}_{$i}.{$extension}";
+                    Storage::disk('public')->copy($originalPath, $newFilename);
+                    $images[] = $newFilename;
+                }
             }
 
             // Random fasilitas (5-10 item)

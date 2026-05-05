@@ -76,11 +76,10 @@
                         <div class="lg:col-span-2">
                             <label
                                 class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1 px-3">Tamu</label>
-                            <button onclick="openModal('guestModal')"
+                            <button onclick="openGuestModal()"
                                 class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all text-left">
                                 <i data-lucide="users" class="w-4 h-4 text-slate-400 shrink-0"></i>
-                                <span id="guestDisplay" class="text-sm text-slate-700 truncate">2 Dewasa, 1
-                                    Kamar</span>
+                                <span id="guestDisplay" class="text-sm text-slate-700 truncate">2 Dewasa, 1 Kamar</span>
                             </button>
                         </div>
                         <!-- Search Button -->
@@ -143,13 +142,13 @@
                         @php
                             $img =
                                 is_array($apt->gambar) && count($apt->gambar)
-                                    ? $apt->gambar[0]
+                                    ? asset('storage/' . $apt->gambar[0])
                                     : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
                         @endphp
                         <a href="{{ route('booking.create', $apt) }}"
                             class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">
                             <div class="relative overflow-hidden aspect-[4/3]">
-                                <img src="{{ $img }}"
+                                <img src="{{ $img }}" loading="lazy"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                     alt="{{ $apt->judul }}">
                             </div>

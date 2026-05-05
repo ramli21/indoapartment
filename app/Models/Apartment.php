@@ -12,6 +12,7 @@ class Apartment extends Model
 
     protected $fillable = [
         'judul',
+        'slug',
         'luas',
         'tipe',
         'harga_per_malam',
@@ -36,6 +37,26 @@ class Apartment extends Model
         'owner_rekening',
         'owner_bank_name'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($apartment) {
+            $apartment->slug = \Str::slug($apartment->judul);
+        });
+
+        static::updating(function ($apartment) {
+            if ($apartment->isDirty('judul')) {
+                $apartment->slug = \Str::slug($apartment->judul);
+            }
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     protected $casts = [
         'fasilitas' => 'array',

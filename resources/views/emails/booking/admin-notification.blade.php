@@ -131,7 +131,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Kode Booking</span>
-                    <span class="detail-value">#{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</span>
+                    <span class="detail-value">#{{ $booking->booking_code }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Apartemen</span>
