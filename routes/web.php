@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\ApartmentController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InquiryController;
@@ -46,6 +47,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Apartments Routes (Admin only)
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
     Route::resource('apartments', ApartmentController::class);
 
     // Help/Panduan Routes
