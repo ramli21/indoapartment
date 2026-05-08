@@ -1,5 +1,12 @@
 @extends('layout')
 
+@php
+    $seoTitle = 'Bantuan — IndoApart';
+    $seoDescription =
+        'Panduan penggunaan IndoApart: cara memesan apartemen, pembayaran, melacak booking, hingga pembatalan.';
+    $seoKeywords = 'bantuan, panduan booking, cara pesan apartemen, pembayaran, lacak booking, IndoApart';
+@endphp
+
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
         <div class="max-w-4xl mx-auto px-4 sm:px-6">

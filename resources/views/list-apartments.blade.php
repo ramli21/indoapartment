@@ -1,6 +1,14 @@
 @extends('layout')
 
+@php
+    $seoTitle = 'Daftar Apartemen di Bandung — IndoApart';
+    $seoDescription =
+        'Cari apartemen & penginapan di Bandung. Gunakan filter tanggal, harga, tower, dan jumlah tamu untuk menemukan unit terbaik.';
+    $seoKeywords = 'daftar apartemen, apartemen bandung, sewa apartemen bandung, booking apartemen, IndoApart';
+@endphp
+
 @section('content')
+
     <!-- Breadcrumb -->
     <section class="bg-slate-50 border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
