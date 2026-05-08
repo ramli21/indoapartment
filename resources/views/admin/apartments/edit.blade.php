@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
@@ -17,8 +17,8 @@
 
             <!-- Form Card -->
             <div class="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                <form action="{{ route('admin.apartments.update', $apartment) }}" method="POST" enctype="multipart/form-data"
-                    class="space-y-8">
+                <form action="{{ route('admin.apartments.update', $apartment) }}" method="POST"
+                    enctype="multipart/form-data" class="space-y-8">
                     @csrf
                     @method('PUT')
 
@@ -209,8 +209,7 @@
 
                             <!-- Nomor Kamar -->
                             <div>
-                                <label for="nomor_kamar"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Nomor Kamar
+                                <label for="nomor_kamar" class="block text-sm font-medium text-slate-700 mb-2">Nomor Kamar
                                     <span class="text-red-500">*</span></label>
                                 <input type="text" name="nomor_kamar" id="nomor_kamar"
                                     value="{{ old('nomor_kamar', $apartment->nomor_kamar) }}" required
@@ -222,12 +221,10 @@
 
                             <!-- Jumlah Kamar -->
                             <div>
-                                <label for="jumlah_kamar"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Jumlah
+                                <label for="jumlah_kamar" class="block text-sm font-medium text-slate-700 mb-2">Jumlah
                                     Kamar <span class="text-red-500">*</span></label>
                                 <input type="number" name="jumlah_kamar" id="jumlah_kamar"
-                                    value="{{ old('jumlah_kamar', $apartment->jumlah_kamar) }}" required
-                                    min="1"
+                                    value="{{ old('jumlah_kamar', $apartment->jumlah_kamar) }}" required min="1"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('jumlah_kamar')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -240,8 +237,8 @@
                                     class="block text-sm font-medium text-slate-700 mb-2">Jumlah Kamar Mandi <span
                                         class="text-red-500">*</span></label>
                                 <input type="number" name="jumlah_kamar_mandi" id="jumlah_kamar_mandi"
-                                    value="{{ old('jumlah_kamar_mandi', $apartment->jumlah_kamar_mandi) }}"
-                                    required min="1"
+                                    value="{{ old('jumlah_kamar_mandi', $apartment->jumlah_kamar_mandi) }}" required
+                                    min="1"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('jumlah_kamar_mandi')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -261,8 +258,7 @@
                         </h2>
                         <div class="space-y-6">
                             <div>
-                                <label for="alamat"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Alamat <span
+                                <label for="alamat" class="block text-sm font-medium text-slate-700 mb-2">Alamat <span
                                         class="text-red-500">*</span></label>
                                 <textarea name="alamat" id="alamat" rows="3" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none">{{ old('alamat', $apartment->alamat) }}</textarea>
@@ -272,17 +268,19 @@
                             </div>
 
                             <div>
-                                <label for="alamat_google"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Link
+                                <label for="alamat_google" class="block text-sm font-medium text-slate-700 mb-2">Link
                                     Google Maps</label>
-                                <div class="relative">
-                                    <i data-lucide="map"
-                                        class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                                    <input type="url" name="alamat_google" id="alamat_google"
+                                {{-- <div class="relative"> --}}
+                                {{-- <i data-lucide="map"
+                                        class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i> --}}
+                                <textarea name="alamat_google" id="alamat_google" rows="4"
+                                    class="w-full pl-4 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none"
+                                    placeholder="https://maps.google.com/...">{{ old('alamat_google', $apartment->alamat_google) }}</textarea>
+                                {{-- <input type="text" name="alamat_google" id="alamat_google"
                                         value="{{ old('alamat_google', $apartment->alamat_google) }}"
                                         class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
-                                        placeholder="https://maps.google.com/...">
-                                </div>
+                                        placeholder="https://maps.google.com/..."> --}}
+                                {{-- </div> --}}
                                 @error('alamat_google')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
@@ -326,8 +324,7 @@
                             @foreach ($fasilitasList as $item)
                                 <label
                                     class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-brand/30 hover:bg-brand/5 transition-all">
-                                    <input type="checkbox" name="fasilitas[]"
-                                        value="{{ $item }}"
+                                    <input type="checkbox" name="fasilitas[]" value="{{ $item }}"
                                         {{ in_array($item, $currentFasilitas) ? 'checked' : '' }}
                                         class="w-4 h-4 rounded border-slate-300 text-brand focus:ring-brand">
                                     <span class="text-sm text-slate-700">{{ $item }}</span>
@@ -350,12 +347,10 @@
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div>
-                                <label for="tamu_dewasa"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Tamu Dewasa
+                                <label for="tamu_dewasa" class="block text-sm font-medium text-slate-700 mb-2">Tamu Dewasa
                                     <span class="text-red-500">*</span></label>
                                 <input type="number" name="tamu_dewasa" id="tamu_dewasa"
-                                    value="{{ old('tamu_dewasa', $apartment->tamu_dewasa) }}" required
-                                    min="0"
+                                    value="{{ old('tamu_dewasa', $apartment->tamu_dewasa) }}" required min="0"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('tamu_dewasa')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -363,12 +358,10 @@
                             </div>
 
                             <div>
-                                <label for="tamu_anak"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Tamu Anak
+                                <label for="tamu_anak" class="block text-sm font-medium text-slate-700 mb-2">Tamu Anak
                                     <span class="text-red-500">*</span></label>
                                 <input type="number" name="tamu_anak" id="tamu_anak"
-                                    value="{{ old('tamu_anak', $apartment->tamu_anak) }}" required
-                                    min="0"
+                                    value="{{ old('tamu_anak', $apartment->tamu_anak) }}" required min="0"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('tamu_anak')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -376,8 +369,7 @@
                             </div>
 
                             <div>
-                                <label for="check_in"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Check-in <span
+                                <label for="check_in" class="block text-sm font-medium text-slate-700 mb-2">Check-in <span
                                         class="text-red-500">*</span></label>
                                 <input type="time" name="check_in" id="check_in"
                                     value="{{ old('check_in', $apartment->check_in) }}" required
@@ -388,8 +380,7 @@
                             </div>
 
                             <div>
-                                <label for="check_out"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Check-out
+                                <label for="check_out" class="block text-sm font-medium text-slate-700 mb-2">Check-out
                                     <span class="text-red-500">*</span></label>
                                 <input type="time" name="check_out" id="check_out"
                                     value="{{ old('check_out', $apartment->check_out) }}" required
@@ -400,8 +391,7 @@
                             </div>
 
                             <div class="lg:col-span-4">
-                                <label for="tata_tertib"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Tata Tertib
+                                <label for="tata_tertib" class="block text-sm font-medium text-slate-700 mb-2">Tata Tertib
                                     Apartemen</label>
                                 <textarea name="tata_tertib" id="tata_tertib" rows="4"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none"
@@ -424,13 +414,11 @@
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <label for="owner_nama"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Nama
+                                <label for="owner_nama" class="block text-sm font-medium text-slate-700 mb-2">Nama
                                     Lengkap
                                     <span class="text-red-500">*</span></label>
                                 <input type="text" name="owner_nama" id="owner_nama"
-                                    value="{{ old('owner_nama', $apartment->owner_nama) }}"
-                                    required
+                                    value="{{ old('owner_nama', $apartment->owner_nama) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                     placeholder="Nama lengkap owner">
                                 @error('owner_nama')
@@ -439,16 +427,14 @@
                             </div>
 
                             <div>
-                                <label for="owner_wa"
-                                    class="block text-sm font-medium text-slate-700 mb-2">No.
+                                <label for="owner_wa" class="block text-sm font-medium text-slate-700 mb-2">No.
                                     WhatsApp
                                     <span class="text-red-500">*</span></label>
                                 <div class="relative">
                                     <i data-lucide="phone"
                                         class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                                     <input type="text" name="owner_wa" id="owner_wa"
-                                        value="{{ old('owner_wa', $apartment->owner_wa) }}"
-                                        required
+                                        value="{{ old('owner_wa', $apartment->owner_wa) }}" required
                                         class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                         placeholder="0812xxxxxxx">
                                 </div>
@@ -458,16 +444,13 @@
                             </div>
 
                             <div>
-                                <label for="owner_rekening"
-                                    class="block text-sm font-medium text-slate-700 mb-2">No.
+                                <label for="owner_rekening" class="block text-sm font-medium text-slate-700 mb-2">No.
                                     Rekening <span class="text-red-500">*</span></label>
                                 <div class="relative">
                                     <i data-lucide="credit-card"
                                         class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                                    <input type="text" name="owner_rekening"
-                                        id="owner_rekening"
-                                        value="{{ old('owner_rekening', $apartment->owner_rekening) }}"
-                                        required
+                                    <input type="text" name="owner_rekening" id="owner_rekening"
+                                        value="{{ old('owner_rekening', $apartment->owner_rekening) }}" required
                                         class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                         placeholder="1234567890 (Bank BCA a.n. Nama)">
                                 </div>
@@ -477,13 +460,11 @@
                             </div>
 
                             <div>
-                                <label for="owner_bank_name"
-                                    class="block text-sm font-medium text-slate-700 mb-2">Nama
+                                <label for="owner_bank_name" class="block text-sm font-medium text-slate-700 mb-2">Nama
                                     Bank
                                     <span class="text-red-500">*</span></label>
                                 <input type="text" name="owner_bank_name" id="owner_bank_name"
-                                    value="{{ old('owner_bank_name', $apartment->owner_bank_name) }}"
-                                    required
+                                    value="{{ old('owner_bank_name', $apartment->owner_bank_name) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                     placeholder="Nama Bank (contoh: Bank BCA, Bank Mandiri)">
                                 @error('owner_bank_name')

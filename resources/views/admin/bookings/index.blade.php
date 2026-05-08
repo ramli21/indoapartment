@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
@@ -123,8 +123,7 @@
                                 @foreach ($bookings as $booking)
                                     <tr class="hover:bg-slate-50 transition-colors">
                                         <td class="px-4 py-3">
-                                            <span
-                                                class="font-mono text-sm">#{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                            <span class="font-mono text-sm">#{{ $booking->booking_code }}</span>
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="text-sm font-medium text-slate-800">

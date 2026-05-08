@@ -21,7 +21,7 @@ class OwnerBookingNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Apartemen Anda Sudah Dipesan - #' . str_pad($this->booking->id, 4, '0', STR_PAD_LEFT),
+            subject: 'Apartemen Anda Sudah Dipesan - #' . $this->booking->booking_code,
         );
     }
 

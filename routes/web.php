@@ -47,7 +47,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Apartments Routes (Admin only)
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::resource('apartments', ApartmentController::class);
 
     // Help/Panduan Routes
@@ -70,6 +70,10 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
 
     // Banner Routes
     Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+
+    // Admin info (bank/contact) settings
+    Route::get('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'edit'])->name('info.edit');
+    Route::post('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'update'])->name('info.update');
 });
 
 // API Routes (for calendar and availability check)

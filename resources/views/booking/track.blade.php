@@ -24,7 +24,7 @@
                     @csrf
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-slate-700 mb-2">Kode Booking</label>
-                        <input type="text" name="booking_code" placeholder="Contoh: 0001"
+                        <input type="text" name="booking_code" placeholder="Contoh: XYZ1234"
                             class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-brand outline-none text-lg"
                             value="{{ old('booking_code') }}">
                         <p class="text-xs text-slate-500 mt-1">Masukkan kode booking yang Anda terima setelah melakukan
@@ -57,7 +57,7 @@
             <div class="mt-4 text-center">
                 <p class="text-sm text-slate-500">
                     Butuh bantuan?
-                    <a href="#" class="text-brand hover:underline">Hubungi Kami</a>
+                    <a href="{{ route('inquiry.create') }}" class="text-brand hover:underline">Hubungi Kami</a>
                 </p>
             </div>
         </div>

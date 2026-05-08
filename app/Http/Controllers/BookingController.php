@@ -10,8 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserBookingConfirmation;
 use App\Mail\AdminBookingNotification;
+use App\Mail\UserPaymentReceived;
+use App\Mail\AdminPaymentReceived;
 use App\Mail\OwnerBookingNotification;
 use Illuminate\Support\Str;
+use App\Models\AdminInfo;
 
 class BookingController extends Controller
 {
@@ -20,10 +23,10 @@ class BookingController extends Controller
      */
     public function create(Apartment $apartment)
     {
-        if ($apartment->status !== 'Tersedia') {
-            return redirect()->route('apartments.list')
-                ->with('error', 'Apartemen ini sedang tidak tersedia.');
-        }
+        // if ($apartment->status !== 'Tersedia') {
+        //     return redirect()->route('apartments.list')
+        //         ->with('error', 'Apartemen ini sedang tidak tersedia.');
+        // }
 
         return view('booking.create', compact('apartment'));
     }
@@ -129,13 +132,15 @@ class BookingController extends Controller
         $booking->load('apartment');
         $apartment = $booking->apartment;
 
+        $paymentInfo = AdminInfo::first();
+
         // Check if already paid
         if ($booking->paid_at) {
             return redirect()->route('booking.success', ['booking_code' => $booking->booking_code])
                 ->with('info', 'Booking ini sudah lunas.');
         }
 
-        return view('booking.payment', compact('booking', 'apartment'));
+        return view('booking.payment', compact('booking', 'apartment', 'paymentInfo'));
     }
 
     /**
@@ -170,9 +175,15 @@ class BookingController extends Controller
         // Update booking status to confirmed if paid
         if ($booking->paid_at) {
             $booking->update(['status' => 'confirmed']);
+            // Send payment-specific notification emails to user and admin
+            try {
+                $this->sendPaymentEmails($booking);
+            } catch (\Exception $e) {
+                \Log::error('Failed to send payment notification emails: ' . $e->getMessage());
+            }
         }
 
-        return redirect()->route('booking.success', ['booking_code' => $booking->booking_code])
+        return redirect()->route('booking.success', $booking)
             ->with('success', 'Pembayaran berhasil diproses!');
     }
 
@@ -297,10 +308,10 @@ class BookingController extends Controller
         }
 
         // Try to find by ID (remove leading zeros) or by booking code
-        $bookingId = (int) ltrim($bookingCode, '0');
+        // $bookingId = (int) ltrim($bookingCode, '0');
 
         $booking = Booking::with('apartment')
-            ->where('id', $bookingId)
+            ->where('booking_code', $bookingCode)
             ->first();
 
         if (!$booking) {
@@ -556,7 +567,21 @@ class BookingController extends Controller
         Mail::to($booking->email_tamu)->send(new UserBookingConfirmation($booking));
 
         // 2. Send notification to admin (from config or first admin user)
-        $adminEmail = config('app.admin_email', false);
+        $adminEmail = false;
+        // Prefer admin email from AdminInfo if available
+        try {
+            $adminInfo = AdminInfo::first();
+            if ($adminInfo && !empty($adminInfo->email)) {
+                $adminEmail = $adminInfo->email;
+            }
+        } catch (\Exception $e) {
+            // ignore and fallback
+        }
+
+        if (!$adminEmail) {
+            $adminEmail = config('app.admin_email', false);
+        }
+
         if (!$adminEmail) {
             $admin = User::where('is_admin', true)->first();
             $adminEmail = $admin?->email;
@@ -568,6 +593,48 @@ class BookingController extends Controller
         // 3. Send notification to owner via WhatsApp (owner email not stored, using WA for contact)
         // The owner notification will be shown in the owner dashboard
         // For now, we'll just indicate the notification was sent
+    }
+
+    /**
+     * Send payment received emails to user and admin
+     */
+    private function sendPaymentEmails(Booking $booking)
+    {
+        $booking->load('apartment');
+
+        // 1. Send thank-you email to user
+        try {
+            Mail::to($booking->email_tamu)->send(new UserPaymentReceived($booking));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send user payment email: ' . $e->getMessage());
+        }
+
+        // 2. Notify admin (prefer AdminInfo email)
+        $adminEmail = false;
+        try {
+            $adminInfo = AdminInfo::first();
+            if ($adminInfo && !empty($adminInfo->email)) {
+                $adminEmail = $adminInfo->email;
+            }
+        } catch (\Exception $e) {
+            // ignore
+        }
+
+        if (!$adminEmail) {
+            $adminEmail = config('app.admin_email', false);
+        }
+        if (!$adminEmail) {
+            $admin = User::where('is_admin', true)->first();
+            $adminEmail = $admin?->email;
+        }
+
+        if ($adminEmail) {
+            try {
+                Mail::to($adminEmail)->send(new AdminPaymentReceived($booking));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send admin payment email: ' . $e->getMessage());
+            }
+        }
     }
 
     /**

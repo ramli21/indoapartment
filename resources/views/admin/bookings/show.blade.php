@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
@@ -19,8 +19,7 @@
                     <div class="flex items-start justify-between">
                         <div>
                             <div class="flex items-center gap-2 mb-1">
-                                <span
-                                    class="font-mono text-lg text-slate-400">#{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                <span class="font-mono text-lg text-slate-400">#{{ $booking->booking_code }}</span>
                                 @php
                                     $statusClasses = [
                                         'pending' => 'bg-amber-100 text-amber-700',

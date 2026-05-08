@@ -13,7 +13,7 @@
             <div class="bg-white rounded-xl border border-slate-100 p-5 shadow-sm mb-6">
                 <div class="flex items-center justify-between mb-4">
                     <span class="text-sm font-medium text-slate-500">Kode Booking</span>
-                    <span class="text-lg font-bold text-brand">#{{ str_pad($booking->id, 6, '0', STR_PAD_LEFT) }}</span>
+                    <span class="text-lg font-bold text-brand">#{{ $booking->booking_code }}</span>
                 </div>
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
@@ -45,7 +45,7 @@
 
             <!-- Payment Form -->
             <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
-                <form method="POST" action="{{ route('booking.processPayment', $booking->id) }}"
+                <form method="POST" action="{{ route('booking.processPayment', $booking->booking_code) }}"
                     enctype="multipart/form-data" id="paymentForm">
                     @csrf
 
@@ -71,7 +71,7 @@
 
                             <!-- QRIS Option -->
                             <label class="relative cursor-pointer">
-                                <input type="radio" name="payment_method" value="qris" class="peer sr-only">
+                                <input type="radio" name="payment_method" value="qris" class="peer sr-only" disabled>
                                 <div
                                     class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand peer-checked:bg-brand/5 transition-all">
                                     <div class="flex items-center gap-3 mb-2">
@@ -98,24 +98,25 @@
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between">
                                 <span class="text-slate-500">Bank</span>
-                                <span class="text-slate-800 font-medium">{{ $apartment->owner_bank_name }}</span>
+                                <span class="text-slate-800 font-medium">{{ $paymentInfo->bank_name }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-slate-500">No. Rekening</span>
-                                <span class="text-slate-800 font-mono font-medium">{{ $apartment->owner_rekening }}</span>
+                                <span class="text-slate-800 font-mono font-medium">{{ $paymentInfo->account_number }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-slate-500">Atas Nama</span>
-                                <span class="text-slate-800 font-medium">{{ $apartment->owner_nama }}</span>
+                                <span class="text-slate-800 font-medium">{{ $paymentInfo->account_holder }}</span>
                             </div>
                         </div>
 
                         <!-- Payment Proof Upload -->
                         <div class="mt-4">
                             <label class="block text-sm font-medium text-slate-700 mb-2">Upload Bukti Transfer</label>
-                            <div class="mt-1 flex justify-center px-4 pt-4 pb-4 border-2 border-dashed border-slate-300 rounded-xl hover:border-brand transition-colors cursor-pointer"
-                                id="dropZone">
-                                <div class="space-y-1 text-center">
+                            <input id="payment_proof" name="payment_proof" type="file" accept="image/*">
+                            {{-- <div class="mt-1 flex justify-center px-4 pt-4 pb-4 border-2 border-dashed border-slate-300 rounded-xl hover:border-brand transition-colors cursor-pointer"
+                                id="dropZone"> --}}
+                            {{-- <div class="space-y-1 text-center">
                                     <div id="previewContainer" class="hidden mb-2">
                                         <img id="proofPreview" class="mx-auto h-32 object-contain rounded-lg">
                                     </div>
@@ -126,14 +127,13 @@
                                         <label for="payment_proof"
                                             class="relative cursor-pointer bg-white rounded-md font-medium text-brand hover:text-brand-light">
                                             <span>Pilih file</span>
-                                            <input id="payment_proof" name="payment_proof" type="file" class="sr-only"
-                                                accept="image/*">
+                                            
                                         </label>
                                         <p class="pl-1">atau drag & drop</p>
                                     </div>
                                     <p class="text-xs text-slate-500">PNG, JPG max 2MB</p>
-                                </div>
-                            </div>
+                                </div> --}}
+                            {{-- </div> --}}
                             @error('payment_proof')
                                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
                             @enderror

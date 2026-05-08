@@ -1,5 +1,15 @@
 @extends('layout')
 
+@push('styles')
+    <style>
+        .map-container>iframe {
+            width: 100% !important;
+            height: 450px !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+@endpush
+
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
         <div class="max-w-5xl mx-auto px-4 sm:px-6">
@@ -138,6 +148,13 @@
                                     </div>
                                 </div>
                             @endif
+
+                            {{-- Maps --}}
+                            <div class="mt-5 rounded-xl border border-slate-100 map-container overflow-hidden">
+                                {!! $apartment->alamat_google !!}
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -299,6 +316,42 @@
             checkInInput.min = today;
             checkOutInput.min = today;
 
+            // Disable dates that are already booked for this apartment
+            // We only rely on client-side disabling here; server-side validation still exists in BookingController.
+            @php
+                $bookingsForDates = \App\Models\Booking::where('apartment_id', $apartment->id)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->get(['check_in', 'check_out']);
+
+                $bookedDatesArr = [];
+                foreach ($bookingsForDates as $b) {
+                    $start = \Carbon\Carbon::parse($b->check_in)->startOfDay();
+                    $end = \Carbon\Carbon::parse($b->check_out)->startOfDay();
+                    // collect each night between check_in (inclusive) and check_out (exclusive)
+                    for ($d = $start->copy(); $d->lt($end); $d->addDay()) {
+                        $bookedDatesArr[] = $d->toDateString();
+                    }
+                }
+
+                $bookedDatesArr = array_values(array_unique($bookedDatesArr));
+            @endphp
+
+            const bookedDates = @json($bookedDatesArr);
+
+            function disableDateInput(inputEl) {
+                // HTML date input supports filtering via min/max only.
+                // So we enforce disabling by clearing value if selected date is blocked.
+                inputEl.addEventListener('change', function() {
+                    if (this.value && bookedDates.includes(this.value)) {
+                        this.value = '';
+                    }
+                });
+            }
+
+            disableDateInput(checkInInput);
+            disableDateInput(checkOutInput);
+
+
             function calculatePrice() {
                 const checkIn = new Date(checkInInput.value);
                 const checkOut = new Date(checkOutInput.value);
@@ -323,6 +376,52 @@
             });
 
             checkOutInput.addEventListener('change', calculatePrice);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+        // initialize a single GLightbox instance and bind clicks to open at index
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof GLightbox === 'undefined') return;
+            const imgs = Array.from(document.querySelectorAll('.slider-img'));
+            if (!imgs.length) return;
+
+            const elements = imgs.map(i => ({
+                href: i.src,
+                type: 'image'
+            }));
+            const light = GLightbox({
+                elements: elements,
+                touchNavigation: true,
+                loop: false
+            });
+
+            imgs.forEach((img, idx) => {
+                img.style.cursor = 'zoom-in';
+                img.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    try {
+                        light.openAt(idx);
+                    } catch (err) {
+                        console.error('GLightbox openAt error', err);
+                    }
+                });
+            });
+
+            // Ensure scrolling is restored when lightbox closes
+            try {
+                light.on('close', function() {
+                    try {
+                        document.body.style.overflow = '';
+                        document.documentElement.style.overflow = '';
+                        document.body.classList.remove('glightbox-open');
+                    } catch (e) {
+                        // no-op
+                    }
+                });
+            } catch (e) {
+                // some GLightbox versions may not support on(); fallback: no-op
+            }
         });
     </script>
     <script src="{{ asset('js/image-slider.js') }}"></script>

@@ -21,7 +21,7 @@
                 <div class="space-y-3">
                     <div class="flex justify-between">
                         <span class="text-slate-500">Kode Booking</span>
-                        <span class="font-medium text-slate-800">#{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}</span>
+                        <span class="font-medium text-slate-800">#{{ $booking->booking_code }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-slate-500">Apartemen</span>
@@ -72,7 +72,7 @@
                         <div>
                             <h3 class="font-medium text-amber-800">Pembatalan dengan Pengembalian Dana</h3>
                             <p class="text-sm text-amber-700 mt-1">
-                                Anda telah melakukan pembayaran untuk booking ini. Setelah pembatalan, silakan hubungi owner
+                                Anda telah melakukan pembayaran untuk booking ini. Setelah pembatalan, silakan hubungi admin
                                 untuk proses pengembalian dana.
                             </p>
                         </div>

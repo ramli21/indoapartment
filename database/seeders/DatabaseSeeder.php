@@ -20,8 +20,12 @@ class DatabaseSeeder extends Seeder
         );
 
         // Seed 10 dummy apartments
-$this->call(ApartmentSeeder::class);
+        $this->call(ApartmentSeeder::class);
         $this->call(AdminInfoSeeder::class);
+
+        // Seed inquiries and bookings
+        $this->call(InquirySeeder::class);
+        $this->call(BookingSeeder::class);
     }
 }
 

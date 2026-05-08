@@ -244,6 +244,8 @@
             background: #f1f5f9 !important;
         }
     </style>
+
+    @stack('styles')
 </head>
 
 <body class="font-sans text-slate-700 bg-white">

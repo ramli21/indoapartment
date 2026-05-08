@@ -12,7 +12,7 @@
                 </a>
                 <p class="text-slate-400 text-sm leading-relaxed mb-4 max-w-xs">Platform booking penginapan apartemen
                     terpercaya di Indonesia dengan harga terbaik.</p>
-                <div class="flex gap-3">
+                {{-- <div class="flex gap-3">
                     <a href="#"
                         class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -41,7 +41,7 @@
                                 d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                         </svg>
                     </a>
-                </div>
+                </div> --}}
             </div>
             <!-- Links -->
             <div>
@@ -49,12 +49,9 @@
                 <ul class="space-y-2.5">
                     <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Tentang
                             Kami</a></li>
-                    <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Karir</a>
-                    </li>
-                    <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Blog</a>
-                    </li>
-                    <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Press</a>
-                    </li>
+                    <li><a href="{{ route('inquiry.create') }}"
+                            class="text-slate-400 text-sm hover:text-white transition-colors">Hubungi
+                            Kami</a></li>
                 </ul>
             </div>
             <div>
@@ -80,11 +77,8 @@
                             Bantuan</a></li>
                     <li><a href="{{ route('booking.track') }}"
                             class="text-slate-400 text-sm hover:text-white transition-colors">Lacak Booking</a></li>
-                    <li><a href="#"
+                    <li><a href="{{ route('help') . '#cancel-booking' }}"
                             class="text-slate-400 text-sm hover:text-white transition-colors">Pembatalan</a></li>
-                    <li><a href="{{ route('inquiry.create') }}"
-                            class="text-slate-400 text-sm hover:text-white transition-colors">Hubungi
-                            Kami</a></li>
                 </ul>
             </div>
         </div>
@@ -122,7 +116,7 @@
 
         <!-- Bottom -->
         <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-xs text-slate-500">&copy; 2025 IndoApart. Semua hak dilindungi.</p>
+            <p class="text-xs text-slate-500">&copy; {{ date('Y') }} IndoApart. Semua hak dilindungi.</p>
             <div class="flex items-center gap-4">
                 <span class="text-xs text-slate-500">Bahasa: Indonesia</span>
                 <span class="text-xs text-slate-600">|</span>

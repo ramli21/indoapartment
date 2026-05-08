@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\AdminInfo;
+
+use Illuminate\Support\Facades\Redirect;
 
 class AdminInfoController extends Controller
 {
@@ -16,43 +19,35 @@ class AdminInfoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show form to edit admin info (bank, contact)
      */
-    public function create()
+    public function edit()
     {
-        //
+        $info = AdminInfo::first();
+        return view('admin.admin_info.edit', compact('info'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update or create AdminInfo
      */
-    public function store(Request $request)
+    public function update(Request $request)
     {
-        //
-    }
+        $validated = $request->validate([
+            'bank_name' => 'nullable|string|max:255',
+            'account_number' => 'nullable|string|max:100',
+            'account_holder' => 'nullable|string|max:255',
+            'whatsapp' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $info = AdminInfo::first();
+        if ($info) {
+            $info->update($validated);
+        } else {
+            AdminInfo::create($validated);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        return redirect()->route('admin.info.edit')->with('success', 'Admin info berhasil disimpan.');
     }
 
     /**

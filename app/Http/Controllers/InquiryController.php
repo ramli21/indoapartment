@@ -7,6 +7,7 @@ use App\Models\Apartment;
 use App\Models\Inquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Models\AdminInfo;
 
 class InquiryController extends Controller
 {
@@ -15,13 +16,14 @@ class InquiryController extends Controller
      */
     public function create(Request $request)
     {
+        $adminInfo = AdminInfo::first();
         $apartment = null;
         if ($request->filled('apartment_id')) {
             $apartment = Apartment::find($request->apartment_id);
         }
         $apartments = Apartment::orderBy('judul')->get();
 
-        return view('inquiry.create', compact('apartment', 'apartments'));
+        return view('inquiry.create', compact('apartment', 'apartments', 'adminInfo'));
     }
 
     /**

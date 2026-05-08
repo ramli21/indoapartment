@@ -28,7 +28,7 @@
                         <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm sticky top-24">
                             <div class="flex items-center justify-between mb-5">
                                 <h2 class="font-semibold text-slate-800">Filter</h2>
-                                @if (request()->hasAny(['search', 'tower', 'tipe', 'harga_min', 'harga_max', 'tamu']))
+                                @if (request()->hasAny(['search', 'tower', 'tipe', 'harga_min', 'harga_max', 'tamu', 'check_in', 'check_out']))
                                     <a href="{{ route('apartments.list') }}" class="text-xs text-brand hover:underline">
                                         Reset
                                     </a>
@@ -84,6 +84,19 @@
                             </div>
 
                             <!-- Price Range -->
+                            <!-- Date Range -->
+                            <div class="mb-5">
+                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                    Tanggal Menginap
+                                </label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="date" name="check_in" value="{{ request('check_in') }}"
+                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
+                                    <input type="date" name="check_out" value="{{ request('check_out') }}"
+                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
+                                </div>
+                            </div>
+
                             <div class="mb-5">
                                 <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
                                     Harga per Malam
@@ -183,7 +196,7 @@
                                         <div class="absolute top-3 left-3">
                                             <span
                                                 class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-semibold rounded-lg uppercase">
-                                                {{ $apartment->status }}
+                                                Tersedia
                                             </span>
                                         </div>
                                     </div>

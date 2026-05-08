@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
@@ -288,11 +288,11 @@
     </div>
 @endsection
 
-@section('styles')
+@push('styles')
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css' rel='stylesheet' />
-@endsection
+@endpush
 
-@section('scripts')
+@push('scripts')
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/id.js'></script>
     <script>
@@ -313,12 +313,24 @@
                 events: function(info, successCallback, failureCallback) {
                     fetch('{{ route('api.bookings.schedule') }}?start=' + info.startStr + '&end=' + info
                             .endStr)
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) return response.text().then(t => {
+                                throw new Error(t || response.statusText);
+                            });
+                            return response.json();
+                        })
                         .then(data => successCallback(data))
-                        .catch(error => failureCallback(error));
+                        .catch(error => {
+                            console.error('Failed to load bookings schedule:', error);
+                            failureCallback(error);
+                        });
                 },
                 eventClick: function(info) {
-                    showBookingModal(info.event.extendedProps);
+                    const props = Object.assign({
+                        id: info.event.id,
+                        title: info.event.title
+                    }, info.event.extendedProps || {});
+                    showBookingModal(props);
                 },
                 eventTimeFormat: {
                     hour: '2-digit',
@@ -410,11 +422,11 @@
                         </div>
                     </div>
                     ${props.notes ? `
-                                    <div>
-                                        <span class="text-sm text-slate-500">Catatan</span>
-                                        <div class="text-slate-800 text-sm">${props.notes}</div>
-                                    </div>
-                                    ` : ''}
+                                                            <div>
+                                                                <span class="text-sm text-slate-500">Catatan</span>
+                                                                <div class="text-slate-800 text-sm">${props.notes}</div>
+                                                            </div>
+                                                            ` : ''}
                 </div>
             `;
 
@@ -491,12 +503,24 @@
                     if (status) url += '&status=' + status;
 
                     fetch(url)
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) return response.text().then(t => {
+                                throw new Error(t || response.statusText);
+                            });
+                            return response.json();
+                        })
                         .then(data => successCallback(data))
-                        .catch(error => failureCallback(error));
+                        .catch(error => {
+                            console.error('Failed to load filtered bookings schedule:', error);
+                            failureCallback(error);
+                        });
                 },
                 eventClick: function(info) {
-                    showBookingModal(info.event.extendedProps);
+                    const props = Object.assign({
+                        id: info.event.id,
+                        title: info.event.title
+                    }, info.event.extendedProps || {});
+                    showBookingModal(props);
                 },
                 height: 'auto'
             });
@@ -688,4 +712,4 @@
                 });
         });
     </script>
-@endsection
+@endpush

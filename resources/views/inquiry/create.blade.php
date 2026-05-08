@@ -93,8 +93,8 @@
 
             <!-- Contact Info -->
             <div class="mt-6 text-center text-sm text-slate-500">
-                <p>Atau hubungi langsung via WhatsApp: <a href="https://wa.me/6281234567890"
-                        class="text-brand font-medium">0812 3456 7890</a></p>
+                <p>Atau hubungi langsung via WhatsApp: <a href="https://wa.me/{{ $adminInfo->whatsapp }}"
+                        class="text-brand font-medium">{{ '+' . $adminInfo->whatsapp }}</a></p>
             </div>
         </div>
     </section>

@@ -1,4 +1,4 @@
-akM@extends('layout')
+@extends('layout')
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
@@ -144,8 +144,8 @@ akM@extends('layout')
                 </div>
             </div>
 
-            <!-- Section 4: FAQ -->
-            <div id="faq" class="bg-white rounded-xl border border-slate-100 p-6 mb-6">
+            <!-- Section 4: Cancel Booking -->
+            <div id="cancel-booking" class="bg-white rounded-xl border border-slate-100 p-6 mb-6">
                 <h2 class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
                     <span class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand">4</span>
                     Cara Membatalkan Booking

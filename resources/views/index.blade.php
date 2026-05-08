@@ -889,7 +889,7 @@
                                 class="w-5 h-5 text-slate-300 ml-auto group-hover:text-brand transition-colors"></i>
                         </a>
 
-                        <a href="tel:+6281234567890"
+                        <a href="tel:+{{ $adminInfo->whatsapp }}"
                             class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hover:bg-brand/5 transition-colors group">
                             <div
                                 class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center group-hover:bg-brand/20 transition-colors">
@@ -897,13 +897,13 @@
                             </div>
                             <div>
                                 <h3 class="font-medium text-slate-800">Telepon</h3>
-                                <p class="text-sm text-slate-500">+62 812 3456 7890</p>
+                                <p class="text-sm text-slate-500">+{{ $adminInfo->whatsapp }}</p>
                             </div>
                             <i data-lucide="arrow-right"
                                 class="w-5 h-5 text-slate-300 ml-auto group-hover:text-brand transition-colors"></i>
                         </a>
 
-                        <a href="mailto:info@indoapart.com"
+                        <a href="mailto:{{ $adminInfo->email }}"
                             class="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hover:bg-brand/5 transition-colors group">
                             <div
                                 class="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center group-hover:bg-brand/20 transition-colors">
@@ -911,7 +911,7 @@
                             </div>
                             <div>
                                 <h3 class="font-medium text-slate-800">Email</h3>
-                                <p class="text-sm text-slate-500">info@indoapart.com</p>
+                                <p class="text-sm text-slate-500">{{ $adminInfo->email }}</p>
                             </div>
                             <i data-lucide="arrow-right"
                                 class="w-5 h-5 text-slate-300 ml-auto group-hover:text-brand transition-colors"></i>

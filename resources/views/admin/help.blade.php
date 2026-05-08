@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('admin.layout')
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
@@ -131,9 +131,11 @@
                         <li>Warna berbeda untuk setiap status:
                             <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
                                 <li><span class="inline-block w-3 h-3 bg-amber-500 rounded-full"></span>
-                                    <strong>Orange</strong> - Pending</li>
+                                    <strong>Orange</strong> - Pending
+                                </li>
                                 <li><span class="inline-block w-3 h-3 bg-emerald-500 rounded-full"></span>
-                                    <strong>Hijau</strong> - Confirmed</li>
+                                    <strong>Hijau</strong> - Confirmed
+                                </li>
                             </ul>
                         </li>
                         <li>Klik pada tanggal untuk melihat booking</li>

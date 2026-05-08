@@ -21,7 +21,7 @@ class UserBookingConfirmation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Konfirmasi Booking Apartemen - #' . str_pad($this->booking->id, 4, '0', STR_PAD_LEFT),
+            subject: 'Konfirmasi Booking Apartemen - #' . $this->booking->booking_code,
         );
     }
 

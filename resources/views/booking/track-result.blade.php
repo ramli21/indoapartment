@@ -28,7 +28,7 @@
                     <div class="flex items-center justify-between">
                         <span class="text-white/80 text-sm">Kode Booking</span>
                         <span class="text-white font-mono text-xl font-semibold">
-                            #{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}
+                            #{{ $booking->booking_code }}
                         </span>
                     </div>
                 </div>
@@ -141,14 +141,14 @@
                 <div class="px-6 pb-6 flex flex-col sm:flex-row gap-3">
                     @if (in_array($booking->status, ['pending', 'confirmed']))
                         @if (!empty($booking->paid_at))
-                            <a href="https://wa.me/{{ $booking->apartment->owner_wa }}?text=Halo,%20saya%20ingin%20konfirmasi%20booking%20{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}"
+                            <a href="https://wa.me/{{ $booking->apartment->owner_wa }}?text=Halo,%20saya%20ingin%20konfirmasi%20booking%20{{ $booking->booking_code }}"
                                 target="_blank"
                                 class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm">
                                 <i data-lucide="message-circle" class="w-4 h-4"></i>
                                 Hubungi via WhatsApp
                             </a>
                         @else
-                            <a href="{{ route('booking.payment', $booking->id) }}"
+                            <a href="{{ route('booking.payment', $booking->booking_code) }}"
                                 class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-brand text-white rounded-lg hover:bg-brand-light transition-colors text-sm">
                                 <i data-lucide="credit-card" class="w-4 h-4"></i>
                                 Bayar Sekarang
@@ -173,7 +173,7 @@
                 <!-- Cancel Booking Button -->
                 @if (in_array($booking->status, ['pending', 'confirmed']))
                     <div class="px-6 pb-2">
-                        <a href="{{ route('booking.cancel', $booking->id) }}"
+                        <a href="{{ route('booking.cancel', $booking->booking_code) }}"
                             class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm">
                             <i data-lucide="x-circle" class="w-4 h-4"></i>
                             Batalkan Booking
@@ -190,7 +190,7 @@
                         <p class="font-medium mb-1">Catatan:</p>
                         <ul class="list-disc list-inside space-y-1 text-amber-700">
                             <li>Silakan datang tepat waktu sesuai tanggal check-in</li>
-                            <li>Hubungi pemilik apartemen jika ada perubahan jadwal</li>
+                            <li>Hubungi admin apartemen jika ada perubahan jadwal</li>
                             <li>Simpan kode booking ini untuk referensi</li>
                         </ul>
                     </div>

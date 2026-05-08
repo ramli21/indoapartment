@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Apartment;
+use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,7 +38,8 @@ class ApartmentController extends Controller
             ->values();
 
         // Build query with filters
-        $query = Apartment::where('status', 'Tersedia'); // Only show available apartments
+        // $query = Apartment::where('status', 'Tersedia'); // Only show available apartments
+        $query = Apartment::whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']); // Only show available apartments
 
         // Filter by search keyword
         if ($request->filled('search')) {
@@ -70,6 +73,43 @@ class ApartmentController extends Controller
         if ($request->filled('tamu')) {
             $query->where('tamu_dewasa', '>=', (int) $request->tamu);
         }
+
+        // Filter availability based on selected dates.
+        // If user doesn't choose dates, default to today & tomorrow.
+        $hasCheckIn = $request->filled('check_in');
+        $hasCheckOut = $request->filled('check_out');
+
+        $checkIn = null;
+        $checkOut = null;
+
+        try {
+            if ($hasCheckIn && $hasCheckOut) {
+                $checkIn = Carbon::parse($request->check_in)->startOfDay();
+                $checkOut = Carbon::parse($request->check_out)->startOfDay();
+            } else {
+                $checkIn = Carbon::today()->startOfDay();
+                $checkOut = Carbon::today()->addDay()->startOfDay();
+            }
+
+            if ($checkOut && $checkIn && $checkOut->gt($checkIn)) {
+                // Overlap rule: existing.check_in < requested.check_out AND existing.check_out > requested.check_in
+                $conflictingApartmentIds = Booking::whereIn('status', ['pending', 'confirmed'])
+                    ->where(function ($q) use ($checkIn, $checkOut) {
+                        $q->where('check_in', '<', $checkOut->toDateString())
+                            ->where('check_out', '>', $checkIn->toDateString());
+                    })
+                    ->pluck('apartment_id')
+                    ->unique()
+                    ->toArray();
+
+                if (!empty($conflictingApartmentIds)) {
+                    $query->whereNotIn('id', $conflictingApartmentIds);
+                }
+            }
+        } catch (\Exception $e) {
+            // ignore invalid dates and continue without date filtering
+        }
+
 
         // Sort
         $sort = $request->get('sort', 'terbaru');
