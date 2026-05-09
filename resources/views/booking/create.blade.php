@@ -344,6 +344,10 @@
                 inputEl.addEventListener('change', function() {
                     if (this.value && bookedDates.includes(this.value)) {
                         this.value = '';
+
+                        alert('Tanggal ' + this.value +
+                            ' sudah dibooking. Silakan pilih tanggal lain (check-in 14:00, check-out 12:00).'
+                            );
                     }
                 });
             }
@@ -370,9 +374,13 @@
             }
 
             checkInInput.addEventListener('change', function() {
-                const checkInDate = new Date(this.value);
-                checkOutInput.min = checkInDate.toISOString().split('T')[0];
-                calculatePrice();
+                if (this.value != '') {
+                    const checkInDate = new Date(this.value);
+                    checkOutInput.min = checkInDate.toISOString().split('T')[0];
+                    calculatePrice();
+                }
+
+                return;
             });
 
             checkOutInput.addEventListener('change', calculatePrice);

@@ -36,10 +36,7 @@ class BookingController extends Controller
      */
     public function store(Request $request, Apartment $apartment)
     {
-        if ($apartment->status !== 'Tersedia') {
-            return redirect()->route('apartments.list')
-                ->with('error', 'Apartemen ini sedang tidak tersedia.');
-        }
+
 
         $validated = $request->validate([
             'nama_tamu' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s\.\-\']+$/',
@@ -61,7 +58,7 @@ class BookingController extends Controller
             ->exists();
 
         if ($overlapping) {
-            return back()->withErrors(['check_in' => 'Rentang tanggal sudah dibooking. Silakan pilih tanggal lain (check-in 14:00, check-out 12:00).']);
+            return back()->withInput()->withErrors(['check_in' => 'Rentang tanggal sudah dibooking. Silakan pilih tanggal lain (check-in 14:00, check-out 12:00).']);
         }
 
         // Sanitize input to prevent XSS and SQL injection

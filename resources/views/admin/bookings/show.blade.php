@@ -172,7 +172,7 @@
                     </div>
 
                     <!-- Owner Contact -->
-                    <div class="mt-6 p-4 bg-brand/5 rounded-xl border border-brand/10">
+                    {{-- <div class="mt-6 p-4 bg-brand/5 rounded-xl border border-brand/10">
                         <h3 class="text-sm font-medium text-brand mb-3 flex items-center gap-2">
                             <i data-lucide="building" class="w-4 h-4"></i>
                             Informasi Owner
@@ -195,7 +195,7 @@
                                 <div class="text-slate-800 font-mono">{{ $booking->apartment->owner_rekening }}</div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Status Update -->
                     <div class="mt-6 pt-6 border-t border-slate-100">
