@@ -76,6 +76,14 @@
                 </span>
             </a>
 
+            <a href="{{ route('admin.midtrans_settings.edit') }}"
+                class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors border {{ $isActive('admin.midtrans_settings.edit') ? 'bg-brand text-white border-brand' : 'bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-100 text-slate-700' }}">
+                <span class="inline-flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                    Setting Midtrans
+                </span>
+            </a>
+
             <a href="{{ route('admin.help') }}"
                 class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors border {{ $routeName === 'admin.help' ? 'bg-brand text-white border-brand' : 'bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-100 text-slate-700' }}">
                 <span class="inline-flex items-center gap-2 text-sm font-medium">

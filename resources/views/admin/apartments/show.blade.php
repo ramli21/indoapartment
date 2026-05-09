@@ -88,7 +88,7 @@
                     </div>
 
                     <div class="mt-6">
-                        <a href="{{ route('admin.apartments.edit', $apartment->id) }}"
+                        <a href="{{ route('admin.apartments.edit', $apartment->slug) }}"
                             class="inline-block px-4 py-2 bg-brand text-white rounded-lg">Edit Apartemen</a>
                     </div>
                 </div>

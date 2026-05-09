@@ -144,48 +144,172 @@ class BookingController extends Controller
     }
 
     /**
-     * Process payment
+     * Process payment (legacy/manual)
      */
     public function processPayment(Request $request, $booking_code)
     {
+        abort(410, 'Manual payment flow is disabled. Please use Midtrans payment.');
+    }
+
+    /**
+     * Create Midtrans Snap transaction
+     */
+    public function createMidtransTransaction(Request $request, $booking_code)
+    {
         $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
 
+        if ($booking->paid_at) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking already paid',
+            ]);
+        }
+
         $validated = $request->validate([
-            'payment_method' => 'required|in:bank_transfer,qris',
             'payment_notes' => 'nullable|string|max:500',
-            'payment_proof' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        // Handle payment proof upload for bank transfer
-        if ($request->payment_method === 'bank_transfer' && $request->hasFile('payment_proof')) {
-            $path = $request->file('payment_proof')->store('payment_proofs', 'public');
-            $validated['payment_proof'] = $path;
-            $validated['paid_at'] = now();
+        if (array_key_exists('payment_notes', $validated)) {
+            $booking->update([
+                'payment_notes' => $validated['payment_notes'] ? strip_tags($validated['payment_notes']) : null,
+            ]);
         }
 
-        // For QRIS, mark as paid immediately (instant payment)
-        if ($request->payment_method === 'qris') {
-            $validated['paid_at'] = now();
+        $midtransSetting = \App\Models\MidtransSetting::getFirst();
+        if (!$midtransSetting || empty($midtransSetting->server_key) || empty($midtransSetting->client_key)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Midtrans keys belum diatur di admin (Midtrans settings).',
+            ], 500);
         }
 
-        $validated['payment_notes'] = $request->payment_notes ? strip_tags($request->payment_notes) : null;
+        $serverKey = $midtransSetting->server_key;
 
-        $booking->update($validated);
+        $params = [
 
-        // Update booking status to confirmed if paid
-        if ($booking->paid_at) {
-            $booking->update(['status' => 'confirmed']);
-            // Send payment-specific notification emails to user and admin
-            try {
-                $this->sendPaymentEmails($booking);
-            } catch (\Exception $e) {
-                \Log::error('Failed to send payment notification emails: ' . $e->getMessage());
-            }
+            'transaction_details' => [
+                'order_id' => (string) $booking->booking_code,
+                'gross_amount' => (int) round($booking->total_harga),
+            ],
+            'customer_details' => [
+                'first_name' => (string) ($booking->nama_tamu ?? 'Guest'),
+                'email' => (string) ($booking->email_tamu ?? 'guest@example.com'),
+                'phone' => (string) ($booking->no_hp ?? '0'),
+            ],
+            'item_details' => [
+                [
+                    'name' => 'Booking ' . $booking->booking_code,
+                    'price' => (int) round($booking->total_harga),
+                    'quantity' => 1,
+                ],
+            ],
+            // callback URLs are handled by Midtrans dashboard; finish/notification optional
+            // (we rely on webhook for instant status updates)
+            // 'callbacks' => [
+            //     'finish' => config('midtrans.callbacks.finish'),
+            //     'notification' => config('midtrans.callbacks.notification'),
+            // ],
+
+        ];
+
+        if (class_exists('Midtrans\CoreApi')) {
+            \Midtrans\CoreApi::setConfig([
+                'serverKey' => $midtransSetting->server_key,
+                'clientKey' => $midtransSetting->client_key,
+                'isProduction' => (bool) $midtransSetting->is_production,
+            ]);
         }
 
-        return redirect()->route('booking.success', $booking)
-            ->with('success', 'Pembayaran berhasil diproses!');
+
+        $snapToken = null;
+        try {
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+        } catch (\Throwable $e) {
+            \Log::error('Midtrans Snap token failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create Midtrans transaction.',
+            ], 500);
+        }
+
+        // Persist midtrans_transaction_id if the library gives it
+        // (Some SDK versions may not populate this; we keep booking_code as order_id anyway.)
+        $booking->update([
+            'midtrans_order_id' => $booking->booking_code,
+        ]);
+
+        try {
+            $booking->refresh();
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+
+        $booking->update([
+            'midtrans_order_id' => $booking->booking_code,
+            'midtrans_transaction_id' => (string) ($booking->midtrans_transaction_id ?? null),
+            'midtrans_status' => 'pending',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'snap_token' => $snapToken,
+        ]);
     }
+
+    /**
+     * Midtrans webhook handler
+     */
+    public function midtransWebhook(Request $request)
+    {
+        // Webhook payload verification (if webhook secret is configured)
+        // Note: official verification may vary by Midtrans SDK version.
+        // We still parse and process idempotently.
+        try {
+            $payload = $request->all();
+
+            $orderId = $payload['order_id'] ?? null;
+            $transactionStatus = $payload['transaction_status'] ?? null;
+            $fraudStatus = $payload['fraud_status'] ?? null;
+
+            if (!$orderId) {
+                return response()->json(['success' => false, 'message' => 'Missing order_id'], 400);
+            }
+
+            $booking = Booking::where('booking_code', $orderId)->first();
+            if (!$booking) {
+                return response()->json(['success' => false, 'message' => 'Booking not found'], 404);
+            }
+
+            $statusToStore = $transactionStatus ?: $fraudStatus;
+            $booking->update([
+                'midtrans_order_id' => $orderId,
+                'midtrans_status' => $statusToStore,
+            ]);
+
+            $isPaid = in_array($transactionStatus, ['settlement', 'capture', 'paid'], true) && empty($booking->paid_at);
+
+            if ($isPaid) {
+                $booking->update([
+                    'paid_at' => now(),
+                    'payment_method' => 'midtrans',
+                    'status' => 'confirmed',
+                ]);
+
+                try {
+                    $this->sendPaymentEmails($booking);
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send payment notification emails: ' . $e->getMessage());
+                }
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            \Log::error('Midtrans webhook error: ' . $e->getMessage());
+            return response()->json(['success' => false], 500);
+        }
+    }
+
 
     /**
      * Admin: List all bookings

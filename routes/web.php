@@ -19,7 +19,16 @@ Route::get('/booking/{apartment}/create', [BookingController::class, 'create'])-
 Route::post('/booking/{apartment}/store', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking/{booking:booking_code}/success', [BookingController::class, 'success'])->name('booking.success');
 Route::get('/booking/{booking:booking_code}/payment', [BookingController::class, 'payment'])->name('booking.payment');
+
+// Midtrans Snap payments
+Route::post('/booking/{booking:booking_code}/payment/midtrans', [BookingController::class, 'createMidtransTransaction'])
+    ->name('booking.payment.midtrans');
+Route::post('/midtrans/webhook', [BookingController::class, 'midtransWebhook'])
+    ->name('midtrans.webhook');
+
+// Legacy/manual payment endpoint (disabled)
 Route::post('/booking/{booking:booking_code}/payment', [BookingController::class, 'processPayment'])->name('booking.processPayment');
+
 
 // Public Track Booking Route (no login required)
 Route::get('/lacak-booking', [BookingController::class, 'track'])->name('booking.track');
@@ -74,7 +83,12 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     // Admin info (bank/contact) settings
     Route::get('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'edit'])->name('info.edit');
     Route::post('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'update'])->name('info.update');
+
+    // Midtrans settings
+    Route::get('/midtrans-settings', [\App\Http\Controllers\Admin\MidtransSettingController::class, 'edit'])->name('midtrans_settings.edit');
+    Route::post('/midtrans-settings', [\App\Http\Controllers\Admin\MidtransSettingController::class, 'update'])->name('midtrans_settings.update');
 });
+
 
 // API Routes (for calendar and availability check)
 Route::middleware(['admin'])->prefix('api')->group(function () {
