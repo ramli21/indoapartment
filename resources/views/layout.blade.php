@@ -4,7 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IndoApart — Temukan Apartemen & Penginapan Terbaik</title>
+
+    {{-- SEO (public pages only) --}}
+    <meta name="robots" content="index, follow">
+
+    {{-- SEO defaults (bisa di-override per halaman lewat $seoTitle/$seoDescription/$seoKeywords/$seoImage) --}}
+    @php
+        $seoTitle = $seoTitle ?? 'IndoApart — Temukan Apartemen & Penginapan Terbaik';
+        $seoDescription =
+            $seoDescription ??
+            'IndoApart menyediakan apartemen & penginapan terbaik di Bandung dan sekitarnya. Cari unit, booking cepat, dan bayar dengan mudah.';
+        $seoKeywords = $seoKeywords ?? 'apartemen, penginapan, booking apartemen, Bandung, IndoApart, sewa apartemen';
+        $seoImage = $seoImage ?? asset('images/og-default.jpg');
+    @endphp
+
+    <title>{{ $seoTitle }}</title>
+
+    {{-- OpenGraph/Twitter image defaults are set by $seoImage (page override possible) --}}
+    <meta name="description" content="{{ $seoDescription }}" />
+    <meta name="keywords" content="{{ $seoKeywords }}" />
+
+    <meta name="author" content="IndoApart" />
+
+    {{-- Open Graph / Facebook --}}
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ $seoTitle }}" />
+    <meta property="og:description" content="{{ $seoDescription }}" />
+    <meta property="og:url" content="{{ request()->url() }}" />
+    <meta property="og:site_name" content="IndoApart" />
+    <meta property="og:image" content="{{ $seoImage }}" />
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ $seoTitle }}" />
+    <meta name="twitter:description" content="{{ $seoDescription }}" />
+    <meta name="twitter:image" content="{{ $seoImage }}" />
+
+
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{{ asset('js/search.js') }}"></script>

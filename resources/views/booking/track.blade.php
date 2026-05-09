@@ -1,5 +1,12 @@
 @extends('layout')
 
+@php
+    $seoTitle = 'Lacak Booking — IndoApart';
+    $seoDescription =
+        'Lacak status booking Anda di IndoApart dengan memasukkan kode booking. Lihat apakah sudah dikonfirmasi atau masih menunggu.';
+    $seoKeywords = 'lacak booking, status booking, IndoApart, booking apartemen';
+@endphp
+
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
         <div class="max-w-lg mx-auto px-4 sm:px-6">

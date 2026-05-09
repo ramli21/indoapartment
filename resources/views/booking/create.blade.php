@@ -1,5 +1,19 @@
 @extends('layout')
 
+@php
+    $seoTitle = 'Booking ' . ($apartment->judul ?? 'Apartemen') . ' — IndoApart';
+    $seoDescription =
+        'Booking apartemen ' .
+        ($apartment->judul ?? '') .
+        ' di Bandung/Sekitarnya. Pilih tanggal check-in & check-out, lalu konfirmasi pemesanan.';
+    $seoKeywords = 'booking apartemen, sewa apartemen, ' . ($apartment->alamat ?? 'Bandung') . ', IndoApart';
+
+    $seoImage =
+        isset($apartment->gambar) && is_array($apartment->gambar) && count($apartment->gambar)
+            ? asset('storage/' . $apartment->gambar[0])
+            : asset('images/og-default.jpg');
+@endphp
+
 @push('styles')
     <style>
         .map-container>iframe {
