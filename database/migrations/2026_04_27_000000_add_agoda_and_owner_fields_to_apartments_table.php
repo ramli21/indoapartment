@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('apartments', function (Blueprint $table) {
+        Schema::table('rooms', function (Blueprint $table) {
             $table->decimal('harga_per_malam', 12, 2)->nullable()->after('tipe');
             $table->text('deskripsi')->nullable()->after('harga_per_malam');
             $table->integer('jumlah_kamar_mandi')->default(1)->after('jumlah_kamar');
@@ -24,7 +24,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('apartments', function (Blueprint $table) {
+        Schema::table('rooms', function (Blueprint $table) {
             $table->dropColumn([
                 'harga_per_malam',
                 'deskripsi',

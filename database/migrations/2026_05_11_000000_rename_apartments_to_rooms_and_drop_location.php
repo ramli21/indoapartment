@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Rename table
-        Schema::rename('apartments', 'rooms');
+        // Schema::rename('apartments', 'rooms');
 
         // Drop location columns
         Schema::table('rooms', function (Blueprint $table) {
@@ -23,10 +23,10 @@ return new class extends Migration
         });
 
         // Update FKs in bookings & inquiries if they still point to apartments
-        // (these changes assume FK columns are named apartment_id)
+        // (these changes assume FK columns are named room_id)
         // You may need to run a refresh/migration depending on current schema state.
         Schema::table('bookings', function (Blueprint $table) {
-            // If bookings table uses apartment_id column -> keep column name, but change FK constraint.
+            // If bookings table uses room_id column -> keep column name, but change FK constraint.
             // Laravel doesn't expose dropForeignBy name easily without introspection; this is left minimal.
         });
 
@@ -37,9 +37,9 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::rename('rooms', 'apartments');
+        // Schema::rename('rooms', 'apartments');
 
-        Schema::table('apartments', function (Blueprint $table) {
+        Schema::table('rooms', function (Blueprint $table) {
             // Restore dropped columns as nullable.
             $table->text('alamat')->nullable();
             $table->text('alamat_google')->nullable();

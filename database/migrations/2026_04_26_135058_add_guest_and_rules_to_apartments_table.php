@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('apartments', function (Blueprint $table) {
+        Schema::table('rooms', function (Blueprint $table) {
             $table->integer('tamu_dewasa')->default(0)->after('nomor_kamar');
             $table->integer('tamu_anak')->default(0)->after('tamu_dewasa');
             $table->integer('jumlah_kamar')->default(1)->after('tamu_anak');
@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('apartments', function (Blueprint $table) {
+        Schema::table('rooms', function (Blueprint $table) {
             $table->dropColumn(['tamu_dewasa', 'tamu_anak', 'jumlah_kamar', 'tata_tertib']);
         });
     }

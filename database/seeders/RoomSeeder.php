@@ -2,33 +2,31 @@
 
 namespace Database\Seeders;
 
-use App\Models\Apartment;
+use App\Models\Room;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
-class ApartmentSeeder extends Seeder
+class RoomSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-// Pastikan direktori apartments ada
-        Storage::disk('public')->makeDirectory('apartments');
-        Storage::disk('public')->makeDirectory('apartments/demo_apartments');
+// Pastikan direktori rooms ada
+        Storage::disk('public')->makeDirectory('rooms');
+        Storage::disk('public')->makeDirectory('rooms/demo_rooms');
 
 
 
-        // Data dummy 10 apartment
-        $apartments = [
+        // Data dummy 10 room
+        $rooms = [
             [
                 'judul' => 'Apartemen Sudirman Park',
                 'luas' => 45.00,
                 'tipe' => '2 BR',
                 'harga_per_malam' => 750000,
                 'deskripsi' => 'Apartemen nyaman di pusat kota dengan view city light yang menakjubkan. Dekat dengan pusat perbelanjaan dan transportasi umum.',
-                'alamat' => 'Jl. K.H. Mas Mansyur Kav. 35, Jakarta Pusat',
-                'alamat_google' => 'https://maps.google.com/?q=Sudirman+Park+Jakarta',
                 'nama_tower' => 'Tower A',
                 'lantai' => 15,
                 'nomor_kamar' => '1502',
@@ -50,8 +48,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => 'Studio',
                 'harga_per_malam' => 450000,
                 'deskripsi' => 'Studio cozy untuk solo traveler atau pasangan. Lokasi strategis di Thamrin dengan akses mudah ke mall dan restoran.',
-                'alamat' => 'Jl. M.H. Thamrin Kav. 10, Jakarta Pusat',
-                'alamat_google' => 'https://maps.google.com/?q=Thamrin+Jakarta',
                 'nama_tower' => 'Tower B',
                 'lantai' => 8,
                 'nomor_kamar' => '805',
@@ -73,8 +69,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => 'Penthouse',
                 'harga_per_malam' => 2500000,
                 'deskripsi' => 'Penthouse mewah dengan rooftop private pool dan view kota 360 derajat. Furnitur premium dan smart home system.',
-                'alamat' => 'Jl. Kemang Raya No. 99, Jakarta Selatan',
-                'alamat_google' => 'https://maps.google.com/?q=Kemang+Jakarta+Selatan',
                 'nama_tower' => 'Tower Premium',
                 'lantai' => 25,
                 'nomor_kamar' => 'PH01',
@@ -96,8 +90,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => '3 BR',
                 'harga_per_malam' => 950000,
                 'deskripsi' => 'Apartemen keluarga luas dengan 3 kamar tidur. Dekat Mall Taman Anggrek dan Universitas Indonesia.',
-                'alamat' => 'Jl. Letjen S. Parman Kav. 21, Jakarta Barat',
-                'alamat_google' => 'https://maps.google.com/?q=Taman+Anggrek+Jakarta',
                 'nama_tower' => 'Tower C',
                 'lantai' => 12,
                 'nomor_kamar' => '1208',
@@ -119,8 +111,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => '1 BR',
                 'harga_per_malam' => 350000,
                 'deskripsi' => 'Apartemen 1BR modern di BSD City dengan fasilitas lengkap. Cocok untuk working professional.',
-                'alamat' => 'Jl. Pahlawan Seribu, BSD City, Tangerang',
-                'alamat_google' => 'https://maps.google.com/?q=BSD+City+Tangerang',
                 'nama_tower' => 'Tower D',
                 'lantai' => 5,
                 'nomor_kamar' => '512',
@@ -142,8 +132,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => 'Duplex',
                 'harga_per_malam' => 1800000,
                 'deskripsi' => 'Duplex eksklusif di SCBD dengan desain modern minimalis. 2 lantai dengan living room yang luas.',
-                'alamat' => 'Jl. Jend. Sudirman Kav. 52-53, Jakarta Selatan',
-                'alamat_google' => 'https://maps.google.com/?q=SCBD+Jakarta',
                 'nama_tower' => 'Tower Executive',
                 'lantai' => 18,
                 'nomor_kamar' => '1801',
@@ -165,8 +153,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => 'Studio',
                 'harga_per_malam' => 550000,
                 'deskripsi' => 'Studio premium di Pantai Indah Kapuk dengan view laut. Dekat dengan restoran seafood dan wahana rekreasi.',
-                'alamat' => 'Jl. Pantai Indah Kapuk Blvd, Jakarta Utara',
-                'alamat_google' => 'https://maps.google.com/?q=Pantai+Indah+Kapuk',
                 'nama_tower' => 'Tower E',
                 'lantai' => 10,
                 'nomor_kamar' => '1005',
@@ -188,8 +174,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => '3 BR',
                 'harga_per_malam' => 850000,
                 'deskripsi' => 'Apartemen keluarga di Kelapa Gading dengan taman bermain anak. Dekat dengan sekolah internasional.',
-                'alamat' => 'Jl. Kelapa Gading Boulevard, Jakarta Utara',
-                'alamat_google' => 'https://maps.google.com/?q=Kelapa+Gading+Jakarta',
                 'nama_tower' => 'Tower F',
                 'lantai' => 7,
                 'nomor_kamar' => '711',
@@ -211,8 +195,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => '2 BR',
                 'harga_per_malam' => 600000,
                 'deskripsi' => 'Apartemen modern 2BR di Tebet dengan kitchen set lengkap. Dekat stasiun Tebet dan pusat kuliner.',
-                'alamat' => 'Jl. Tebet Raya No. 45, Jakarta Selatan',
-                'alamat_google' => 'https://maps.google.com/?q=Tebet+Jakarta+Selatan',
                 'nama_tower' => 'Tower G',
                 'lantai' => 9,
                 'nomor_kamar' => '918',
@@ -234,8 +216,6 @@ class ApartmentSeeder extends Seeder
                 'tipe' => 'Studio',
                 'harga_per_malam' => 250000,
                 'deskripsi' => 'Studio budget-friendly di Cibubur dengan fasilitas dasar yang lengkap. Cocok untuk staycation hemat.',
-                'alamat' => 'Jl. Alternatif Cibubur No. 100, Jakarta Timur',
-                'alamat_google' => 'https://maps.google.com/?q=Cibubur+Jakarta+Timur',
                 'nama_tower' => 'Tower H',
                 'lantai' => 3,
                 'nomor_kamar' => '302',
@@ -259,8 +239,8 @@ class ApartmentSeeder extends Seeder
             'Keamanan 24 Jam', 'CCTV', 'Elevator', 'Rooftop', 'Lounge', 'BBQ Area',
         ];
 
-        foreach ($apartments as $index => $data) {
-            // Copy 5 demo images for this apartment
+        foreach ($rooms as $index => $data) {
+            // Copy 5 demo images for this room
             $demoImages = Storage::disk('public')->files('demo');
             $startIndex = $index * 4;
             $images = [];
@@ -269,7 +249,7 @@ class ApartmentSeeder extends Seeder
                 if (isset($demoImages[$demoImageIndex])) {
                     $originalPath = $demoImages[$demoImageIndex];
                     $extension = pathinfo($originalPath, PATHINFO_EXTENSION);
-                    $newFilename = "apartments/demo_apartment_{$index}_{$i}.{$extension}";
+                    $newFilename = "rooms/demo_room_{$index}_{$i}.{$extension}";
                     Storage::disk('public')->copy($originalPath, $newFilename);
                     $images[] = $newFilename;
                 }
@@ -281,7 +261,7 @@ class ApartmentSeeder extends Seeder
             $data['fasilitas'] = array_slice($randomFasilitas, 0, rand(5, 10));
             $data['gambar'] = $images;
 
-            Apartment::create($data);
+            Room::create($data);
         }
     }
 }
