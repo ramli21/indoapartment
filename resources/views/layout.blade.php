@@ -293,6 +293,13 @@
 
     @include('footer')
 
+    {{-- Floating WhatsApp Button --}}
+    <a href="https://wa.me/{{ $adminInfo->whatsapp }}" target="_blank" rel="noopener noreferrer"
+        class="fixed right-5 bottom-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-white shadow-lg transition-colors hover:bg-green-700"
+        aria-label="Chat via WhatsApp">
+        <img src="{{ asset('images/chat-icon.svg') }}" alt="" srcset="" width="24">
+    </a>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof lucide !== 'undefined') {

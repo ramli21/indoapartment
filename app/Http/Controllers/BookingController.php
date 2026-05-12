@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Apartment;
+use App\Models\Room;
 use App\Models\Booking;
+
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,25 +17,30 @@ use App\Mail\OwnerBookingNotification;
 use Illuminate\Support\Str;
 use App\Models\AdminInfo;
 
+
+
+
 class BookingController extends Controller
 {
+
     /**
-     * Show booking form for an apartment
+     * Show booking form for a room
      */
-    public function create(Apartment $apartment)
+    public function create(Room $room)
     {
+
         // if ($apartment->status !== 'Tersedia') {
         //     return redirect()->route('apartments.list')
         //         ->with('error', 'Apartemen ini sedang tidak tersedia.');
         // }
 
-        return view('booking.create', compact('apartment'));
+return view('booking.create', compact('room'));
     }
 
     /**
      * Store a new booking
      */
-    public function store(Request $request, Apartment $apartment)
+public function store(Request $request, Room $room)
     {
 
 
@@ -44,12 +50,12 @@ class BookingController extends Controller
             'no_hp' => 'required|string|max:20|regex:/^[0-9+\s]+$/',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
-            'jumlah_tamu' => 'required|integer|min:1|max:' . ($apartment->tamu_dewasa + $apartment->tamu_anak),
+'jumlah_tamu' => 'required|integer|min:1|max:' . ($room->tamu_dewasa + $room->tamu_anak),
             'catatan' => 'nullable|string|max:1000',
         ]);
 
         // Check for overlapping bookings (only pending/confirmed block)
-        $overlapping = Booking::where('apartment_id', $apartment->id)
+$overlapping = Booking::where('room_id', $room->id)
             ->whereIn('status', ['pending', 'confirmed'])
             ->where(function ($q) use ($validated) {
                 $q->where('check_in', '<', $validated['check_out'])
@@ -76,7 +82,7 @@ class BookingController extends Controller
         $checkIn = \Carbon\Carbon::parse($validated['check_in']);
         $checkOut = \Carbon\Carbon::parse($validated['check_out']);
         $jumlahMalam = $checkIn->diffInDays($checkOut);
-        $hargaPerMalam = (float) $apartment->harga_per_malam;
+        $hargaPerMalam = (float) $room->harga_per_malam;
         $totalHarga = $hargaPerMalam * $jumlahMalam;
 
         // Generate unique 6-char alphanumeric booking code
@@ -84,9 +90,9 @@ class BookingController extends Controller
             $bookingCode = strtoupper(Str::random(6));
         } while (Booking::where('booking_code', $bookingCode)->exists());
 
-        $booking = Booking::create([
+$booking = Booking::create([
             'booking_code' => $bookingCode,
-            'apartment_id' => $apartment->id,
+            'room_id' => (int) $room->id,
             'nama_tamu' => $sanitized['nama_tamu'],
             'email_tamu' => $sanitized['email_tamu'],
             'no_hp' => $sanitized['no_hp'],
@@ -100,8 +106,8 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        // Update apartment status to Terisi (occupied)
-        $apartment->update(['status' => 'Terisi']);
+        // Update room status to Terisi (occupied)
+        $room->update(['status' => 'Terisi']);
 
         // Send email notifications
         $this->sendBookingEmails($booking);
@@ -116,9 +122,12 @@ class BookingController extends Controller
     public function success($booking_code)
     {
         $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
-        $apartment = $booking->apartment;
-        return view('booking.success', compact('booking', 'apartment'));
+        $booking->load('room');
+        $room = $booking->room;
+
+        return view('booking.success', compact('booking', 'room'));
     }
+
 
     /**
      * Show payment page
@@ -126,10 +135,11 @@ class BookingController extends Controller
     public function payment($booking_code)
     {
         $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
-        $booking->load('apartment');
-        $apartment = $booking->apartment;
+        $booking->load('room');
+        $room = $booking->room;
 
         $paymentInfo = AdminInfo::first();
+
 
         // Check if already paid
         if ($booking->paid_at) {
@@ -137,7 +147,8 @@ class BookingController extends Controller
                 ->with('info', 'Booking ini sudah lunas.');
         }
 
-        return view('booking.payment', compact('booking', 'apartment', 'paymentInfo'));
+        return view('booking.payment', compact('booking', 'room', 'paymentInfo'));
+
     }
 
     /**
@@ -189,17 +200,19 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Booking::with('apartment')->latest();
+        $query = Booking::with('room')->latest();
+
 
         // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter by apartment
-        if ($request->filled('apartment_id')) {
-            $query->where('apartment_id', $request->apartment_id);
+        // Filter by room
+        if ($request->filled('room_id')) {
+            $query->where('room_id', $request->room_id);
         }
+
 
         // Filter by date range
         if ($request->filled('tanggal_mulai')) {
@@ -219,7 +232,8 @@ class BookingController extends Controller
         }
 
         $bookings = $query->paginate(15)->withQueryString();
-        $apartments = Apartment::orderBy('judul')->get();
+        $rooms = \App\Models\Room::orderBy('judul')->get();
+
 
         // Stats
         $stats = [
@@ -230,7 +244,8 @@ class BookingController extends Controller
             'cancelled' => Booking::where('status', 'cancelled')->count(),
         ];
 
-        return view('admin.bookings.index', compact('bookings', 'apartments', 'stats'));
+        return view('admin.bookings.index', compact('bookings', 'rooms', 'stats'));
+
     }
 
     /**
@@ -238,8 +253,9 @@ class BookingController extends Controller
      */
     public function show(Booking $booking)
     {
-        $booking->load('apartment');
+        $booking->load('room');
         return view('admin.bookings.show', compact('booking'));
+
     }
 
     /**
@@ -256,13 +272,15 @@ class BookingController extends Controller
 
         // If cancelled, make apartment available again
         if ($validated['status'] === 'cancelled' && $oldStatus !== 'cancelled') {
-            $booking->apartment->update(['status' => 'Tersedia']);
+            $booking->room->update(['status' => 'Tersedia']);
         }
+
 
         // If confirmed/completed, ensure apartment is marked as occupied
         if (in_array($validated['status'], ['pending', 'confirmed', 'completed'])) {
-            $booking->apartment->update(['status' => 'Terisi']);
+            $booking->room->update(['status' => 'Terisi']);
         }
+
 
         return redirect()->route('admin.bookings.show', $booking->id)
             ->with('success', 'Status booking berhasil diperbarui!');
@@ -273,12 +291,13 @@ class BookingController extends Controller
      */
     public function destroy(Booking $booking)
     {
-        // Make apartment available again
-        if ($booking->apartment) {
-            $booking->apartment->update(['status' => 'Tersedia']);
+        // Make room available again
+        if ($booking->room) {
+            $booking->room->update(['status' => 'Tersedia']);
         }
 
         $booking->delete();
+
 
         return redirect()->route('admin.bookings.index')
             ->with('success', 'Booking berhasil dibatalkan!');
@@ -307,7 +326,8 @@ class BookingController extends Controller
         // Try to find by ID (remove leading zeros) or by booking code
         // $bookingId = (int) ltrim($bookingCode, '0');
 
-        $booking = Booking::with('apartment')
+        $booking = Booking::with('room')
+
             ->where('booking_code', $bookingCode)
             ->first();
 
@@ -557,8 +577,9 @@ class BookingController extends Controller
      */
     private function sendBookingEmails(Booking $booking)
     {
-        $booking->load('apartment');
-        $apartment = $booking->apartment;
+        $booking->load('room');
+        $room = $booking->room;
+
 
         // 1. Send confirmation email to user
         Mail::to($booking->email_tamu)->send(new UserBookingConfirmation($booking));
@@ -597,7 +618,8 @@ class BookingController extends Controller
      */
     private function sendPaymentEmails(Booking $booking)
     {
-        $booking->load('apartment');
+        $booking->load('room');
+
 
         // 1. Send thank-you email to user
         try {

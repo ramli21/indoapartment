@@ -29,7 +29,7 @@
         <div class="max-w-5xl mx-auto px-4 sm:px-6">
             <!-- Breadcrumb -->
             <div class="mb-6">
-                <a href="{{ route('apartments.list') }}"
+                <a href="{{ route('rooms.list') }}"
                     class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
                     Kembali ke Daftar
@@ -361,7 +361,7 @@
 
                         alert('Tanggal ' + this.value +
                             ' sudah dibooking. Silakan pilih tanggal lain (check-in 14:00, check-out 12:00).'
-                            );
+                        );
                     }
                 });
             }

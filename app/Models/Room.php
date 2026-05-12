@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Apartment extends Model
+class Room extends Model
 {
-    /** @use HasFactory<\Database\Factories\ApartmentFactory> */
     use HasFactory;
+
+    // Room di DB direpresentasikan oleh tabel `rooms`
+    protected $table = 'rooms';
 
     protected $fillable = [
         'judul',
@@ -19,8 +21,6 @@ class Apartment extends Model
         'deskripsi',
         'gambar',
         'fasilitas',
-        'alamat',
-        'alamat_google',
         'nama_tower',
         'lantai',
         'nomor_kamar',
@@ -35,20 +35,27 @@ class Apartment extends Model
         'owner_nama',
         'owner_wa',
         'owner_rekening',
-        'owner_bank_name'
+        'owner_bank_name',
+    ];
+
+    protected $casts = [
+        'fasilitas' => 'array',
+        'gambar' => 'array',
+        'luas' => 'decimal:2',
+        'harga_per_malam' => 'decimal:2',
     ];
 
     public static function boot()
     {
         parent::boot();
 
-        static::creating(function ($apartment) {
-            $apartment->slug = \Str::slug($apartment->judul);
+        static::creating(function ($room) {
+            $room->slug = \Str::slug($room->judul);
         });
 
-        static::updating(function ($apartment) {
-            if ($apartment->isDirty('judul')) {
-                $apartment->slug = \Str::slug($apartment->judul);
+        static::updating(function ($room) {
+            if ($room->isDirty('judul')) {
+                $room->slug = \Str::slug($room->judul);
             }
         });
     }
@@ -57,11 +64,5 @@ class Apartment extends Model
     {
         return 'slug';
     }
-
-    protected $casts = [
-        'fasilitas' => 'array',
-        'gambar' => 'array',
-        'luas' => 'decimal:2',
-        'harga_per_malam' => 'decimal:2',
-    ];
 }
+

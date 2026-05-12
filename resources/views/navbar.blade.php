@@ -19,16 +19,17 @@
             <div class="hidden lg:flex items-center gap-1">
                 <a href="{{ url('/') }}"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Home</a>
-                <a href="{{ route('apartments.list') }}"
-                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Apartemen</a>
-                <a href="{{ route('inquiry.create') }}"
+                <a href="{{ route('rooms.list') }}"
+                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">
+                    Room Sewa</a>
+                {{-- <a href="{{ route('inquiry.create') }}"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Hubungi
-                    Kami</a>
+                    Kami</a> --}}
                 <a href="{{ route('booking.track') }}"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Lacak
                     Booking</a>
-                <a href="{{ route('help') }}"
-                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Bantuan</a>
+                {{-- <a href="{{ route('help') }}"
+                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Bantuan</a> --}}
                 {{-- <a href="#"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Resort</a>
                 <a href="#"
@@ -80,8 +81,8 @@
             <div class="max-w-7xl mx-auto px-4 py-4 space-y-1">
                 <a href="#"
                     class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Hotel</a>
-                <a href="{{ route('apartments.list') }}"
-                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Apartemen</a>
+                <a href="{{ route('rooms.list') }}"
+                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Rooms</a>
                 <a href="{{ route('inquiry.create') }}"
                     class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Hubungi
                     Kami</a>

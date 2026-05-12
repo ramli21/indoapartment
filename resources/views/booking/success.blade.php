@@ -113,7 +113,7 @@
                             Bayar Sekarang
                         </a>
                     @endif
-                    <a href="{{ route('apartments.list') }}"
+                    <a href="{{ route('rooms.list') }}"
                         class="flex-1 px-4 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
                         <i data-lucide="home" class="w-4 h-4"></i>
                         Kembali ke Home

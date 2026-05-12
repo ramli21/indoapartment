@@ -12,7 +12,9 @@
             <div class="text-center mb-8">
                 <h1
                     class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-semibold text-white tracking-tight leading-tight mb-4">
-                    Temukan Apartemen<br class="hidden sm:block"> Impianmu
+                    {{-- Temukan Apartemen<br class="hidden sm:block"> Impianmu --}}
+                    Staycation in Apartment
+
                 </h1>
                 <p class="text-white/70 text-base sm:text-lg max-w-xl mx-auto">Jelajahi pilihan apartemen dan
                     penginapan terbaik di bandung dengan harga terjangkau</p>
@@ -130,39 +132,39 @@
                     <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Terbaru</span>
                     <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-1">Apartemen Terbaru</h2>
                 </div>
-                <a href="{{ route('apartments.list') }}"
+                <a href="{{ route('rooms.list') }}"
                     class="hidden sm:flex items-center gap-1 text-sm font-medium text-brand hover:underline">
                     Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </a>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                @if (isset($newestApartments) && $newestApartments->count())
-                    @foreach ($newestApartments as $apt)
+                @if (isset($newestRooms) && $newestRooms->count())
+                    @foreach ($newestRooms as $room)
                         @php
                             $img =
-                                is_array($apt->gambar) && count($apt->gambar)
-                                    ? asset('storage/' . $apt->gambar[0])
-                                    : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
+                                is_array($room->gambar) && count($room->gambar)
+                                    ? asset('storage/' . $room->gambar[0])
+                                    : 'https://picsum.photos/seed/room' . $loop->index . '/600/450';
                         @endphp
-                        <a href="{{ route('booking.create', $apt) }}"
+                        <a href="{{ route('booking.create', $room) }}"
                             class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">
                             <div class="relative overflow-hidden aspect-[4/3]">
                                 <img src="{{ $img }}" loading="lazy"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                    alt="{{ $apt->judul }}">
+                                    alt="{{ $room->judul }}">
                             </div>
                             <div class="p-4">
                                 <div class="flex items-center justify-between mb-1">
                                     <span
-                                        class="text-xs text-slate-400">{{ $apt->nama_tower ?? ($apt->alamat ?? '—') }}</span>
+                                        class="text-xs text-slate-400">{{ $room->nama_tower ?? ($room->alamat ?? '—') }}</span>
                                     <span class="text-xs text-slate-500">Rp
-                                        {{ number_format((float) $apt->harga_per_malam, 0, ',', '.') }}</span>
+                                        {{ number_format((float) $room->harga_per_malam, 0, ',', '.') }}</span>
                                 </div>
                                 <h3 class="font-semibold text-slate-800 line-clamp-1 group-hover:text-brand">
-                                    {{ $apt->judul }}</h3>
+                                    {{ $room->judul }}</h3>
                                 <p class="text-[12px] text-slate-500 mt-2 line-clamp-2">
-                                    {{ \Illuminate\Support\Str::limit($apt->deskripsi, 80) }}</p>
+                                    {{ \Illuminate\Support\Str::limit($room->deskripsi, 80) }}</p>
                             </div>
                         </a>
                     @endforeach
@@ -584,7 +586,7 @@
     <section class="py-16 md:py-20 bg-brand">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="text-center mb-12">
-                <span class="text-xs font-medium tracking-[0.2em] uppercase text-accent/70">Mengapa StayGo</span>
+                <span class="text-xs font-medium tracking-[0.2em] uppercase text-accent/70">Mengapa IndoApart</span>
                 <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-white mt-2">Kenapa Jutaan Orang<br
                         class="hidden sm:block"> Memilih Kami?</h2>
             </div>
@@ -595,8 +597,7 @@
                         <i data-lucide="shield-check" class="w-7 h-7 text-accent"></i>
                     </div>
                     <h3 class="text-white font-semibold mb-2">Jaminan Harga</h3>
-                    <p class="text-white/50 text-sm leading-relaxed">Temukan harga lebih murah? Kami kembalikan selisih
-                        2x lipat</p>
+                    <p class="text-white/50 text-sm leading-relaxed">Temukan harga lebih murah?</p>
                 </div>
                 <div
                     class="text-center p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
@@ -622,7 +623,7 @@
                         <i data-lucide="rotate-ccw" class="w-7 h-7 text-accent"></i>
                     </div>
                     <h3 class="text-white font-semibold mb-2">Gratis Pembatalan</h3>
-                    <p class="text-white/50 text-sm leading-relaxed">Banyak pilihan hotel dengan gratis pembatalan
+                    <p class="text-white/50 text-sm leading-relaxed">Banyak pilihan apartemen dengan gratis pembatalan
                         hingga 24 jam</p>
                 </div>
             </div>
@@ -724,7 +725,7 @@
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                     </div>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Pertama kali pakai StayGo, langsung ketemu
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Pertama kali pakai IndoApart, langsung ketemu
                         hotel impian di Bali. Harganya jauh lebih murah dari platform lain. Proses bookingnya super
                         gampang!"</p>
                     <div class="flex items-center gap-3">

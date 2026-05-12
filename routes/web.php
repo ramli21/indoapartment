@@ -2,21 +2,21 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomepageController;
-use App\Http\Controllers\ApartmentController;
+use App\Http\Controllers\RoomController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InquiryController;
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
-Route::get('/list-apartments', [ApartmentController::class, 'listApartments'])->name('apartments.list');
+Route::get('/list-rooms', [RoomController::class, 'listRooms'])->name('rooms.list');
 Route::get('/bantuan', function () {
     return view('help');
 })->name('help');
 
 // Public Booking Routes
-Route::get('/booking/{apartment}/create', [BookingController::class, 'create'])->name('booking.create');
-Route::post('/booking/{apartment}/store', [BookingController::class, 'store'])->name('booking.store');
+Route::get('/booking/{room}/create', [BookingController::class, 'create'])->name('booking.create');
+Route::post('/booking/{room}/store', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking/{booking:booking_code}/success', [BookingController::class, 'success'])->name('booking.success');
 Route::get('/booking/{booking:booking_code}/payment', [BookingController::class, 'payment'])->name('booking.payment');
 Route::post('/booking/{booking:booking_code}/payment', [BookingController::class, 'processPayment'])->name('booking.processPayment');
@@ -37,8 +37,9 @@ Route::get('/hubungi-kami/terkirim', [InquiryController::class, 'success'])->nam
 // Route::get('/contact', [HomepageController::class, 'contact']);
 
 // Public Owner Registration Routes (no login required)
-Route::get('/daftarkan-apartemen', [ApartmentController::class, 'ownerCreate'])->name('apartments.owner.create');
-Route::post('/daftarkan-apartemen', [ApartmentController::class, 'ownerStore'])->name('apartments.owner.store');
+Route::get('/daftarkan-apartemen', [RoomController::class, 'ownerCreate'])->name('rooms.owner.create');
+Route::post('/daftarkan-apartemen', [RoomController::class, 'ownerStore'])->name('rooms.owner.store');
+
 
 // Admin Login Routes (public)
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -48,7 +49,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Apartments Routes (Admin only)
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
-    Route::resource('apartments', ApartmentController::class);
+Route::resource('rooms', RoomController::class);
 
     // Help/Panduan Routes
     Route::get('/help', function () {

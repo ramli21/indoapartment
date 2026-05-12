@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminInfoSeeder::class);
 
         // Seed inquiries and bookings
-        $this->call(InquirySeeder::class);
-        $this->call(BookingSeeder::class);
+        // $this->call(InquirySeeder::class);
+        // $this->call(BookingSeeder::class);
     }
 }
 

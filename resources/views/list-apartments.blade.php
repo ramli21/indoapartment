@@ -37,7 +37,7 @@
                             <div class="flex items-center justify-between mb-5">
                                 <h2 class="font-semibold text-slate-800">Filter</h2>
                                 @if (request()->hasAny(['search', 'tower', 'tipe', 'harga_min', 'harga_max', 'tamu', 'check_in', 'check_out']))
-                                    <a href="{{ route('apartments.list') }}" class="text-xs text-brand hover:underline">
+                                    <a href="{{ route('rooms.list') }}" class="text-xs text-brand hover:underline">
                                         Reset
                                     </a>
                                 @endif
@@ -256,7 +256,7 @@
                             </div>
                             <h3 class="text-lg font-medium text-slate-700 mb-1">Tidak ada apartemen</h3>
                             <p class="text-sm text-slate-500 mb-6">Coba sesuaikan filter Anda</p>
-                            <a href="{{ route('apartments.list') }}"
+                            <a href="{{ route('rooms.list') }}"
                                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors">
                                 <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                                 Reset Filter
