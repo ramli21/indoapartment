@@ -180,27 +180,27 @@
                     <!-- Results Count -->
                     <div class="flex items-center justify-between mb-5">
                         <p class="text-sm text-slate-500">
-                            Ditemukan <span class="font-semibold text-slate-700">{{ $apartments->total() }}</span>
+                            Ditemukan <span class="font-semibold text-slate-700">{{ $rooms->total() }}</span>
                             apartemen
                         </p>
                     </div>
 
-                    @if ($apartments->count() > 0)
+                    @if ($rooms->count() > 0)
                         <!-- Apartment Grid -->
                         <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                            @foreach ($apartments as $apartment)
+                            @foreach ($rooms as $room)
                                 @php
                                     $img =
-                                        is_array($apartment->gambar) && count($apartment->gambar) > 0
-                                            ? asset('storage/' . $apartment->gambar[0])
+                                        is_array($room->gambar) && count($room->gambar) > 0
+                                            ? asset('storage/' . $room->gambar[0])
                                             : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
                                 @endphp
-                                <a href="{{ route('booking.create', $apartment) }}"
+                                <a href="{{ route('booking.create', $room) }}"
                                     class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">
                                     <div class="relative overflow-hidden aspect-[4/3]">
                                         <img src="{{ $img }}" loading="lazy"
                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                            alt="{{ $apartment->judul }}">
+                                            alt="{{ $room->judul }}">
                                         <div class="absolute top-3 left-3">
                                             <span
                                                 class="px-2.5 py-1 bg-emerald-500 text-white text-[10px] font-semibold rounded-lg uppercase">
@@ -210,31 +210,31 @@
                                     </div>
                                     <div class="p-4">
                                         <div class="flex items-center justify-between mb-1">
-                                            <span class="text-xs text-slate-400">{{ $apartment->nama_tower }}</span>
+                                            <span class="text-xs text-slate-400">{{ $room->nama_tower }}</span>
                                             <span class="text-xs text-slate-500">Rp
-                                                {{ number_format((float) $apartment->harga_per_malam, 0, ',', '.') }}</span>
+                                                {{ number_format((float) $room->harga_per_malam, 0, ',', '.') }}</span>
                                         </div>
                                         <h3 class="font-semibold text-slate-800 line-clamp-1 group-hover:text-brand">
-                                            {{ $apartment->judul }}</h3>
+                                            {{ $room->judul }}</h3>
                                         <p class="text-sm text-slate-500 mt-1 line-clamp-1">
-                                            {{ $apartment->alamat }}
+                                            {{ $room->alamat }}
                                         </p>
                                         <div class="flex items-center gap-3 mt-3 pt-3 border-t border-slate-50">
                                             <div class="flex items-center gap-1 text-xs text-slate-500">
                                                 <i data-lucide="users" class="w-3.5 h-3.5"></i>
-                                                {{ $apartment->tamu_dewasa + $apartment->tamu_anak }}
+                                                {{ $room->tamu_dewasa + $room->tamu_anak }}
                                             </div>
                                             <div class="flex items-center gap-1 text-xs text-slate-500">
                                                 <i data-lucide="door-open" class="w-3.5 h-3.5"></i>
-                                                {{ $apartment->jumlah_kamar }} KT
+                                                {{ $room->jumlah_kamar }} KT
                                             </div>
                                             <div class="flex items-center gap-1 text-xs text-slate-500">
                                                 <i data-lucide="bath" class="w-3.5 h-3.5"></i>
-                                                {{ $apartment->jumlah_kamar_mandi }} KM
+                                                {{ $room->jumlah_kamar_mandi }} KM
                                             </div>
                                             <div class="flex items-center gap-1 text-xs text-slate-500">
                                                 <i data-lucide="maximize" class="w-3.5 h-3.5"></i>
-                                                {{ $apartment->luas }} m²
+                                                {{ $room->luas }} m²
                                             </div>
                                         </div>
                                     </div>
@@ -243,9 +243,9 @@
                         </div>
 
                         <!-- Pagination -->
-                        @if ($apartments->hasPages())
+                        @if ($rooms->hasPages())
                             <div class="mt-8">
-                                {{ $apartments->links('pagination::tailwind') }}
+                                {{ $room->links('pagination::tailwind') }}
                             </div>
                         @endif
                     @else

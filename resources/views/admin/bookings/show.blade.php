@@ -33,10 +33,10 @@
                                     {{ $booking->status }}
                                 </span>
                             </div>
-                            <h1 class="text-2xl font-serif font-semibold text-slate-800">{{ $booking->apartment->judul }}
+                            <h1 class="text-2xl font-serif font-semibold text-slate-800">{{ $booking->room->judul }}
                             </h1>
-                            <p class="text-sm text-slate-500">{{ $booking->apartment->nama_tower }} - Kamar
-                                {{ $booking->apartment->nomor_kamar }}</p>
+                            <p class="text-sm text-slate-500">{{ $booking->room->nama_tower }} - Kamar
+                                {{ $booking->room->nomor_kamar }}</p>
                         </div>
                         <div class="text-right">
                             <div class="text-2xl font-bold text-brand">Rp
@@ -180,19 +180,19 @@
                         <div class="grid grid-cols-2 gap-3 text-sm">
                             <div>
                                 <div class="text-xs text-slate-500">Nama</div>
-                                <div class="text-slate-800">{{ $booking->apartment->owner_nama }}</div>
+                                <div class="text-slate-800">{{ $booking->room->owner_nama }}</div>
                             </div>
                             <div>
                                 <div class="text-xs text-slate-500">WhatsApp</div>
-                                <div class="text-slate-800">{{ $booking->apartment->owner_wa }}</div>
+                                <div class="text-slate-800">{{ $booking->room->owner_wa }}</div>
                             </div>
                             <div>
                                 <div class="text-xs text-slate-500">Bank</div>
-                                <div class="text-slate-800">{{ $booking->apartment->owner_bank_name }}</div>
+                                <div class="text-slate-800">{{ $booking->room->owner_bank_name }}</div>
                             </div>
                             <div>
                                 <div class="text-xs text-slate-500">No. Rekening</div>
-                                <div class="text-slate-800 font-mono">{{ $booking->apartment->owner_rekening }}</div>
+                                <div class="text-slate-800 font-mono">{{ $booking->room->owner_rekening }}</div>
                             </div>
                         </div>
                     </div> --}}

@@ -111,49 +111,49 @@
                                             <div class="text-sm text-slate-800">{{ $inquiry->subjek }}</div>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <div class="text-sm text-slate-700">{{ $inquiry->apartment->judul ?? '-' }}
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            <span
-                                                class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full {{ $statusClasses[$inquiry->status] ?? 'bg-slate-100 text-slate-600' }}">
-                                                {{ $inquiry->status }}
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            <div class="text-sm text-slate-600">
-                                                {{ optional($inquiry->created_at)->format('d M Y') }}</div>
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            <div class="flex items-center gap-2">
-                                                <a href="{{ route('admin.inquiries.show', $inquiry->id) }}"
-                                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs text-brand hover:bg-brand/10 rounded-lg transition-colors">
-                                                    <i data-lucide="eye" class="w-3 h-3"></i>
-                                                    Detail
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                            {{ $inquiry->apartment->judul ?? '-' }}
                     </div>
-
-                    @if ($inquiries->hasPages())
-                        <div class="px-4 py-3 border-t border-slate-100">
-                            {{ $inquiries->links('pagination::tailwind') }}
+                    </td>
+                    <td class="px-4 py-3">
+                        <span
+                            class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full {{ $statusClasses[$inquiry->status] ?? 'bg-slate-100 text-slate-600' }}">
+                            {{ $inquiry->status }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-sm text-slate-600">
+                            {{ optional($inquiry->created_at)->format('d M Y') }}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('admin.inquiries.show', $inquiry->id) }}"
+                                class="inline-flex items-center gap-1 px-2 py-1 text-xs text-brand hover:bg-brand/10 rounded-lg transition-colors">
+                                <i data-lucide="eye" class="w-3 h-3"></i>
+                                Detail
+                            </a>
                         </div>
-                    @endif
-                @else
-                    <div class="text-center py-12">
-                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i data-lucide="inbox" class="w-8 h-8 text-slate-300"></i>
-                        </div>
-                        <h3 class="text-lg font-medium text-slate-700 mb-1">Tidak ada inquiry</h3>
-                        <p class="text-sm text-slate-500">Belum ada pesan untuk ditampilkan</p>
-                    </div>
-                @endif
+                    </td>
+                    </tr>
+                @endforeach
+                </tbody>
+                </table>
             </div>
+
+            @if ($inquiries->hasPages())
+                <div class="px-4 py-3 border-t border-slate-100">
+                    {{ $inquiries->links('pagination::tailwind') }}
+                </div>
+            @endif
+        @else
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="inbox" class="w-8 h-8 text-slate-300"></i>
+                </div>
+                <h3 class="text-lg font-medium text-slate-700 mb-1">Tidak ada inquiry</h3>
+                <p class="text-sm text-slate-500">Belum ada pesan untuk ditampilkan</p>
+            </div>
+            @endif
+        </div>
         </div>
     </section>
 @endsection

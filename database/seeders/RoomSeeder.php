@@ -244,6 +244,16 @@ class RoomSeeder extends Seeder
             $demoImages = Storage::disk('public')->files('demo');
             $startIndex = $index * 4;
             $images = [];
+
+            // Relasikan room ke apartment kategori
+            // default: set setelah ApartmentSeeder dijalankan (minimal-drift untuk demo)
+            // Agar tidak error saat seeder dijalankan tanpa apartment data, tetap gunakan null.
+            $data['apartment_id'] = null;
+
+            // Catatan: relasi yang benar akan dibuat oleh ApartmentSeeder.
+
+
+
             for ($i = 0; $i < 4; $i++) {
                 $demoImageIndex = $startIndex + $i;
                 if (isset($demoImages[$demoImageIndex])) {
@@ -261,7 +271,17 @@ class RoomSeeder extends Seeder
             $data['fasilitas'] = array_slice($randomFasilitas, 0, rand(5, 10));
             $data['gambar'] = $images;
 
-            Room::create($data);
+            // Cegah duplicate slug saat seeder dijalankan lebih dari sekali
+            // slug akan diset otomatis oleh model via boot() jika tidak ada di $data
+            // sehingga kita gunakan updateOrCreate berdasarkan judul/slug turunan.
+            $slug = \Str::slug($data['judul'] ?? '');
+
+            Room::updateOrCreate(
+                ['slug' => $slug],
+                $data
+            );
+
+
         }
     }
 }

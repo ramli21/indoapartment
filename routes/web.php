@@ -49,6 +49,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Apartments Routes (Admin only)
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
+Route::resource('apartments', \App\Http\Controllers\ApartmentController::class);
+    // tetap pertahankan CRUD room yang sudah ada (tidak diubah)
 Route::resource('rooms', RoomController::class);
 
     // Help/Panduan Routes

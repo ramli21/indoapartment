@@ -127,8 +127,8 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="text-sm font-medium text-slate-800">
-                                                {{ $booking->apartment->judul }}</div>
-                                            <div class="text-xs text-slate-400">{{ $booking->apartment->nama_tower }}</div>
+                                                {{ $booking->room->judul }}</div>
+                                            <div class="text-xs text-slate-400">{{ $booking->room->nama_tower }}</div>
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="text-sm text-slate-800">{{ $booking->nama_tamu }}</div>

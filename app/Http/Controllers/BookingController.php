@@ -17,12 +17,8 @@ use App\Mail\OwnerBookingNotification;
 use Illuminate\Support\Str;
 use App\Models\AdminInfo;
 
-
-
-
 class BookingController extends Controller
 {
-
     /**
      * Show booking form for a room
      */
@@ -34,28 +30,26 @@ class BookingController extends Controller
         //         ->with('error', 'Apartemen ini sedang tidak tersedia.');
         // }
 
-return view('booking.create', compact('room'));
+        return view('booking.create', compact('room'));
     }
 
     /**
      * Store a new booking
      */
-public function store(Request $request, Room $room)
+    public function store(Request $request, Room $room)
     {
-
-
         $validated = $request->validate([
             'nama_tamu' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s\.\-\']+$/',
             'email_tamu' => 'required|email|max:255',
             'no_hp' => 'required|string|max:20|regex:/^[0-9+\s]+$/',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
-'jumlah_tamu' => 'required|integer|min:1|max:' . ($room->tamu_dewasa + $room->tamu_anak),
+            'jumlah_tamu' => 'required|integer|min:1|max:' . ($room->tamu_dewasa + $room->tamu_anak),
             'catatan' => 'nullable|string|max:1000',
         ]);
 
         // Check for overlapping bookings (only pending/confirmed block)
-$overlapping = Booking::where('room_id', $room->id)
+        $overlapping = Booking::where('room_id', $room->id)
             ->whereIn('status', ['pending', 'confirmed'])
             ->where(function ($q) use ($validated) {
                 $q->where('check_in', '<', $validated['check_out'])
@@ -90,7 +84,7 @@ $overlapping = Booking::where('room_id', $room->id)
             $bookingCode = strtoupper(Str::random(6));
         } while (Booking::where('booking_code', $bookingCode)->exists());
 
-$booking = Booking::create([
+        $booking = Booking::create([
             'booking_code' => $bookingCode,
             'room_id' => (int) $room->id,
             'nama_tamu' => $sanitized['nama_tamu'],
@@ -502,15 +496,15 @@ $booking = Booking::create([
 
                 return [
                     'id' => $booking->id,
-                    'title' => $booking->apartment->judul . ' - ' . $booking->nama_tamu,
+                    'title' => $booking->room->judul . ' - ' . $booking->nama_tamu,
                     'start' => $booking->check_in,
                     'end' => \Carbon\Carbon::parse($booking->check_out)->addDay()->format('Y-m-d'),
                     'backgroundColor' => $statusColors[$booking->status] ?? '#6366f1',
                     'borderColor' => $statusColors[$booking->status] ?? '#6366f1',
                     'extendedProps' => [
-                        'apartment_id' => $booking->apartment_id,
-                        'apartment_name' => $booking->apartment->judul,
-                        'tower_name' => $booking->apartment->nama_tower,
+                        'apartment_id' => $booking->room_id,
+                        'apartment_name' => $booking->room->judul,
+                        'tower_name' => $booking->room->nama_tower,
                         'guest_name' => $booking->nama_tamu,
                         'guest_email' => $booking->email_tamu,
                         'guest_phone' => $booking->no_hp,
@@ -703,8 +697,8 @@ $booking = Booking::create([
         ]);
 
         // Make apartment available again
-        if ($booking->apartment) {
-            $booking->apartment->update(['status' => 'Tersedia']);
+        if ($booking->room) {
+            $booking->room->update(['status' => 'Tersedia']);
         }
 
         // Send notification to admin about cancellation

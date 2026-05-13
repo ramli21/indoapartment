@@ -131,12 +131,12 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Apartemen</span>
-                    <span class="detail-value">{{ $booking->apartment->judul }}</span>
+                    <span class="detail-value">{{ $booking->room->judul }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Tower / Lantai</span>
-                    <span class="detail-value">{{ $booking->apartment->nama_tower }} / Lantai
-                        {{ $booking->apartment->lantai }}</span>
+                    <span class="detail-value">{{ $booking->room->nama_tower }} / Lantai
+                        {{ $booking->room->lantai }}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Check-in</span>

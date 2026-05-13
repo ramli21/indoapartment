@@ -1,16 +1,16 @@
 @extends('layout')
 
 @php
-    $seoTitle = 'Booking ' . ($apartment->judul ?? 'Apartemen') . ' — IndoApart';
+    $seoTitle = 'Booking ' . ($room->judul ?? 'Apartemen') . ' — IndoApart';
     $seoDescription =
         'Booking apartemen ' .
-        ($apartment->judul ?? '') .
+        ($room->judul ?? '') .
         ' di Bandung/Sekitarnya. Pilih tanggal check-in & check-out, lalu konfirmasi pemesanan.';
-    $seoKeywords = 'booking apartemen, sewa apartemen, ' . ($apartment->alamat ?? 'Bandung') . ', IndoApart';
+    $seoKeywords = 'booking apartemen, sewa apartemen, ' . ($room->alamat ?? 'Bandung') . ', IndoApart';
 
     $seoImage =
-        isset($apartment->gambar) && is_array($apartment->gambar) && count($apartment->gambar)
-            ? asset('storage/' . $apartment->gambar[0])
+        isset($room->gambar) && is_array($room->gambar) && count($room->gambar)
+            ? asset('storage/' . $room->gambar[0])
             : asset('images/og-default.jpg');
 @endphp
 
@@ -42,13 +42,13 @@
                     <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
                         <!-- Image Slider -->
                         <div class="relative">
-                            @if ($apartment->gambar && is_array($apartment->gambar) && count($apartment->gambar) > 0)
+                            @if ($room->gambar && is_array($room->gambar) && count($room->gambar) > 0)
                                 <div id="imageSlider" class="relative h-64 sm:h-80 overflow-hidden rounded-t-2xl">
-                                    @foreach ($apartment->gambar as $index => $image)
+                                    @foreach ($room->gambar as $index => $image)
                                         <img src="{{ asset('storage/' . $image) }}" data-index="{{ $index }}"
                                             class="slider-img absolute inset-0 w-full h-full object-cover cursor-zoom-in transition-opacity duration-500 opacity-0"
                                             style="{{ $index === 0 ? 'opacity: 1;' : '' }}"
-                                            alt="{{ $apartment->judul }} - Gambar {{ $index + 1 }}" loading="lazy">
+                                            alt="{{ $room->judul }} - Gambar {{ $index + 1 }}" loading="lazy">
                                     @endforeach
                                     <!-- Navigation Arrows + Dots -->
                                     <!-- Left Arrow -->
@@ -63,7 +63,7 @@
                                     </button>
                                     <!-- Navigation Dots -->
                                     <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-                                        @foreach ($apartment->gambar as $index => $image)
+                                        @foreach ($room->gambar as $index => $image)
                                             <button
                                                 class="slider-dot w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white transition-all duration-200 {{ $index === 0 ? 'bg-white' : '' }}"
                                                 onclick="goToSlide({{ $index }})"></button>
@@ -79,7 +79,7 @@
                             <div class="absolute top-4 left-4 z-10">
                                 <span
                                     class="px-3 py-1.5 bg-white/90 backdrop-blur-sm text-sm font-medium text-brand rounded-lg shadow-sm">
-                                    {{ $apartment->tipe }}
+                                    {{ $room->tipe }}
                                 </span>
                             </div>
                         </div>
@@ -87,26 +87,26 @@
                         <!-- Content -->
                         <div class="p-6 sm:p-8">
                             <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand mb-2">
-                                {{ $apartment->judul }}</h1>
+                                {{ $room->judul }}</h1>
                             <div class="flex items-center gap-1.5 text-slate-500 mb-4">
                                 <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i>
-                                <span class="text-sm">{{ $apartment->alamat }}</span>
+                                <span class="text-sm">{{ $room->alamat }}</span>
                             </div>
 
                             <!-- Price -->
-                            @if ($apartment->harga_per_malam)
+                            @if ($room->harga_per_malam)
                                 <div class="flex items-baseline gap-2 mb-6 p-4 bg-brand/5 rounded-xl">
                                     <span class="text-2xl font-bold text-brand">Rp
-                                        {{ number_format($apartment->harga_per_malam, 0, ',', '.') }}</span>
+                                        {{ number_format($room->harga_per_malam, 0, ',', '.') }}</span>
                                     <span class="text-sm text-slate-500">/ malam</span>
                                 </div>
                             @endif
 
                             <!-- Description -->
-                            @if ($apartment->deskripsi)
+                            @if ($room->deskripsi)
                                 <div class="mb-6">
                                     <h3 class="text-sm font-medium text-slate-700 mb-2">Deskripsi</h3>
-                                    <p class="text-sm text-slate-600 leading-relaxed">{{ $apartment->deskripsi }}</p>
+                                    <p class="text-sm text-slate-600 leading-relaxed">{{ $room->deskripsi }}</p>
                                 </div>
                             @endif
 
@@ -115,32 +115,32 @@
                                 <div class="p-3 bg-slate-50 rounded-xl text-center">
                                     <i data-lucide="maximize" class="w-5 h-5 text-brand mx-auto mb-1"></i>
                                     <div class="text-xs text-slate-500">Luas</div>
-                                    <div class="text-sm font-semibold text-slate-800">{{ $apartment->luas }} m²</div>
+                                    <div class="text-sm font-semibold text-slate-800">{{ $room->luas }} m²</div>
                                 </div>
                                 <div class="p-3 bg-slate-50 rounded-xl text-center">
                                     <i data-lucide="building" class="w-5 h-5 text-brand mx-auto mb-1"></i>
                                     <div class="text-xs text-slate-500">Tower</div>
-                                    <div class="text-sm font-semibold text-slate-800">{{ $apartment->nama_tower }}</div>
+                                    <div class="text-sm font-semibold text-slate-800">{{ $room->nama_tower }}</div>
                                 </div>
                                 <div class="p-3 bg-slate-50 rounded-xl text-center">
                                     <i data-lucide="door-open" class="w-5 h-5 text-brand mx-auto mb-1"></i>
                                     <div class="text-xs text-slate-500">Kamar</div>
-                                    <div class="text-sm font-semibold text-slate-800">{{ $apartment->nomor_kamar }}</div>
+                                    <div class="text-sm font-semibold text-slate-800">{{ $room->nomor_kamar }}</div>
                                 </div>
                                 <div class="p-3 bg-slate-50 rounded-xl text-center">
                                     <i data-lucide="users" class="w-5 h-5 text-brand mx-auto mb-1"></i>
                                     <div class="text-xs text-slate-500">Kapasitas</div>
                                     <div class="text-sm font-semibold text-slate-800">
-                                        {{ $apartment->tamu_dewasa + $apartment->tamu_anak }} Tamu</div>
+                                        {{ $room->tamu_dewasa + $room->tamu_anak }} Tamu</div>
                                 </div>
                             </div>
 
                             <!-- Fasilitas -->
-                            @if ($apartment->fasilitas && count($apartment->fasilitas) > 0)
+                            @if ($room->fasilitas && count($room->fasilitas) > 0)
                                 <div class="mb-6">
                                     <h3 class="text-sm font-medium text-slate-700 mb-3">Fasilitas</h3>
                                     <div class="flex flex-wrap gap-2">
-                                        @foreach ($apartment->fasilitas as $fasilitas)
+                                        @foreach ($room->fasilitas as $fasilitas)
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-accent/20 text-brand text-sm font-medium rounded-full">
                                                 <i data-lucide="check" class="w-3.5 h-3.5"></i>
@@ -152,20 +152,20 @@
                             @endif
 
                             <!-- Tata Tertib -->
-                            @if ($apartment->tata_tertib)
+                            @if ($room->tata_tertib)
                                 <div class="p-5 bg-slate-50 rounded-xl border border-slate-100">
                                     <h3 class="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
                                         <i data-lucide="scroll-text" class="w-4 h-4 text-brand"></i>
                                         Tata Tertib
                                     </h3>
-                                    <div class="text-sm text-slate-600 whitespace-pre-line">{{ $apartment->tata_tertib }}
+                                    <div class="text-sm text-slate-600 whitespace-pre-line">{{ $room->tata_tertib }}
                                     </div>
                                 </div>
                             @endif
 
                             {{-- Maps --}}
                             <div class="mt-5 rounded-xl border border-slate-100 map-container overflow-hidden">
-                                {!! $apartment->alamat_google !!}
+                                {!! $room->alamat_google !!}
                             </div>
 
 
@@ -181,7 +181,7 @@
                             Formulir Booking
                         </h2>
 
-                        <form action="{{ route('booking.store', $apartment->slug) }}" method="POST" id="bookingForm">
+                        <form action="{{ route('booking.store', $room->slug) }}" method="POST" id="bookingForm">
                             @csrf
 
                             <!-- Name -->
@@ -250,11 +250,11 @@
                             <!-- Guests -->
                             <div class="mb-4">
                                 <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                    Jumlah Tamu (Max: {{ $apartment->tamu_dewasa + $apartment->tamu_anak }})
+                                    Jumlah Tamu (Max: {{ $room->tamu_dewasa + $room->tamu_anak }})
                                 </label>
                                 <select name="jumlah_tamu" required
                                     class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
-                                    @for ($i = 1; $i <= $apartment->tamu_dewasa + $apartment->tamu_anak; $i++)
+                                    @for ($i = 1; $i <= $room->tamu_dewasa + $room->tamu_anak; $i++)
                                         <option value="{{ $i }}">{{ $i }} Tamu</option>
                                     @endfor
                                 </select>
@@ -281,7 +281,7 @@
                                 <div class="flex justify-between text-sm mb-2">
                                     <span class="text-slate-600">Harga per malam</span>
                                     <span class="text-slate-800">Rp
-                                        {{ number_format($apartment->harga_per_malam, 0, ',', '.') }}</span>
+                                        {{ number_format($room->harga_per_malam, 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm mb-2">
                                     <span class="text-slate-600">Jumlah malam</span>
@@ -313,7 +313,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Image slider init - make images global (safe init)
-            window.apartmentImages = @json($apartment->gambar ?? []);
+            window.apartmentImages = @json($room->gambar ?? []);
             if (window.initSlider && window.apartmentImages.length > 0) {
                 window.initSlider();
             }
@@ -323,7 +323,7 @@
             const checkOutInput = document.getElementById('checkOut');
             const jumlahMalamDisplay = document.getElementById('jumlahMalam');
             const totalHargaDisplay = document.getElementById('totalHarga');
-            const hargaPerMalam = {{ (float) $apartment->harga_per_malam }};
+            const hargaPerMalam = {{ (float) $room->harga_per_malam }};
 
             // Set min date to today
             const today = new Date().toISOString().split('T')[0];
@@ -333,7 +333,7 @@
             // Disable dates that are already booked for this apartment
             // We only rely on client-side disabling here; server-side validation still exists in BookingController.
             @php
-                $bookingsForDates = \App\Models\Booking::where('apartment_id', $apartment->id)
+                $bookingsForDates = \App\Models\Booking::where('room_id', $room->id)
                     ->whereIn('status', ['pending', 'confirmed'])
                     ->get(['check_in', 'check_out']);
 

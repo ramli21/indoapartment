@@ -42,9 +42,9 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-sm text-slate-500">Apartemen</p>
-                            <p class="font-semibold text-slate-800">{{ $booking->apartment->judul }}</p>
-                            <p class="text-sm text-slate-600">{{ $booking->apartment->nama_tower }} - Lantai
-                                {{ $booking->apartment->lantai }}</p>
+                            <p class="font-semibold text-slate-800">{{ $booking->room->judul }}</p>
+                            <p class="text-sm text-slate-600">{{ $booking->room->nama_tower }} - Lantai
+                                {{ $booking->room->lantai }}</p>
                         </div>
                     </div>
 
@@ -141,7 +141,7 @@
                 <div class="px-6 pb-6 flex flex-col sm:flex-row gap-3">
                     @if (in_array($booking->status, ['pending', 'confirmed']))
                         @if (!empty($booking->paid_at))
-                            <a href="https://wa.me/{{ $booking->apartment->owner_wa }}?text=Halo,%20saya%20ingin%20konfirmasi%20booking%20{{ $booking->booking_code }}"
+                            <a href="https://wa.me/{{ $booking->room->owner_wa }}?text=Halo,%20saya%20ingin%20konfirmasi%20booking%20{{ $booking->booking_code }}"
                                 target="_blank"
                                 class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm">
                                 <i data-lucide="message-circle" class="w-4 h-4"></i>

@@ -23,15 +23,15 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-slate-600">Apartemen</span>
-                            <span class="text-slate-800 font-medium">{{ $booking->apartment->judul }}</span>
+                            <span class="text-slate-800 font-medium">{{ $booking->room->judul }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-slate-600">Tower</span>
-                            <span class="text-slate-800">{{ $booking->apartment->nama_tower }}</span>
+                            <span class="text-slate-800">{{ $booking->room->nama_tower }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-slate-600">Kamar</span>
-                            <span class="text-slate-800">{{ $booking->apartment->nomor_kamar }}</span>
+                            <span class="text-slate-800">{{ $booking->room->nomor_kamar }}</span>
                         </div>
                         <div class="border-t border-slate-200 my-3"></div>
                         <div class="flex justify-between">

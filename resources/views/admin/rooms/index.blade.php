@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <section class="pt-4 pb-12 min-h-screen">
+        <div class="max-w-7xl px-4 sm:px-6">
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div>
@@ -90,10 +90,20 @@
                                         Gambar</th>
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Apartemen</th>
+                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tipe
+                                    </th>
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Alamat</th>
+                                        Harga/Malam</th>
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Status</th>
+                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Tower / Lantai</th>
+                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Kamar</th>
+                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tamu
+                                    </th>
+                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Owner</th>
                                     <th
                                         class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
                                         Aksi</th>
@@ -102,18 +112,12 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach ($apartments as $apartment)
                                     <tr class="hover:bg-slate-50/50 transition-colors group">
+                                        <!-- Gambar -->
                                         <td class="px-5 py-4">
                                             <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100">
-                                                @php
-                                                    $imgs = is_array($apartment->gambar)
-                                                        ? $apartment->gambar
-                                                        : (json_decode($apartment->gambar, true) ?:
-                                                        []);
-                                                @endphp
-                                                @if (!empty($imgs))
-                                                    <img src="{{ asset('storage/' . $imgs[0]) }}"
-                                                        alt="{{ $apartment->nama ?? ($apartment->judul ?? '') }}"
-                                                        class="w-full h-full object-cover" />
+                                                @if ($apartment->gambar && is_array($apartment->gambar) && count($apartment->gambar) > 0)
+                                                    <img src="{{ asset('storage/' . $apartment->gambar[0]) }}"
+                                                        alt="{{ $apartment->judul }}" class="w-full h-full object-cover">
                                                 @else
                                                     <div
                                                         class="w-full h-full flex items-center justify-center text-slate-300">
@@ -123,22 +127,89 @@
                                             </div>
                                         </td>
 
+                                        <!-- Apartemen -->
                                         <td class="px-5 py-4">
-                                            <div class="font-medium text-slate-800 text-sm">
-                                                {{ $apartment->nama ?? $apartment->judul }}</div>
+                                            <div>
+                                                <div class="font-medium text-slate-800 text-sm">{{ $apartment->judul }}
+                                                </div>
+                                                <div class="text-xs text-slate-400 mt-0.5 line-clamp-1">
+                                                    {{ Str::limit($apartment->alamat, 40) }}</div>
+                                            </div>
                                         </td>
 
+                                        <!-- Tipe -->
                                         <td class="px-5 py-4">
-                                            <div class="text-sm text-slate-700">{{ $apartment->alamat }}</div>
-                                        </td>
-
-                                        <td class="px-5 py-4">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">
-                                                {{ $apartment->status ?? 'Tersedia' }}
+                                            <span class="px-2.5 py-1 bg-brand/10 text-brand text-xs font-medium rounded-lg">
+                                                {{ $apartment->tipe }}
                                             </span>
                                         </td>
 
+                                        <!-- Harga -->
+                                        <td class="px-5 py-4">
+                                            <div class="text-sm font-semibold text-slate-800">
+                                                Rp {{ number_format($apartment->harga_per_malam, 0, ',', '.') }}
+                                            </div>
+                                        </td>
+
+                                        <!-- Status -->
+                                        <td class="px-5 py-4">
+                                            @php
+                                                $statusConfig = [
+                                                    'Tersedia' => [
+                                                        'bg' => 'bg-emerald-50',
+                                                        'text' => 'text-emerald-700',
+                                                        'dot' => 'bg-emerald-500',
+                                                    ],
+                                                    'Terisi' => [
+                                                        'bg' => 'bg-amber-50',
+                                                        'text' => 'text-amber-700',
+                                                        'dot' => 'bg-amber-500',
+                                                    ],
+                                                    'Perawatan' => [
+                                                        'bg' => 'bg-red-50',
+                                                        'text' => 'text-red-700',
+                                                        'dot' => 'bg-red-500',
+                                                    ],
+                                                ];
+                                                $config =
+                                                    $statusConfig[$apartment->status] ?? $statusConfig['Tersedia'];
+                                            @endphp
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $config['bg'] }} {{ $config['text'] }}">
+                                                <span class="w-1.5 h-1.5 rounded-full {{ $config['dot'] }}"></span>
+                                                {{ $apartment->status }}
+                                            </span>
+                                        </td>
+
+                                        <!-- Tower / Lantai -->
+                                        <td class="px-5 py-4">
+                                            <div class="text-sm text-slate-700">{{ $apartment->nama_tower }}</div>
+                                            <div class="text-xs text-slate-400">Lantai {{ $apartment->lantai }} • No.
+                                                {{ $apartment->nomor_kamar }}</div>
+                                        </td>
+
+                                        <!-- Kamar -->
+                                        <td class="px-5 py-4">
+                                            <div class="text-sm text-slate-700">{{ $apartment->jumlah_kamar }} KT</div>
+                                            <div class="text-xs text-slate-400">{{ $apartment->jumlah_kamar_mandi }} KM •
+                                                {{ $apartment->luas }} m²</div>
+                                        </td>
+
+                                        <!-- Tamu -->
+                                        <td class="px-5 py-4">
+                                            <div class="text-sm text-slate-700">
+                                                {{ $apartment->tamu_dewasa + $apartment->tamu_anak }} orang</div>
+                                            <div class="text-xs text-slate-400">{{ $apartment->tamu_dewasa }} dewasa •
+                                                {{ $apartment->tamu_anak }} anak</div>
+                                        </td>
+
+                                        <!-- Owner -->
+                                        <td class="px-5 py-4">
+                                            <div class="text-sm text-slate-700">{{ $apartment->owner_nama }}</div>
+                                            <div class="text-xs text-slate-400">{{ $apartment->owner_wa }}</div>
+                                        </td>
+
+                                        <!-- Aksi -->
                                         <td class="px-5 py-4">
                                             <div class="flex items-center justify-end gap-1.5">
                                                 <a href="{{ route('admin.apartments.show', $apartment) }}"
@@ -171,6 +242,7 @@
                     </div>
                 </div>
             @else
+                <!-- Empty State -->
                 <div class="text-center py-20">
                     <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <i data-lucide="building-2" class="w-8 h-8 text-slate-300"></i>

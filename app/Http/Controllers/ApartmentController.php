@@ -17,7 +17,7 @@ class ApartmentController extends Controller
         $tersedia = $apartments->where('status', 'Tersedia')->count();
         $terisi = $apartments->where('status', 'Terisi')->count();
         $perawatan = $apartments->where('status', 'Perawatan')->count();
-        return view('admin.apartments.index', compact('apartments', 'total', 'tersedia', 'terisi', 'perawatan'));
+        return view('admin.rooms.index', compact('apartments', 'total', 'tersedia', 'terisi', 'perawatan'));
     }
 
     public function listApartments(Request $request)

@@ -12,6 +12,7 @@ class Room extends Model
     // Room di DB direpresentasikan oleh tabel `rooms`
     protected $table = 'rooms';
 
+
     protected $fillable = [
         'judul',
         'slug',
@@ -36,7 +37,9 @@ class Room extends Model
         'owner_wa',
         'owner_rekening',
         'owner_bank_name',
+        'apartment_id',
     ];
+
 
     protected $casts = [
         'fasilitas' => 'array',
@@ -64,5 +67,11 @@ class Room extends Model
     {
         return 'slug';
     }
+
+    public function apartment()
+    {
+        return $this->belongsTo(Apartment::class, 'apartment_id');
+    }
 }
+
 

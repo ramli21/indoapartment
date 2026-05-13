@@ -53,7 +53,7 @@
                 informasi tambahan yang diperlukan.</p>
             <p style="margin-top:16px">Detail singkat:</p>
             <ul>
-                <li>Apartemen: {{ $booking->apartment->judul }}</li>
+                <li>Apartemen: {{ $booking->room->judul }}</li>
                 <li>Check-in: {{ \Carbon\Carbon::parse($booking->check_in)->format('d M Y') }}</li>
                 <li>Check-out: {{ \Carbon\Carbon::parse($booking->check_out)->format('d M Y') }}</li>
                 <li>Total: Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</li>
