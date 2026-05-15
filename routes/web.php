@@ -9,7 +9,8 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InquiryController;
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
-Route::get('/list-rooms', [RoomController::class, 'listRooms'])->name('rooms.list');
+Route::get('/rooms', [RoomController::class, 'listRooms'])->name('rooms.list');
+Route::get('/apartments/{apartment}', [RoomController::class, 'apartmentRooms'])->name('apartment.rooms');
 Route::get('/bantuan', function () {
     return view('help');
 })->name('help');
@@ -49,9 +50,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Apartments Routes (Admin only)
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
-Route::resource('apartments', \App\Http\Controllers\ApartmentController::class);
+    Route::resource('apartments', \App\Http\Controllers\ApartmentController::class);
     // tetap pertahankan CRUD room yang sudah ada (tidak diubah)
-Route::resource('rooms', RoomController::class);
+
+    Route::get('/apartments/{id}/rooms', [RoomController::class, 'index'])->name('apartments.rooms.index');
+    Route::get('/apartments/{id}/rooms/create', [RoomController::class, 'create'])->name('apartments.rooms.create');
+    Route::post('/apartments/{id}/rooms', [RoomController::class, 'store'])->name('apartments.rooms.store');
+    Route::get('/apartments/{id}/rooms/{room_id}/edit', [RoomController::class, 'edit'])->name('apartments.rooms.edit');
+    Route::put('/apartments/{id}/rooms/{room_id}', [RoomController::class, 'update'])->name('apartments.rooms.update');
+    Route::delete('/apartments/{id}/rooms/{room_id}', [RoomController::class, 'destroy'])->name('apartments.rooms.destroy');
 
     // Help/Panduan Routes
     Route::get('/help', function () {

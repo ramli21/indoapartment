@@ -7,7 +7,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand">Daftar Apartemen</h1>
-                    <p class="text-slate-500 mt-1">Kelola data apartemen Anda</p>
+                    <p class="text-slate-500 mt-1">Kelola data room Anda</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="{{ route('admin.help') }}"
@@ -18,7 +18,7 @@
                     <a href="{{ route('admin.apartments.create') }}"
                         class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors shadow-lg shadow-brand/20">
                         <i data-lucide="plus" class="w-4 h-4"></i>
-                        Tambah Apartemen
+                        Tambah Room
                     </a>
                 </div>
             </div>
@@ -80,7 +80,7 @@
             </div>
 
             <!-- Table -->
-            @if ($apartments->count() > 0)
+            @if ($rooms->count() > 0)
                 <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
@@ -89,7 +89,7 @@
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Gambar</th>
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Apartemen</th>
+                                        Room</th>
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tipe
                                     </th>
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -110,14 +110,14 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                @foreach ($apartments as $apartment)
+                                @foreach ($rooms as $room)
                                     <tr class="hover:bg-slate-50/50 transition-colors group">
                                         <!-- Gambar -->
                                         <td class="px-5 py-4">
                                             <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100">
-                                                @if ($apartment->gambar && is_array($apartment->gambar) && count($apartment->gambar) > 0)
-                                                    <img src="{{ asset('storage/' . $apartment->gambar[0]) }}"
-                                                        alt="{{ $apartment->judul }}" class="w-full h-full object-cover">
+                                                @if ($room->gambar && is_array($room->gambar) && count($room->gambar) > 0)
+                                                    <img src="{{ asset('storage/' . $room->gambar[0]) }}"
+                                                        alt="{{ $room->judul }}" class="w-full h-full object-cover">
                                                 @else
                                                     <div
                                                         class="w-full h-full flex items-center justify-center text-slate-300">
@@ -130,24 +130,24 @@
                                         <!-- Apartemen -->
                                         <td class="px-5 py-4">
                                             <div>
-                                                <div class="font-medium text-slate-800 text-sm">{{ $apartment->judul }}
+                                                <div class="font-medium text-slate-800 text-sm">{{ $room->judul }}
                                                 </div>
                                                 <div class="text-xs text-slate-400 mt-0.5 line-clamp-1">
-                                                    {{ Str::limit($apartment->alamat, 40) }}</div>
+                                                    {{ Str::limit($room->alamat, 40) }}</div>
                                             </div>
                                         </td>
 
                                         <!-- Tipe -->
                                         <td class="px-5 py-4">
                                             <span class="px-2.5 py-1 bg-brand/10 text-brand text-xs font-medium rounded-lg">
-                                                {{ $apartment->tipe }}
+                                                {{ $room->tipe }}
                                             </span>
                                         </td>
 
                                         <!-- Harga -->
                                         <td class="px-5 py-4">
                                             <div class="text-sm font-semibold text-slate-800">
-                                                Rp {{ number_format($apartment->harga_per_malam, 0, ',', '.') }}
+                                                Rp {{ number_format($room->harga_per_malam, 0, ',', '.') }}
                                             </div>
                                         </td>
 
@@ -171,58 +171,57 @@
                                                         'dot' => 'bg-red-500',
                                                     ],
                                                 ];
-                                                $config =
-                                                    $statusConfig[$apartment->status] ?? $statusConfig['Tersedia'];
+                                                $config = $statusConfig[$room->status] ?? $statusConfig['Tersedia'];
                                             @endphp
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $config['bg'] }} {{ $config['text'] }}">
                                                 <span class="w-1.5 h-1.5 rounded-full {{ $config['dot'] }}"></span>
-                                                {{ $apartment->status }}
+                                                {{ $room->status }}
                                             </span>
                                         </td>
 
                                         <!-- Tower / Lantai -->
                                         <td class="px-5 py-4">
-                                            <div class="text-sm text-slate-700">{{ $apartment->nama_tower }}</div>
-                                            <div class="text-xs text-slate-400">Lantai {{ $apartment->lantai }} • No.
-                                                {{ $apartment->nomor_kamar }}</div>
+                                            <div class="text-sm text-slate-700">{{ $room->nama_tower }}</div>
+                                            <div class="text-xs text-slate-400">Lantai {{ $room->lantai }} • No.
+                                                {{ $room->nomor_kamar }}</div>
                                         </td>
 
                                         <!-- Kamar -->
                                         <td class="px-5 py-4">
-                                            <div class="text-sm text-slate-700">{{ $apartment->jumlah_kamar }} KT</div>
-                                            <div class="text-xs text-slate-400">{{ $apartment->jumlah_kamar_mandi }} KM •
-                                                {{ $apartment->luas }} m²</div>
+                                            <div class="text-sm text-slate-700">{{ $room->jumlah_kamar }} KT</div>
+                                            <div class="text-xs text-slate-400">{{ $room->jumlah_kamar_mandi }} KM •
+                                                {{ $room->luas }} m²</div>
                                         </td>
 
                                         <!-- Tamu -->
                                         <td class="px-5 py-4">
                                             <div class="text-sm text-slate-700">
-                                                {{ $apartment->tamu_dewasa + $apartment->tamu_anak }} orang</div>
-                                            <div class="text-xs text-slate-400">{{ $apartment->tamu_dewasa }} dewasa •
-                                                {{ $apartment->tamu_anak }} anak</div>
+                                                {{ $room->tamu_dewasa + $room->tamu_anak }} orang</div>
+                                            <div class="text-xs text-slate-400">{{ $room->tamu_dewasa }} dewasa •
+                                                {{ $room->tamu_anak }} anak</div>
                                         </td>
 
                                         <!-- Owner -->
                                         <td class="px-5 py-4">
-                                            <div class="text-sm text-slate-700">{{ $apartment->owner_nama }}</div>
-                                            <div class="text-xs text-slate-400">{{ $apartment->owner_wa }}</div>
+                                            <div class="text-sm text-slate-700">{{ $room->owner_nama }}</div>
+                                            <div class="text-xs text-slate-400">{{ $room->owner_wa }}</div>
                                         </td>
 
                                         <!-- Aksi -->
                                         <td class="px-5 py-4">
                                             <div class="flex items-center justify-end gap-1.5">
-                                                <a href="{{ route('admin.apartments.show', $apartment) }}"
+                                                <a href="{{ route('admin.apartments.show', $room) }}"
                                                     class="p-2 text-brand bg-brand/5 hover:bg-brand/10 rounded-lg transition-colors"
                                                     title="Detail">
                                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                                 </a>
-                                                <a href="{{ route('admin.apartments.edit', $apartment) }}"
+                                                <a href="{{ route('admin.apartments.edit', $room) }}"
                                                     class="p-2 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                                                     title="Edit">
                                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                                 </a>
-                                                <form action="{{ route('admin.apartments.destroy', $apartment) }}"
+                                                <form action="{{ route('admin.apartments.destroy', $room) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Yakin ingin menghapus apartemen ini?')">
                                                     @csrf

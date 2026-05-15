@@ -27,12 +27,8 @@ class DatabaseSeeder extends Seeder
 
         // Relasikan rooms ke apartment (minimal-drift untuk demo)
         // Jika ApartmentSeeder membuat record, RoomSeeder sebelumnya akan di-update di sini.
-        $this->call(RoomSeeder::class);
-
-
         $this->call(AdminInfoSeeder::class);
-
-
+        $this->call(RoomSeeder::class);
         // Seed inquiries and bookings
         // $this->call(InquirySeeder::class);
         // $this->call(BookingSeeder::class);

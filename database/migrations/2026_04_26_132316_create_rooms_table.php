@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rooms', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('judul');
             $table->decimal('luas', 8, 2)->nullable();
             $table->string('tipe');
@@ -20,7 +20,6 @@ return new class extends Migration
             $table->json('fasilitas')->nullable();
             $table->text('alamat');
             $table->text('alamat_google')->nullable();
-            $table->string('nama_tower');
             $table->integer('lantai');
             $table->string('nomor_kamar');
             $table->timestamps();

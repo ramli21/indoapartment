@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Apartment;
 use App\Models\Booking;
+use App\Models\Room;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,12 +13,12 @@ class ApartmentController extends Controller
 {
     public function index()
     {
-        $apartments = Apartment::latest()->get();
-        $total = $apartments->count();
-        $tersedia = $apartments->where('status', 'Tersedia')->count();
-        $terisi = $apartments->where('status', 'Terisi')->count();
-        $perawatan = $apartments->where('status', 'Perawatan')->count();
-        return view('admin.rooms.index', compact('apartments', 'total', 'tersedia', 'terisi', 'perawatan'));
+        $rooms = Room::latest()->get();
+        $total = $rooms->count();
+        $tersedia = $rooms->where('status', 'Tersedia')->count();
+        $terisi = $rooms->where('status', 'Terisi')->count();
+        $perawatan = $rooms->where('status', 'Perawatan')->count();
+        return view('admin.rooms.index', compact('rooms', 'total', 'tersedia', 'terisi', 'perawatan'));
     }
 
     public function listApartments(Request $request)

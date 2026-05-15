@@ -17,7 +17,7 @@
 
             <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm mb-6">
                 <h2 class="text-sm font-medium text-slate-500 mb-4">Perlu bantuan lebih cepat?</h2>
-                <a href="https://wa.me/6281234567890"
+                <a href="https://wa.me/{{ $adminInfo->whatsapp }}"
                     class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors">
                     <i data-lucide="message-circle" class="w-4 h-4"></i>
                     Chat WhatsApp

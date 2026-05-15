@@ -23,10 +23,10 @@
             </div>
 
             @php
-                $totalApartments = \App\Models\Apartment::count();
-                $availableApartments = \App\Models\Apartment::where('status', 'Tersedia')->count();
-                $occupiedApartments = \App\Models\Apartment::where('status', 'Terisi')->count();
-                $maintenanceApartments = \App\Models\Apartment::where('status', 'Perawatan')->count();
+                $totalApartments = \App\Models\Room::count();
+                $availableApartments = \App\Models\Room::where('status', 'Tersedia')->count();
+                $occupiedApartments = \App\Models\Room::where('status', 'Terisi')->count();
+                $maintenanceApartments = \App\Models\Room::where('status', 'Perawatan')->count();
 
                 $totalBookings = \App\Models\Booking::count();
                 $pendingBookings = \App\Models\Booking::where('status', 'pending')->count();

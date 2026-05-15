@@ -141,7 +141,7 @@
 
                                         <td class="px-5 py-4">
                                             <div class="flex items-center justify-end gap-1.5">
-                                                <a href="{{ route('admin.apartments.show', $apartment) }}"
+                                                <a href="{{ route('admin.apartments.rooms.index', $apartment) }}"
                                                     class="p-2 text-brand bg-brand/5 hover:bg-brand/10 rounded-lg transition-colors"
                                                     title="Detail">
                                                     <i data-lucide="eye" class="w-4 h-4"></i>

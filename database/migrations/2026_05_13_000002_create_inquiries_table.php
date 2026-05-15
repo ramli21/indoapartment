@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('inquiries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('room_id')->nullable()->constrained()->onDelete('set null');
+            $table->uuid('apartment_id')->nullable();
+            $table->foreign('apartment_id')->references('id')->on('apartments')->nullOnDelete();
             $table->string('nama');
             $table->string('email');
             $table->string('no_hp');

@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Room;
+use App\Models\Apartment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
-    public function index()
+    public function index(Request $request, $apartmentId)
     {
-        $rooms = Room::latest()->get();
+        $apartment = Apartment::findOrFail($apartmentId);
+        $rooms = $apartment->rooms()->latest()->get();
         $total = $rooms->count();
         $tersedia = $rooms->where('status', 'Tersedia')->count();
         $terisi = $rooms->where('status', 'Terisi')->count();
@@ -23,11 +25,11 @@ class RoomController extends Controller
 
     public function listRooms(Request $request)
     {
-        $towers = Room::whereNotNull('nama_tower')
-            ->where('nama_tower', '!=', '')
-            ->distinct()
-            ->pluck('nama_tower')
-            ->sort()
+        $towers = Apartment::whereNotNull('nama')
+        ->where('nama', '!=', '')
+        ->distinct()
+        ->pluck('nama')
+        ->sort()
             ->values();
 
         $tipes = Room::whereNotNull('tipe')
@@ -37,7 +39,11 @@ class RoomController extends Controller
             ->sort()
             ->values();
 
-        $query = Room::whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']);
+        $apartment = Apartment::where('nama', $request->get('apartment'))->first();
+
+        // dd($apartment);
+
+        $query = empty($apartment) ? Room::whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']) : $apartment->rooms()->whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -47,9 +53,9 @@ class RoomController extends Controller
             });
         }
 
-        if ($request->filled('tower')) {
-            $query->where('nama_tower', $request->tower);
-        }
+        // if ($request->filled('tower')) {
+        //     $query->where('nama_tower', $request->tower);
+        // }
 
         if ($request->filled('tipe')) {
             $query->where('tipe', $request->tipe);
@@ -117,6 +123,13 @@ class RoomController extends Controller
         $rooms = $query->paginate(12)->appends(request()->query());
 
         return view('list-rooms', compact('rooms', 'towers', 'tipes'));
+    }
+
+    public function apartmentRooms(Apartment $apartment)
+    {
+        $rooms = $apartment->rooms()->whereIn('status', ['Tersedia', 'Perawatan', 'Terisi'])->latest()->get();
+
+        return view('list-rooms', compact('rooms', 'apartment'));
     }
 
     public function create()

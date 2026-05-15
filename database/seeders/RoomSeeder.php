@@ -17,19 +17,19 @@ class RoomSeeder extends Seeder
         Storage::disk('public')->makeDirectory('rooms');
         Storage::disk('public')->makeDirectory('rooms/demo_rooms');
 
-
+        // $apartment_ids = \App\Models\Apartment::limit(3)->pluck('id')->toArray();
 
         // Data dummy 10 room
         $rooms = [
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Apartemen Sudirman Park',
                 'luas' => 45.00,
                 'tipe' => '2 BR',
                 'harga_per_malam' => 750000,
                 'deskripsi' => 'Apartemen nyaman di pusat kota dengan view city light yang menakjubkan. Dekat dengan pusat perbelanjaan dan transportasi umum.',
-                'nama_tower' => 'Tower A',
                 'lantai' => 15,
-                'nomor_kamar' => '1502',
+                'nomor_kamar' => '321',
                 'tamu_dewasa' => 4,
                 'tamu_anak' => 2,
                 'jumlah_kamar' => 2,
@@ -43,12 +43,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '1234567890 (BCA a.n. Budi Santoso)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Studio Apartment Thamrin',
                 'luas' => 28.50,
                 'tipe' => 'Studio',
                 'harga_per_malam' => 450000,
                 'deskripsi' => 'Studio cozy untuk solo traveler atau pasangan. Lokasi strategis di Thamrin dengan akses mudah ke mall dan restoran.',
-                'nama_tower' => 'Tower B',
                 'lantai' => 8,
                 'nomor_kamar' => '805',
                 'tamu_dewasa' => 2,
@@ -64,12 +64,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '2345678901 (Mandiri a.n. Siti Aminah)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Luxury Penthouse Kemang',
                 'luas' => 120.00,
                 'tipe' => 'Penthouse',
                 'harga_per_malam' => 2500000,
                 'deskripsi' => 'Penthouse mewah dengan rooftop private pool dan view kota 360 derajat. Furnitur premium dan smart home system.',
-                'nama_tower' => 'Tower Premium',
                 'lantai' => 25,
                 'nomor_kamar' => 'PH01',
                 'tamu_dewasa' => 6,
@@ -85,12 +85,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '3456789012 (BNI a.n. Ahmad Rizki)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Apartemen Taman Anggrek 3BR',
                 'luas' => 65.00,
                 'tipe' => '3 BR',
                 'harga_per_malam' => 950000,
                 'deskripsi' => 'Apartemen keluarga luas dengan 3 kamar tidur. Dekat Mall Taman Anggrek dan Universitas Indonesia.',
-                'nama_tower' => 'Tower C',
                 'lantai' => 12,
                 'nomor_kamar' => '1208',
                 'tamu_dewasa' => 6,
@@ -106,12 +106,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '4567890123 (BRI a.n. Dewi Lestari)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Cozy 1BR Apartemen BSD',
                 'luas' => 36.00,
                 'tipe' => '1 BR',
                 'harga_per_malam' => 350000,
                 'deskripsi' => 'Apartemen 1BR modern di BSD City dengan fasilitas lengkap. Cocok untuk working professional.',
-                'nama_tower' => 'Tower D',
                 'lantai' => 5,
                 'nomor_kamar' => '512',
                 'tamu_dewasa' => 2,
@@ -127,12 +127,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '5678901234 (BCA a.n. Rudi Hartono)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Duplex Apartment SCBD',
                 'luas' => 85.00,
                 'tipe' => 'Duplex',
                 'harga_per_malam' => 1800000,
                 'deskripsi' => 'Duplex eksklusif di SCBD dengan desain modern minimalis. 2 lantai dengan living room yang luas.',
-                'nama_tower' => 'Tower Executive',
                 'lantai' => 18,
                 'nomor_kamar' => '1801',
                 'tamu_dewasa' => 4,
@@ -148,12 +148,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '6789012345 (Mandiri a.n. Nina Wijaya)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Studio Premium PIK',
                 'luas' => 32.00,
                 'tipe' => 'Studio',
                 'harga_per_malam' => 550000,
                 'deskripsi' => 'Studio premium di Pantai Indah Kapuk dengan view laut. Dekat dengan restoran seafood dan wahana rekreasi.',
-                'nama_tower' => 'Tower E',
                 'lantai' => 10,
                 'nomor_kamar' => '1005',
                 'tamu_dewasa' => 2,
@@ -169,12 +169,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '7890123456 (BCA a.n. Yoga Pratama)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Family Apartment Kelapa Gading',
                 'luas' => 72.00,
                 'tipe' => '3 BR',
                 'harga_per_malam' => 850000,
                 'deskripsi' => 'Apartemen keluarga di Kelapa Gading dengan taman bermain anak. Dekat dengan sekolah internasional.',
-                'nama_tower' => 'Tower F',
                 'lantai' => 7,
                 'nomor_kamar' => '711',
                 'tamu_dewasa' => 6,
@@ -190,12 +190,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '8901234567 (BNI a.n. Maya Sari)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Modern 2BR Apartemen Tebet',
                 'luas' => 52.00,
                 'tipe' => '2 BR',
                 'harga_per_malam' => 600000,
                 'deskripsi' => 'Apartemen modern 2BR di Tebet dengan kitchen set lengkap. Dekat stasiun Tebet dan pusat kuliner.',
-                'nama_tower' => 'Tower G',
                 'lantai' => 9,
                 'nomor_kamar' => '918',
                 'tamu_dewasa' => 4,
@@ -211,12 +211,12 @@ class RoomSeeder extends Seeder
                 'owner_rekening' => '9012345678 (BRI a.n. Fajar Nugroho)',
             ],
             [
+                // 'apartment_id' => $apartment_ids[array_rand($apartment_ids)], // Relasi ke apartment pertama (jika ada)
                 'judul' => 'Budget Studio Cibubur',
                 'luas' => 24.00,
                 'tipe' => 'Studio',
                 'harga_per_malam' => 250000,
                 'deskripsi' => 'Studio budget-friendly di Cibubur dengan fasilitas dasar yang lengkap. Cocok untuk staycation hemat.',
-                'nama_tower' => 'Tower H',
                 'lantai' => 3,
                 'nomor_kamar' => '302',
                 'tamu_dewasa' => 2,
@@ -248,7 +248,7 @@ class RoomSeeder extends Seeder
             // Relasikan room ke apartment kategori
             // default: set setelah ApartmentSeeder dijalankan (minimal-drift untuk demo)
             // Agar tidak error saat seeder dijalankan tanpa apartment data, tetap gunakan null.
-            $data['apartment_id'] = null;
+            // $data['apartment_id'] = null;
 
             // Catatan: relasi yang benar akan dibuat oleh ApartmentSeeder.
 

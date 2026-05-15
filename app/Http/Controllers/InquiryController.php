@@ -21,7 +21,7 @@ class InquiryController extends Controller
         if ($request->filled('apartment_id')) {
             $apartment = Apartment::find($request->apartment_id);
         }
-        $apartments = Apartment::orderBy('judul')->get();
+        $apartments = Apartment::orderBy('nama')->get();
 
         return view('inquiry.create', compact('apartment', 'apartments', 'adminInfo'));
     }

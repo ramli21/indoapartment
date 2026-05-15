@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Room extends Model
 {
     use HasFactory;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     // Room di DB direpresentasikan oleh tabel `rooms`
     protected $table = 'rooms';
@@ -53,12 +58,15 @@ class Room extends Model
         parent::boot();
 
         static::creating(function ($room) {
-            $room->slug = \Str::slug($room->judul);
+            if (empty($room->id)) {
+                $room->id = (string) Str::uuid();
+            }
+            $room->slug = Str::slug($room->judul);
         });
 
         static::updating(function ($room) {
             if ($room->isDirty('judul')) {
-                $room->slug = \Str::slug($room->judul);
+                $room->slug = Str::slug($room->judul);
             }
         });
     }

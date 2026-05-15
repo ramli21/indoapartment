@@ -86,7 +86,7 @@ class BookingController extends Controller
 
         $booking = Booking::create([
             'booking_code' => $bookingCode,
-            'room_id' => (int) $room->id,
+            'room_id' => $room->id,
             'nama_tamu' => $sanitized['nama_tamu'],
             'email_tamu' => $sanitized['email_tamu'],
             'no_hp' => $sanitized['no_hp'],
@@ -420,7 +420,7 @@ class BookingController extends Controller
         $totalHarga = $hargaPerMalam * $jumlahMalam;
 
         $booking = Booking::create([
-            'apartment_id' => (int) $validated['apartment_id'],
+            'apartment_id' => $validated['apartment_id'],
             'nama_tamu' => $sanitized['nama_tamu'],
             'email_tamu' => $sanitized['email_tamu'],
             'no_hp' => $sanitized['no_hp'],
