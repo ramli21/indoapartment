@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('tipe');
             $table->string('gambar')->nullable();
             $table->json('fasilitas')->nullable();
+            $table->text('nama_tower')->nullable();
             $table->text('alamat');
             $table->text('alamat_google')->nullable();
             $table->integer('lantai');

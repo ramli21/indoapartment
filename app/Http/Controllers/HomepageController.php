@@ -15,7 +15,7 @@ class HomepageController extends Controller
         $apartments = Apartment::orderBy('created_at', 'desc')
             ->take(8)
             ->get();
-
+        // dd($apartments);
         return view('index', ['apartments' => $apartments, 'adminInfo' => $adminInfo]);
     }
 

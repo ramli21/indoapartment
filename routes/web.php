@@ -56,9 +56,9 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     Route::get('/apartments/{id}/rooms', [RoomController::class, 'index'])->name('apartments.rooms.index');
     Route::get('/apartments/{id}/rooms/create', [RoomController::class, 'create'])->name('apartments.rooms.create');
     Route::post('/apartments/{id}/rooms', [RoomController::class, 'store'])->name('apartments.rooms.store');
-    Route::get('/apartments/{id}/rooms/{room_id}/edit', [RoomController::class, 'edit'])->name('apartments.rooms.edit');
-    Route::put('/apartments/{id}/rooms/{room_id}', [RoomController::class, 'update'])->name('apartments.rooms.update');
-    Route::delete('/apartments/{id}/rooms/{room_id}', [RoomController::class, 'destroy'])->name('apartments.rooms.destroy');
+    Route::get('/apartments/rooms/{room_id}/edit', [RoomController::class, 'edit'])->name('apartments.rooms.edit');
+    Route::put('/apartments/rooms/{room_id}', [RoomController::class, 'update'])->name('apartments.rooms.update');
+    Route::delete('/apartments/rooms/{room_id}', [RoomController::class, 'destroy'])->name('apartments.rooms.destroy');
 
     // Help/Panduan Routes
     Route::get('/help', function () {

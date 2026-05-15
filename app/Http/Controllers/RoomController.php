@@ -20,7 +20,7 @@ class RoomController extends Controller
         $terisi = $rooms->where('status', 'Terisi')->count();
         $perawatan = $rooms->where('status', 'Perawatan')->count();
 
-        return view('admin.rooms.index', compact('rooms', 'total', 'tersedia', 'terisi', 'perawatan'));
+        return view('admin.rooms.index', compact('rooms', 'total', 'tersedia', 'terisi', 'perawatan', 'apartment'));
     }
 
     public function listRooms(Request $request)
@@ -132,14 +132,17 @@ class RoomController extends Controller
         return view('list-rooms', compact('rooms', 'apartment'));
     }
 
-    public function create()
+    public function create($apartmentId)
     {
-        return view('admin.rooms.create');
+        $apartment = Apartment::findOrFail($apartmentId);
+        return view('admin.rooms.create', compact('apartment'));
     }
 
     public function ownerCreate()
     {
-        return view('admin.rooms.owner_create');
+        $apartments = Apartment::orderBy('nama')->get(['id', 'nama']);
+
+        return view('admin.rooms.owner_create', compact('apartments'));
     }
 
     private function uploadImages(Request $request): ?array
@@ -158,8 +161,10 @@ class RoomController extends Controller
         return $uploadedImages ?: null;
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $apartmentId)
     {
+        $apartment = Apartment::findOrFail($apartmentId);
+        // $request->all();
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
@@ -170,7 +175,7 @@ class RoomController extends Controller
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'fasilitas' => 'nullable|array',
             'fasilitas.*' => 'string|max:100',
-            'nama_tower' => 'required|string|max:100',
+            'nama_tower' => 'required|string|max:255',
             'lantai' => 'required|integer|min:1',
             'nomor_kamar' => 'required|string|max:50',
             'tamu_dewasa' => 'required|integer|min:0',
@@ -192,14 +197,17 @@ class RoomController extends Controller
             $validated['gambar'] = $images;
         }
 
+        $validated['apartment_id'] = $apartment->id;
+
         Room::create($validated);
 
-        return redirect()->route('admin.rooms.index')->with('success', 'Room berhasil ditambahkan!');
+        return redirect()->route('admin.apartments.rooms.index', $apartment->id)->with('success', 'Room berhasil ditambahkan!');
     }
 
     public function ownerStore(Request $request)
     {
         $validated = $request->validate([
+            'apartment_id' => 'required|exists:apartments,id',
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
             'tipe' => 'required|string|max:100',
@@ -209,7 +217,7 @@ class RoomController extends Controller
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'fasilitas' => 'nullable|array',
             'fasilitas.*' => 'string|max:100',
-            'nama_tower' => 'required|string|max:100',
+            'nama_tower' => 'required|string|max:255',
             'lantai' => 'required|integer|min:1',
             'nomor_kamar' => 'required|string|max:50',
             'tamu_dewasa' => 'required|integer|min:0',
@@ -226,6 +234,7 @@ class RoomController extends Controller
             'owner_bank_name' => 'required|string|max:50',
         ]);
 
+
         $images = $this->uploadImages($request);
         if ($images) {
             $validated['gambar'] = $images;
@@ -233,22 +242,31 @@ class RoomController extends Controller
 
         Room::create($validated);
 
-        return redirect()->route('admin.rooms.owner.create')
+        return redirect()->route('rooms.owner.create')
             ->with('success', 'Pendaftaran room berhasil dikirim! Tim kami akan meninjau data Anda.');
     }
 
-    public function show(Room $room)
+    public function show($apartmentId, $room_id)
     {
-        return view('admin.rooms.show', compact('room'));
+        $apartment = Apartment::findOrFail($apartmentId);
+        $room = $apartment->rooms()->findOrFail($room_id);
+
+        return view('admin.rooms.show', compact('room', 'apartment'));
     }
 
-    public function edit(Room $room)
+    public function edit($room_id)
     {
-        return view('admin.rooms.edit', compact('room'));
+        $room = Room::findOrFail($room_id);
+        $apartment = $room->apartment;
+
+        return view('admin.rooms.edit', compact('room', 'apartment'));
     }
 
-    public function update(Request $request, Room $room)
+    public function update(Request $request, $apartmentId, $room_id)
     {
+        $apartment = Apartment::findOrFail($apartmentId);
+        $room = $apartment->rooms()->findOrFail($room_id);
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
@@ -259,7 +277,7 @@ class RoomController extends Controller
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'fasilitas' => 'nullable|array',
             'fasilitas.*' => 'string|max:100',
-            'nama_tower' => 'required|string|max:100',
+            'nama_tower' => 'required|string|max:255',
             'lantai' => 'required|integer|min:1',
             'nomor_kamar' => 'required|string|max:50',
             'tamu_dewasa' => 'required|integer|min:0',
@@ -290,11 +308,14 @@ class RoomController extends Controller
 
         $room->update($validated);
 
-        return redirect()->route('admin.rooms.index')->with('success', 'Room berhasil diperbarui!');
+        return redirect()->route('admin.apartments.rooms.index', $apartment->id)->with('success', 'Room berhasil diperbarui!');
     }
 
-    public function destroy(Room $room)
+    public function destroy($apartmentId, $room_id)
     {
+        $apartment = Apartment::findOrFail($apartmentId);
+        $room = $apartment->rooms()->findOrFail($room_id);
+
         if ($room->gambar && is_array($room->gambar)) {
             foreach ($room->gambar as $image) {
                 if (Storage::disk('public')->exists($image)) {
@@ -305,7 +326,7 @@ class RoomController extends Controller
 
         $room->delete();
 
-        return redirect()->route('admin.rooms.index')->with('success', 'Room berhasil dihapus!');
+        return redirect()->route('admin.apartments.rooms.index', $apartment->id)->with('success', 'Room berhasil dihapus!');
     }
 }
 

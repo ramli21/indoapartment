@@ -133,10 +133,9 @@
                 @if (isset($apartments) && $apartments->count())
                     @foreach ($apartments as $apartment)
                         @php
-                            $img =
-                                is_array($apartment->gambar) && count($apartment->gambar)
-                                    ? asset('storage/' . $apartment->gambar[0])
-                                    : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
+                            $img = $apartment->gambar
+                                ? asset('storage/' . $apartment->gambar)
+                                : 'https://picsum.photos/seed/apartment' . $loop->index . '/600/450';
                         @endphp
                         <a href="{{ route('rooms.list', ['apartment' => $apartment->nama]) }}"
                             class="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-xl transition-all duration-300">

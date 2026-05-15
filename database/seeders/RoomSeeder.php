@@ -242,7 +242,7 @@ class RoomSeeder extends Seeder
         foreach ($rooms as $index => $data) {
             // Copy 5 demo images for this room
             $demoImages = Storage::disk('public')->files('demo');
-            $startIndex = $index * 4;
+            $startIndex = $index * 2;
             $images = [];
 
             // Relasikan room ke apartment kategori

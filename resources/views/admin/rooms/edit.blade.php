@@ -5,19 +5,20 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <!-- Header -->
             <div class="mb-8">
-                <a href="{{ route('admin.apartments.index') }}"
+                <a href="{{ route('admin.apartments.rooms.index', $apartment->id) }}"
                     class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors mb-4">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
                     Kembali ke Daftar
                 </a>
-                <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand">Edit Apartemen</h1>
-                <p class="text-slate-500 mt-1">Perbarui data apartemen <span
-                        class="font-medium text-slate-700">{{ $apartment->judul }}</span></p>
+                <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand">Edit Ruangan ({{ $apartment->nama }})
+                </h1>
+                <p class="text-slate-500 mt-1">Perbarui data ruangan <span
+                        class="font-medium text-slate-700">{{ $room->judul }}</span></p>
             </div>
 
             <!-- Form Card -->
             <div class="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                <form action="{{ route('admin.apartments.update', $apartment) }}" method="POST"
+                <form action="{{ route('admin.apartments.update', $room->id) }}" method="POST"
                     enctype="multipart/form-data" class="space-y-8">
                     @csrf
                     @method('PUT')
@@ -38,8 +39,8 @@
                             <div class="sm:col-span-2">
                                 <label for="judul" class="block text-sm font-medium text-slate-700 mb-2">Judul / Nama
                                     Apartemen <span class="text-red-500">*</span></label>
-                                <input type="text" name="judul" id="judul"
-                                    value="{{ old('judul', $apartment->judul) }}" required
+                                <input type="text" name="judul" id="judul" value="{{ old('judul', $room->judul) }}"
+                                    required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('judul')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -53,18 +54,18 @@
                                 <select name="tipe" id="tipe" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all">
                                     <option value="" disabled>Pilih tipe</option>
-                                    <option value="Studio"
-                                        {{ old('tipe', $apartment->tipe) == 'Studio' ? 'selected' : '' }}>Studio</option>
-                                    <option value="1 BR" {{ old('tipe', $apartment->tipe) == '1 BR' ? 'selected' : '' }}>1
+                                    <option value="Studio" {{ old('tipe', $room->tipe) == 'Studio' ? 'selected' : '' }}>
+                                        Studio</option>
+                                    <option value="1 BR" {{ old('tipe', $room->tipe) == '1 BR' ? 'selected' : '' }}>1
                                         BR</option>
-                                    <option value="2 BR" {{ old('tipe', $apartment->tipe) == '2 BR' ? 'selected' : '' }}>2
+                                    <option value="2 BR" {{ old('tipe', $room->tipe) == '2 BR' ? 'selected' : '' }}>2
                                         BR</option>
-                                    <option value="3 BR" {{ old('tipe', $apartment->tipe) == '3 BR' ? 'selected' : '' }}>3
+                                    <option value="3 BR" {{ old('tipe', $room->tipe) == '3 BR' ? 'selected' : '' }}>3
                                         BR</option>
-                                    <option value="Duplex"
-                                        {{ old('tipe', $apartment->tipe) == 'Duplex' ? 'selected' : '' }}>Duplex</option>
+                                    <option value="Duplex" {{ old('tipe', $room->tipe) == 'Duplex' ? 'selected' : '' }}>
+                                        Duplex</option>
                                     <option value="Penthouse"
-                                        {{ old('tipe', $apartment->tipe) == 'Penthouse' ? 'selected' : '' }}>Penthouse
+                                        {{ old('tipe', $room->tipe) == 'Penthouse' ? 'selected' : '' }}>Penthouse
                                     </option>
                                 </select>
                                 @error('tipe')
@@ -80,7 +81,7 @@
                                     <span
                                         class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400">Rp</span>
                                     <input type="number" name="harga_per_malam" id="harga_per_malam"
-                                        value="{{ old('harga_per_malam', $apartment->harga_per_malam) }}" required
+                                        value="{{ old('harga_per_malam', $room->harga_per_malam) }}" required
                                         min="0"
                                         class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 </div>
@@ -96,13 +97,13 @@
                                 <select name="status" id="status" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all">
                                     <option value="Tersedia"
-                                        {{ old('status', $apartment->status) == 'Tersedia' ? 'selected' : '' }}>Tersedia
+                                        {{ old('status', $room->status) == 'Tersedia' ? 'selected' : '' }}>Tersedia
                                     </option>
                                     <option value="Terisi"
-                                        {{ old('status', $apartment->status) == 'Terisi' ? 'selected' : '' }}>Terisi
+                                        {{ old('status', $room->status) == 'Terisi' ? 'selected' : '' }}>Terisi
                                     </option>
                                     <option value="Perawatan"
-                                        {{ old('status', $apartment->status) == 'Perawatan' ? 'selected' : '' }}>Perawatan
+                                        {{ old('status', $room->status) == 'Perawatan' ? 'selected' : '' }}>Perawatan
                                     </option>
                                 </select>
                                 @error('status')
@@ -115,9 +116,9 @@
                                 <label for="gambar" class="block text-sm font-medium text-slate-700 mb-2">Gambar
                                     Apartemen <span class="text-xs text-slate-400 font-normal">(Maksimal 5 gambar,
                                         upload baru akan mengganti semua gambar lama)</span></label>
-                                @if ($apartment->gambar && is_array($apartment->gambar) && count($apartment->gambar) > 0)
+                                @if ($room->gambar && is_array($room->gambar) && count($room->gambar) > 0)
                                     <div class="mb-3 flex flex-wrap gap-2">
-                                        @foreach ($apartment->gambar as $img)
+                                        @foreach ($room->gambar as $img)
                                             <div
                                                 class="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
                                                 <img src="{{ asset('storage/' . $img) }}" alt="Preview"
@@ -147,7 +148,7 @@
                                     class="block text-sm font-medium text-slate-700 mb-2">Deskripsi</label>
                                 <textarea name="deskripsi" id="deskripsi" rows="3"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none"
-                                    placeholder="Deskripsi singkat tentang apartemen">{{ old('deskripsi', $apartment->deskripsi) }}</textarea>
+                                    placeholder="Deskripsi singkat tentang apartemen">{{ old('deskripsi', $room->deskripsi) }}</textarea>
                                 @error('deskripsi')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
@@ -171,8 +172,7 @@
                                     (m²) <span class="text-red-500">*</span></label>
                                 <div class="relative">
                                     <input type="number" name="luas" id="luas"
-                                        value="{{ old('luas', $apartment->luas) }}" required step="0.01"
-                                        min="0"
+                                        value="{{ old('luas', $room->luas) }}" required step="0.01" min="0"
                                         class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                     <span
                                         class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400">m²</span>
@@ -188,7 +188,7 @@
                                     Tower
                                     <span class="text-red-500">*</span></label>
                                 <input type="text" name="nama_tower" id="nama_tower"
-                                    value="{{ old('nama_tower', $apartment->nama_tower) }}" required
+                                    value="{{ old('nama_tower', $room->nama_tower) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('nama_tower')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -200,7 +200,7 @@
                                 <label for="lantai" class="block text-sm font-medium text-slate-700 mb-2">Lantai
                                     <span class="text-red-500">*</span></label>
                                 <input type="number" name="lantai" id="lantai"
-                                    value="{{ old('lantai', $apartment->lantai) }}" required min="1"
+                                    value="{{ old('lantai', $room->lantai) }}" required min="1"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('lantai')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -212,7 +212,7 @@
                                 <label for="nomor_kamar" class="block text-sm font-medium text-slate-700 mb-2">Nomor Kamar
                                     <span class="text-red-500">*</span></label>
                                 <input type="text" name="nomor_kamar" id="nomor_kamar"
-                                    value="{{ old('nomor_kamar', $apartment->nomor_kamar) }}" required
+                                    value="{{ old('nomor_kamar', $room->nomor_kamar) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('nomor_kamar')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -224,7 +224,7 @@
                                 <label for="jumlah_kamar" class="block text-sm font-medium text-slate-700 mb-2">Jumlah
                                     Kamar <span class="text-red-500">*</span></label>
                                 <input type="number" name="jumlah_kamar" id="jumlah_kamar"
-                                    value="{{ old('jumlah_kamar', $apartment->jumlah_kamar) }}" required min="1"
+                                    value="{{ old('jumlah_kamar', $room->jumlah_kamar) }}" required min="1"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('jumlah_kamar')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -237,51 +237,10 @@
                                     class="block text-sm font-medium text-slate-700 mb-2">Jumlah Kamar Mandi <span
                                         class="text-red-500">*</span></label>
                                 <input type="number" name="jumlah_kamar_mandi" id="jumlah_kamar_mandi"
-                                    value="{{ old('jumlah_kamar_mandi', $apartment->jumlah_kamar_mandi) }}" required
+                                    value="{{ old('jumlah_kamar_mandi', $room->jumlah_kamar_mandi) }}" required
                                     min="1"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('jumlah_kamar_mandi')
-                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-slate-100 my-8"></div>
-
-                    <!-- Lokasi -->
-                    <div>
-                        <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                            <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">3</span>
-                            Lokasi
-                        </h2>
-                        <div class="space-y-6">
-                            <div>
-                                <label for="alamat" class="block text-sm font-medium text-slate-700 mb-2">Alamat <span
-                                        class="text-red-500">*</span></label>
-                                <textarea name="alamat" id="alamat" rows="3" required
-                                    class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none">{{ old('alamat', $apartment->alamat) }}</textarea>
-                                @error('alamat')
-                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="alamat_google" class="block text-sm font-medium text-slate-700 mb-2">Link
-                                    Google Maps</label>
-                                {{-- <div class="relative"> --}}
-                                {{-- <i data-lucide="map"
-                                        class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i> --}}
-                                <textarea name="alamat_google" id="alamat_google" rows="4"
-                                    class="w-full pl-4 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none"
-                                    placeholder="https://maps.google.com/...">{{ old('alamat_google', $apartment->alamat_google) }}</textarea>
-                                {{-- <input type="text" name="alamat_google" id="alamat_google"
-                                        value="{{ old('alamat_google', $apartment->alamat_google) }}"
-                                        class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
-                                        placeholder="https://maps.google.com/..."> --}}
-                                {{-- </div> --}}
-                                @error('alamat_google')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -294,7 +253,7 @@
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">4</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">3</span>
                             Fasilitas
                         </h2>
                         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -319,7 +278,7 @@
                                     'Lounge',
                                     'BBQ Area',
                                 ];
-                                $currentFasilitas = old('fasilitas', $apartment->fasilitas ?? []);
+                                $currentFasilitas = old('fasilitas', $room->fasilitas ?? []);
                             @endphp
                             @foreach ($fasilitasList as $item)
                                 <label
@@ -342,7 +301,7 @@
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">5</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">4</span>
                             Informasi Tamu & Check-in
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -350,7 +309,7 @@
                                 <label for="tamu_dewasa" class="block text-sm font-medium text-slate-700 mb-2">Tamu Dewasa
                                     <span class="text-red-500">*</span></label>
                                 <input type="number" name="tamu_dewasa" id="tamu_dewasa"
-                                    value="{{ old('tamu_dewasa', $apartment->tamu_dewasa) }}" required min="0"
+                                    value="{{ old('tamu_dewasa', $room->tamu_dewasa) }}" required min="0"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('tamu_dewasa')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -361,7 +320,7 @@
                                 <label for="tamu_anak" class="block text-sm font-medium text-slate-700 mb-2">Tamu Anak
                                     <span class="text-red-500">*</span></label>
                                 <input type="number" name="tamu_anak" id="tamu_anak"
-                                    value="{{ old('tamu_anak', $apartment->tamu_anak) }}" required min="0"
+                                    value="{{ old('tamu_anak', $room->tamu_anak) }}" required min="0"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400">
                                 @error('tamu_anak')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -372,7 +331,7 @@
                                 <label for="check_in" class="block text-sm font-medium text-slate-700 mb-2">Check-in <span
                                         class="text-red-500">*</span></label>
                                 <input type="time" name="check_in" id="check_in"
-                                    value="{{ old('check_in', $apartment->check_in) }}" required
+                                    value="{{ old('check_in', $room->check_in) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all">
                                 @error('check_in')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -383,7 +342,7 @@
                                 <label for="check_out" class="block text-sm font-medium text-slate-700 mb-2">Check-out
                                     <span class="text-red-500">*</span></label>
                                 <input type="time" name="check_out" id="check_out"
-                                    value="{{ old('check_out', $apartment->check_out) }}" required
+                                    value="{{ old('check_out', $room->check_out) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all">
                                 @error('check_out')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -395,7 +354,7 @@
                                     Apartemen</label>
                                 <textarea name="tata_tertib" id="tata_tertib" rows="4"
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none"
-                                    placeholder="Contoh:&#10;- Dilarang merokok di dalam unit&#10;- Check-in pukul 14:00, Check-out pukul 12:00&#10;- Tidak boleh membawa hewan peliharaan">{{ old('tata_tertib', $apartment->tata_tertib) }}</textarea>
+                                    placeholder="Contoh:&#10;- Dilarang merokok di dalam unit&#10;- Check-in pukul 14:00, Check-out pukul 12:00&#10;- Tidak boleh membawa hewan peliharaan">{{ old('tata_tertib', $room->tata_tertib) }}</textarea>
                                 @error('tata_tertib')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
@@ -409,7 +368,7 @@
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">6</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">5</span>
                             Informasi Owner
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -418,7 +377,7 @@
                                     Lengkap
                                     <span class="text-red-500">*</span></label>
                                 <input type="text" name="owner_nama" id="owner_nama"
-                                    value="{{ old('owner_nama', $apartment->owner_nama) }}" required
+                                    value="{{ old('owner_nama', $room->owner_nama) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                     placeholder="Nama lengkap owner">
                                 @error('owner_nama')
@@ -434,7 +393,7 @@
                                     <i data-lucide="phone"
                                         class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                                     <input type="text" name="owner_wa" id="owner_wa"
-                                        value="{{ old('owner_wa', $apartment->owner_wa) }}" required
+                                        value="{{ old('owner_wa', $room->owner_wa) }}" required
                                         class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                         placeholder="0812xxxxxxx">
                                 </div>
@@ -450,7 +409,7 @@
                                     <i data-lucide="credit-card"
                                         class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                                     <input type="text" name="owner_rekening" id="owner_rekening"
-                                        value="{{ old('owner_rekening', $apartment->owner_rekening) }}" required
+                                        value="{{ old('owner_rekening', $room->owner_rekening) }}" required
                                         class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                         placeholder="1234567890 (Bank BCA a.n. Nama)">
                                 </div>
@@ -464,7 +423,7 @@
                                     Bank
                                     <span class="text-red-500">*</span></label>
                                 <input type="text" name="owner_bank_name" id="owner_bank_name"
-                                    value="{{ old('owner_bank_name', $apartment->owner_bank_name) }}" required
+                                    value="{{ old('owner_bank_name', $room->owner_bank_name) }}" required
                                     class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
                                     placeholder="Nama Bank (contoh: Bank BCA, Bank Mandiri)">
                                 @error('owner_bank_name')

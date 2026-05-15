@@ -16,8 +16,8 @@
 
             <!-- Form Card -->
             <div class="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                <form action="{{ route('admin.apartments.store') }}" method="POST" enctype="multipart/form-data"
-                    class="space-y-8">
+                <form action="{{ route('admin.apartments.rooms.store', $apartment->id) }}" method="POST"
+                    enctype="multipart/form-data" class="space-y-8">
                     @csrf
 
                     <!-- Informasi Dasar -->
@@ -228,7 +228,7 @@
                     <div class="border-t border-slate-100 my-5"></div>
 
                     <!-- Alamat -->
-                    <div>
+                    {{-- <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
                                 class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">3</span>
@@ -263,15 +263,15 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="border-t border-slate-100 my-5"></div>
+                    {{-- <div class="border-t border-slate-100 my-5"></div> --}}
 
                     <!-- Fasilitas -->
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">4</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">3</span>
                             Fasilitas
                         </h2>
                         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -319,7 +319,7 @@
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">5</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">4</span>
                             Informasi Tamu & Check-in
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -391,7 +391,7 @@
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">6</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">5</span>
                             Informasi Owner
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">

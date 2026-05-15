@@ -30,7 +30,7 @@ class BookingController extends Controller
         //         ->with('error', 'Apartemen ini sedang tidak tersedia.');
         // }
 
-        return view('booking.create', compact('room'));
+        return view('booking.create', compact('room', 'apartment'));
     }
 
     /**
@@ -226,7 +226,7 @@ class BookingController extends Controller
         }
 
         $bookings = $query->paginate(15)->withQueryString();
-        $rooms = \App\Models\Room::orderBy('judul')->get();
+        // $apartments = \App\Models\Apartment::orderBy('nama')->get();
 
 
         // Stats
@@ -238,7 +238,7 @@ class BookingController extends Controller
             'cancelled' => Booking::where('status', 'cancelled')->count(),
         ];
 
-        return view('admin.bookings.index', compact('bookings', 'rooms', 'stats'));
+        return view('admin.bookings.index', compact('bookings', 'stats'));
 
     }
 

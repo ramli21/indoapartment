@@ -61,9 +61,9 @@ class ApartmentSeeder extends Seeder
             // gambar dummy: pakai salah satu file demo rooms yang sudah ada jika memungkinkan
             // fallback: tetap insert gambar null jika folder demo kosong.
             $dummyImagePath = null;
-            $demoFiles = Storage::disk('public')->files('demo');
-            if (!empty($demoFiles)) {
-                $picked = $demoFiles[$i % count($demoFiles)];
+            $demoImages = Storage::disk('public')->files('dummy');
+            if (!empty($demoImages)) {
+                $picked = $demoImages[$i % count($demoImages)];
                 $ext = pathinfo($picked, PATHINFO_EXTENSION);
                 $dummyImagePath = 'apartments/demo_apartment_' . ($i + 1) . '.' . $ext;
                 Storage::disk('public')->copy($picked, $dummyImagePath);

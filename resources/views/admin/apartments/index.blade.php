@@ -32,52 +32,6 @@
                 </div>
             @endif
 
-            <!-- Status Cards -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center">
-                            <i data-lucide="building-2" class="w-5 h-5 text-brand"></i>
-                        </div>
-                        <span class="text-xs font-medium text-slate-400">Total</span>
-                    </div>
-                    <div class="text-2xl font-bold text-slate-800">{{ $total }}</div>
-                    <div class="text-xs text-slate-500 mt-1">Semua apartemen</div>
-                </div>
-
-                <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
-                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-emerald-600">Tersedia</span>
-                    </div>
-                    <div class="text-2xl font-bold text-slate-800">{{ $tersedia }}</div>
-                    <div class="text-xs text-slate-500 mt-1">Siap dihuni</div>
-                </div>
-
-                <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                            <i data-lucide="user-check" class="w-5 h-5 text-amber-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-amber-600">Terisi</span>
-                    </div>
-                    <div class="text-2xl font-bold text-slate-800">{{ $terisi }}</div>
-                    <div class="text-xs text-slate-500 mt-1">Sedang ditempati</div>
-                </div>
-
-                <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-                            <i data-lucide="wrench" class="w-5 h-5 text-red-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-red-600">Perawatan</span>
-                    </div>
-                    <div class="text-2xl font-bold text-slate-800">{{ $perawatan }}</div>
-                    <div class="text-xs text-slate-500 mt-1">Dalam perbaikan</div>
-                </div>
-            </div>
 
             <!-- Table -->
             @if ($apartments->count() > 0)
@@ -93,7 +47,7 @@
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Alamat</th>
                                     <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Status</th>
+                                        Jumlah Room</th>
                                     <th
                                         class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
                                         Aksi</th>
@@ -105,13 +59,10 @@
                                         <td class="px-5 py-4">
                                             <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100">
                                                 @php
-                                                    $imgs = is_array($apartment->gambar)
-                                                        ? $apartment->gambar
-                                                        : (json_decode($apartment->gambar, true) ?:
-                                                        []);
+                                                    $imgs = $apartment->gambar ? $apartment->gambar : '-';
                                                 @endphp
                                                 @if (!empty($imgs))
-                                                    <img src="{{ asset('storage/' . $imgs[0]) }}"
+                                                    <img src="{{ asset('storage/' . $imgs) }}"
                                                         alt="{{ $apartment->nama ?? ($apartment->judul ?? '') }}"
                                                         class="w-full h-full object-cover" />
                                                 @else
@@ -133,9 +84,12 @@
                                         </td>
 
                                         <td class="px-5 py-4">
+                                            @php
+                                                $total_room = $apartment->rooms->count();
+                                            @endphp
                                             <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">
-                                                {{ $apartment->status ?? 'Tersedia' }}
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 {{ $total_room > 0 ? 'text-emerald-700 bg-emerald-50' : 'text-slate-500 bg-red-100' }}">
+                                                {{ $total_room }} Room
                                             </span>
                                         </td>
 
@@ -144,7 +98,7 @@
                                                 <a href="{{ route('admin.apartments.rooms.index', $apartment) }}"
                                                     class="p-2 text-brand bg-brand/5 hover:bg-brand/10 rounded-lg transition-colors"
                                                     title="Detail">
-                                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                                    <i data-lucide="building" class="w-4 h-4"></i>
                                                 </a>
                                                 <a href="{{ route('admin.apartments.edit', $apartment) }}"
                                                     class="p-2 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"

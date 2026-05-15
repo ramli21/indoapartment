@@ -6,8 +6,8 @@
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div>
-                    <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand">Daftar Apartemen</h1>
-                    <p class="text-slate-500 mt-1">Kelola data room Anda</p>
+                    <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-brand">Daftar Ruangan</h1>
+                    <p class="text-slate-500 mt-1">Apartment : {{ $apartment->nama }}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="{{ route('admin.help') }}"
@@ -15,7 +15,7 @@
                         <i data-lucide="help-circle" class="w-4 h-4"></i>
                         Panduan
                     </a>
-                    <a href="{{ route('admin.apartments.create') }}"
+                    <a href="{{ route('admin.apartments.rooms.create', $apartment) }}"
                         class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors shadow-lg shadow-brand/20">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         Tambah Room
@@ -211,19 +211,15 @@
                                         <!-- Aksi -->
                                         <td class="px-5 py-4">
                                             <div class="flex items-center justify-end gap-1.5">
-                                                <a href="{{ route('admin.apartments.show', $room) }}"
-                                                    class="p-2 text-brand bg-brand/5 hover:bg-brand/10 rounded-lg transition-colors"
-                                                    title="Detail">
-                                                    <i data-lucide="eye" class="w-4 h-4"></i>
-                                                </a>
-                                                <a href="{{ route('admin.apartments.edit', $room) }}"
+                                                <a href="{{ route('admin.apartments.rooms.edit', [$room->id]) }}"
                                                     class="p-2 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
                                                     title="Edit">
                                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                                 </a>
-                                                <form action="{{ route('admin.apartments.destroy', $room) }}"
+                                                <form
+                                                    action="{{ route('admin.apartments.rooms.destroy', [$apartment->id, $room->id]) }}"
                                                     method="POST"
-                                                    onsubmit="return confirm('Yakin ingin menghapus apartemen ini?')">
+                                                    onsubmit="return confirm('Yakin ingin menghapus room ini?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"

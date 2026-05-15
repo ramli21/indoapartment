@@ -19,7 +19,7 @@
 
             <!-- Form Card -->
             <div class="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                <form action="{{ route('admin.apartments.owner.store') }}" method="POST" enctype="multipart/form-data"
+                <form action="{{ route('rooms.owner.store') }}" method="POST" enctype="multipart/form-data"
                     class="space-y-8">
                     @csrf
 
@@ -43,6 +43,25 @@
                             </div>
 
                             <div>
+                                <label for="apartment_id" class="block text-sm font-medium text-slate-700 mb-2">Apartemen
+                                    <span class="text-red-500">*</span></label>
+                                <select name="apartment_id" id="apartment_id" required
+                                    class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all">
+                                    <option value="" disabled {{ old('apartment_id') ? '' : 'selected' }}>Pilih
+                                        apartment</option>
+                                    @foreach ($apartments as $apt)
+                                        <option value="{{ $apt->id }}"
+                                            {{ old('apartment_id') == $apt->id ? 'selected' : '' }}>
+                                            {{ $apt->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('apartment_id')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="tipe" class="block text-sm font-medium text-slate-700 mb-2">Tipe <span
                                         class="text-red-500">*</span></label>
                                 <select name="tipe" id="tipe" required
@@ -60,6 +79,7 @@
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+
 
                             <div>
                                 <label for="harga_per_malam" class="block text-sm font-medium text-slate-700 mb-2">Harga per
@@ -181,50 +201,12 @@
 
                             <div class="sm:col-span-2 border-t border-slate-100"></div>
 
-                            <!-- Lokasi -->
-                            <div class="sm:col-span-2">
-                                <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                                    <span
-                                        class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">3</span>
-                                    Lokasi
-                                </h2>
-                                <div class="space-y-6">
-                                    <div>
-                                        <label for="alamat" class="block text-sm font-medium text-slate-700 mb-2">Alamat
-                                            Lengkap <span class="text-red-500">*</span></label>
-                                        <textarea name="alamat" id="alamat" rows="3" required
-                                            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400 resize-none"
-                                            placeholder="Alamat lengkap apartemen">{{ old('alamat') }}</textarea>
-                                        @error('alamat')
-                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                    <div>
-                                        <label for="alamat_google"
-                                            class="block text-sm font-medium text-slate-700 mb-2">Link Google
-                                            Maps</label>
-                                        <div class="relative">
-                                            <i data-lucide="map"
-                                                class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                                            <input type="url" name="alamat_google" id="alamat_google"
-                                                value="{{ old('alamat_google') }}"
-                                                class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
-                                                placeholder="https://maps.google.com/...">
-                                        </div>
-                                        @error('alamat_google')
-                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-2 border-t border-slate-100"></div>
 
                             <!-- Fasilitas -->
                             <div class="sm:col-span-2">
                                 <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                                     <span
-                                        class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">4</span>
+                                        class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">3</span>
                                     Fasilitas
                                 </h2>
                                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -274,7 +256,7 @@
                     <div class="sm:col-span-2">
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">5</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">4</span>
                             Informasi Tamu & Check-in
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -339,7 +321,7 @@
                     <div>
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <span
-                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">6</span>
+                                class="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center text-brand text-sm font-bold">5</span>
                             Informasi Owner
                         </h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -369,7 +351,7 @@
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="sm:col-span-2">
+                            <div>
                                 <label for="owner_rekening" class="block text-sm font-medium text-slate-700 mb-2">No.
                                     Rekening <span class="text-red-500">*</span></label>
                                 <div class="relative">
@@ -381,6 +363,18 @@
                                         placeholder="1234567890 (Bank BCA a.n. Nama)">
                                 </div>
                                 @error('owner_rekening')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="owner_bank_name" class="block text-sm font-medium text-slate-700 mb-2">Nama
+                                    Bank
+                                    <span class="text-red-500">*</span></label>
+                                <input type="text" name="owner_bank_name" id="owner_bank_name"
+                                    value="{{ old('owner_bank_name') }}" required
+                                    class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-700 outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 transition-all placeholder:text-slate-400"
+                                    placeholder="Nama Bank (contoh: Bank BCA, Bank Mandiri)">
+                                @error('owner_bank_name')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
