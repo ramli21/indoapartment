@@ -1,183 +1,93 @@
-<!DOCTYPE html>
-<html>
+@extends('emails.layouts.table')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Konfirmasi Booking</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f1f5f9;
-        }
+@section('title', 'Konfirmasi Booking')
+@section('heading', '🎉 Konfirmasi Booking Anda')
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+@section('content')
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+        <tr>
+            <td style="padding-bottom:12px;">
+                <p style="margin:0">Halo <strong>{{ $booking->nama_tamu }}</strong>,</p>
+                <p class="muted" style="margin:8px 0 0 0;">Terima kasih telah melakukan pemesanan. Berikut adalah detail
+                    booking Anda:</p>
+            </td>
+        </tr>
 
-        .card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+        <tr>
+            <td style="padding:16px 0;">
+                <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+                    style="background:#f1f5f9; border-radius:6px;">
+                    <tr>
+                        <td align="center" style="padding:12px; color:#64748b; font-size:14px;">Kode Booking</td>
+                    </tr>
+                    <tr>
+                        <td align="center"
+                            style="padding:8px 12px 16px 12px; font-family:monospace; font-size:20px; color:#6366f1; font-weight:700;">
+                            #{{ $booking->booking_code }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
 
-        .header {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            padding: 30px;
-            text-align: center;
-        }
+        <tr>
+            <td>
+                <table width="100%" cellpadding="8" cellspacing="0" role="presentation"
+                    style="border-top:1px solid #e2e8f0;">
+                    <tr>
+                        <td style="width:50%;" class="muted">Apartemen</td>
+                        <td style="text-align:right; font-weight:600;">{{ $booking->room->judul }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Tower / Lantai</td>
+                        <td style="text-align:right; font-weight:600;">{{ $booking->room->nama_tower }} / Lantai
+                            {{ $booking->room->lantai }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Check-in</td>
+                        <td style="text-align:right; font-weight:600;">
+                            {{ \Carbon\Carbon::parse($booking->check_in)->format('d M Y') }} (Pukul 14:00)</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Check-out</td>
+                        <td style="text-align:right; font-weight:600;">
+                            {{ \Carbon\Carbon::parse($booking->check_out)->format('d M Y') }} (Pukul 12:00)</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Jumlah Tamu</td>
+                        <td style="text-align:right; font-weight:600;">{{ $booking->jumlah_tamu }} orang</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Lama Menginap</td>
+                        <td style="text-align:right; font-weight:600;">{{ $booking->jumlah_malam }} malam</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
 
-        .header h1 {
-            color: white;
-            margin: 0;
-            font-size: 24px;
-        }
+        <tr>
+            <td style="padding-top:12px;">
+                <table width="100%" cellpadding="8" cellspacing="0" role="presentation"
+                    style="background:#f0fdf4; border-radius:6px;">
+                    <tr>
+                        <td class="muted">Harga per malam</td>
+                        <td style="text-align:right; font-weight:600;">Rp
+                            {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Total</td>
+                        <td style="text-align:right; font-size:18px; font-weight:700; color:#16a34a;">Rp
+                            {{ number_format($booking->total_harga, 0, ',', '.') }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
 
-        .content {
-            padding: 30px;
-        }
+        <tr>
+            <td style="padding-top:16px; color:#64748b; font-size:14px;">
+                <p style="margin:0;">Simpan kode booking ini untuk referensi Anda. Anda dapat melacak booking anytime di:
+                    <strong>/lacak-booking</strong></p>
+            </td>
+        </tr>
 
-        .booking-code {
-            background: #f1f5f9;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .booking-code span {
-            font-size: 28px;
-            font-weight: bold;
-            color: #6366f1;
-            font-family: monospace;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
-            color: #64748b;
-        }
-
-        .detail-value {
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .total-price {
-            background: #f0fdf4;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .total-price .amount {
-            font-size: 24px;
-            font-weight: bold;
-            color: #16a34a;
-        }
-
-        .footer {
-            padding: 20px 30px;
-            background: #f8fafc;
-            text-align: center;
-        }
-
-        .footer p {
-            color: #94a3b8;
-            font-size: 12px;
-            margin: 0;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #6366f1;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="card">
-            <div class="header">
-                <h1>🎉 Konfirmasi Booking Anda</h1>
-            </div>
-            <div class="content">
-                <p>Halo <strong>{{ $booking->nama_tamu }}</strong>,</p>
-                <p>Terima kasih telah melakukan pemesanan. Berikut adalah detail booking Anda:</p>
-
-                <div class="booking-code">
-                    <p style="margin: 0 0 5px 0; color: #64748b; font-size: 14px;">Kode Booking</p>
-                    <span>#{{ $booking->booking_code }}</span>
-                </div>
-
-                <div class="detail-row">
-                    <span class="detail-label">Apartemen</span>
-                    <span class="detail-value">{{ $booking->room->judul }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Tower / Lantai</span>
-                    <span class="detail-value">{{ $booking->room->nama_tower }} / Lantai
-                        {{ $booking->room->lantai }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Check-in</span>
-                    <span class="detail-value">{{ \Carbon\Carbon::parse($booking->check_in)->format('d M Y') }} (Pukul
-                        14:00)</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Check-out</span>
-                    <span class="detail-value">{{ \Carbon\Carbon::parse($booking->check_out)->format('d M Y') }} (Pukul
-                        12:00)</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Jumlah Tamu</span>
-                    <span class="detail-value">{{ $booking->jumlah_tamu }} orang</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Lama Menginap</span>
-                    <span class="detail-value">{{ $booking->jumlah_malam }} malam</span>
-                </div>
-
-                <div class="total-price">
-                    <div class="detail-row">
-                        <span class="detail-label">Harga per malam</span>
-                        <span class="detail-value">Rp {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Total</span>
-                        <span class="amount">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
-                    </div>
-                </div>
-
-                <p style="margin-top: 20px; color: #64748b; font-size: 14px;">
-                    Simpan kode booking ini untuk referensi Anda.
-                    Anda dapat melacak booking anytime di: <strong>/lacak-booking</strong>
-                </p>
-            </div>
-            <div class="footer">
-                <p>IndoApart - Sistem Pemesanan Apartemen</p>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>
+    </table>
+@endsection
