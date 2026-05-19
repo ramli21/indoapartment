@@ -15,11 +15,11 @@
                         <i data-lucide="help-circle" class="w-4 h-4"></i>
                         Panduan
                     </a>
-                    <a href="{{ route('admin.bookings.calendar') }}"
+                    {{-- <a href="{{ route('admin.bookings.calendar') }}"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light transition-colors">
                         <i data-lucide="calendar-days" class="w-4 h-4"></i>
                         Kalender
-                    </a>
+                    </a> --}}
                 </div>
             </div>
 
@@ -49,7 +49,7 @@
 
             <!-- Filters -->
             <div class="bg-white rounded-xl border border-slate-100 p-4 shadow-sm mb-6">
-                <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1">Cari</label>
                         <input type="text" name="search" value="{{ request('search') }}"
@@ -70,18 +70,18 @@
                             </option>
                         </select>
                     </div>
-                    <div>
+                    {{-- <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1">Apartemen</label>
                         <select name="apartment_id"
                             class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-brand outline-none text-sm">
                             <option value="">Semua Apartemen</option>
                             @foreach ($apartments as $apt)
                                 <option value="{{ $apt->id }}"
-                                    {{ request('apartment_id') == $apt->id ? 'selected' : '' }}>{{ $apt->judul }}
+                                    {{ request('apartment_id') == $apt->id ? 'selected' : '' }}>{{ $apt->nama }}
                                 </option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1">Tanggal Mulai</label>
                         <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}"
@@ -127,8 +127,8 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="text-sm font-medium text-slate-800">
-                                                {{ $booking->apartment->judul }}</div>
-                                            <div class="text-xs text-slate-400">{{ $booking->apartment->nama_tower }}</div>
+                                                {{ $booking->room->judul }}</div>
+                                            <div class="text-xs text-slate-400">{{ $booking->room->nama_tower }}</div>
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="text-sm text-slate-800">{{ $booking->nama_tamu }}</div>

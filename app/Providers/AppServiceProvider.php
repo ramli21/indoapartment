@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\AdminInfo;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +23,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        // Make AdminInfo available in all Blade views.
+        // Prevents layout.blade.php from failing when controllers forget to pass $adminInfo.
+        View::composer('*', function ($view) {
+            $view->with('adminInfo', AdminInfo::getFirst());
+        });
     }
 }
+

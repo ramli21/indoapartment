@@ -50,6 +50,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap"
         rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css" />
+
     <script>
         tailwind.config = {
             theme: {
@@ -292,6 +295,21 @@
     @yield('content')
 
     @include('footer')
+
+    {{-- Floating WhatsApp Button --}}
+    @php
+        $whatsapp = optional($adminInfo)->whatsapp;
+        $whatsappLink = $whatsapp ? 'https://wa.me/' . $whatsapp : null;
+    @endphp
+
+    @if ($whatsappLink)
+        <a href="{{ $whatsappLink }}" target="_blank" rel="noopener noreferrer"
+            class="fixed right-5 bottom-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-white shadow-lg transition-colors hover:bg-green-700"
+            aria-label="Chat via WhatsApp">
+            <i class="iconoir-whatsapp text-xl"></i>
+        </a>
+    @endif
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

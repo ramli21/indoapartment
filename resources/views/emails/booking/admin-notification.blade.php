@@ -5,203 +5,186 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Booking Baru</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f1f5f9;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            background: #ef4444;
-            padding: 20px 30px;
-        }
-
-        .header h1 {
-            color: white;
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-pending {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .badge-confirmed {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
-            color: #64748b;
-        }
-
-        .detail-value {
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .total-price {
-            background: #f0fdf4;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .total-price .amount {
-            font-size: 24px;
-            font-weight: bold;
-            color: #16a34a;
-        }
-
-        .footer {
-            padding: 20px 30px;
-            background: #f8fafc;
-            text-align: center;
-        }
-
-        .footer p {
-            color: #94a3b8;
-            font-size: 12px;
-            margin: 0;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #6366f1;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-        }
-    </style>
 </head>
 
-<body>
-    <div class="container">
-        <div class="card">
-            <div class="header">
-                <h1>📋 Booking Baru Masuk!</h1>
-            </div>
-            <div class="content">
-                <p>Ada pemesanan baru yang perlu ditinjau. Berikut detail lengkapnya:</p>
+<body style="margin:0; padding:0; background-color:#f1f5f9; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;">
 
-                <div style="margin: 20px 0;">
-                    <span class="badge badge-pending">{{ $booking->status }}</span>
-                </div>
+    <!-- outer wrapper (table based) -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;">
+        <tr>
+            <td align="center" style="padding:20px;">
 
-                <div class="detail-row">
-                    <span class="detail-label">Kode Booking</span>
-                    <span class="detail-value">#{{ $booking->booking_code }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Apartemen</span>
-                    <span class="detail-value">{{ $booking->apartment->judul }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Tower / Lantai</span>
-                    <span class="detail-value">{{ $booking->apartment->nama_tower }} / Lantai
-                        {{ $booking->apartment->lantai }}</span>
-                </div>
+                <!-- main card -->
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+                    style="background:#ffffff; border-radius:12px; overflow:hidden; border:0; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td style="background:#ef4444; padding:20px 30px;">
+                            <div style="color:#ffffff; font-size:20px; font-weight:700;">
+                                🚫 Booking Baru Masuk!
+                            </div>
+                        </td>
+                    </tr>
 
-                <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+                    <tr>
+                        <td style="padding:30px;">
+                            <div style="font-size:14px; color:#334155; line-height:1.5;">
+                                Ada pemesanan baru yang perlu ditinjau. Berikut detail lengkapnya:
+                            </div>
 
-                <p style="font-weight: 600; margin-bottom: 10px;">Informasi Tamu:</p>
-                <div class="detail-row">
-                    <span class="detail-label">Nama</span>
-                    <span class="detail-value">{{ $booking->nama_tamu }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Email</span>
-                    <span class="detail-value">{{ $booking->email_tamu }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">No. WhatsApp</span>
-                    <span class="detail-value">{{ $booking->no_hp }}</span>
-                </div>
+                            <div style="margin:20px 0;">
+                                <span
+                                    style="display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; text-transform:uppercase; background:#fef3c7; color:#d97706;">
+                                    {{ $booking->status }}
+                                </span>
+                            </div>
 
-                <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+                            <!-- Section: Booking Summary -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                style="border-collapse:collapse;">
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Kode Booking</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        #{{ $booking->booking_code }}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Apartemen</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        {{ $booking->room->judul }}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Tower / Lantai</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        {{ $booking->room->nama_tower }} / Lantai<br>{{ $booking->room->lantai }}</td>
+                                </tr>
+                            </table>
 
-                <p style="font-weight: 600; margin-bottom: 10px;">Jadwal Menginap:</p>
-                <div class="detail-row">
-                    <span class="detail-label">Check-in</span>
-                    <span class="detail-value">{{ \Carbon\Carbon::parse($booking->check_in)->format('d M Y') }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Check-out</span>
-                    <span class="detail-value">{{ \Carbon\Carbon::parse($booking->check_out)->format('d M Y') }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Jumlah Tamu</span>
-                    <span class="detail-value">{{ $booking->jumlah_tamu }} orang</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Lama Menginap</span>
-                    <span class="detail-value">{{ $booking->jumlah_malam }} malam</span>
-                </div>
+                            <div style="height:1px; background:#e2e8f0; margin:20px 0;"></div>
 
-                <div class="total-price">
-                    <div class="detail-row">
-                        <span class="detail-label">Total Pembayaran</span>
-                        <span class="amount">Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
-                    </div>
-                </div>
+                            <!-- Section: Informasi Tamu -->
+                            <div style="font-weight:700; margin-bottom:10px; color:#334155; font-size:14px;">Informasi
+                                Tamu:</div>
 
-                @if ($booking->catatan)
-                    <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
-                        <p style="font-weight: 600; margin: 0 0 5px 0; color: #64748b;">Catatan:</p>
-                        <p style="margin: 0;">{{ $booking->catatan }}</p>
-                    </div>
-                @endif
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                style="border-collapse:collapse;">
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Nama</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        {{ $booking->nama_tamu }}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Email</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        {{ $booking->email_tamu }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:12px 0; color:#64748b; font-size:14px; width:45%;">No. WhatsApp
+                                    </td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%;">
+                                        {{ $booking->no_hp }}</td>
+                                </tr>
+                            </table>
 
-                <p style="margin-top: 20px;">
-                    <a href="/admin/bookings/{{ $booking->id }}" class="btn">Lihat Detail Lengkap</a>
-                </p>
-            </div>
-            <div class="footer">
-                <p>IndoApart - Admin Dashboard</p>
-            </div>
-        </div>
-    </div>
+                            <div style="height:1px; background:#e2e8f0; margin:20px 0;"></div>
+
+                            <!-- Section: Jadwal Menginap -->
+                            <div style="font-weight:700; margin-bottom:10px; color:#334155; font-size:14px;">Jadwal
+                                Menginap:</div>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                style="border-collapse:collapse;">
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Check-in</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        {{ \Carbon\Carbon::parse($booking->check_in)->format('d M Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Check-out</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        {{ \Carbon\Carbon::parse($booking->check_out)->format('d M Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding:12px 0; color:#64748b; font-size:14px; width:45%; border-bottom:1px solid #e2e8f0;">
+                                        Jumlah Tamu</td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%; border-bottom:1px solid #e2e8f0;">
+                                        {{ $booking->jumlah_tamu }} orang</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:12px 0; color:#64748b; font-size:14px; width:45%;">Lama Menginap
+                                    </td>
+                                    <td
+                                        style="padding:12px 0; color:#1e293b; font-weight:700; font-size:14px; width:55%;">
+                                        {{ $booking->jumlah_malam }} malam</td>
+                                </tr>
+                            </table>
+
+                            <!-- Total -->
+                            <div style="background:#f0fdf4; padding:15px; border-radius:8px; margin-top:20px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                    style="border-collapse:collapse;">
+                                    <tr>
+                                        <td style="padding:0; color:#64748b; font-size:14px; width:50%;">Total
+                                            Pembayaran</td>
+                                        <td
+                                            style="padding:0; text-align:right; color:#16a34a; font-weight:800; font-size:24px; width:50%;">
+                                            Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            @if ($booking->catatan)
+                                <div
+                                    style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;">
+                                    <div style="font-weight:700; margin:0 0 5px 0; color:#64748b; font-size:14px;">
+                                        Catatan:</div>
+                                    <div style="margin:0; color:#334155; font-size:14px; line-height:1.5;">
+                                        {{ $booking->catatan }}</div>
+                                </div>
+                            @endif
+
+                            <div style="margin-top:20px;">
+                                <a href="/admin/bookings/{{ $booking->id }}"
+                                    style="display:inline-block; background:#6366f1; color:#ffffff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:700; font-size:14px;">
+                                    Lihat Detail Lengkap
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:20px 30px; background:#f8fafc; text-align:center;">
+                            <div style="color:#94a3b8; font-size:12px;">IndoApart - Admin Dashboard</div>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
 </body>
 
 </html>

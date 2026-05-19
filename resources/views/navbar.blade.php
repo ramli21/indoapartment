@@ -19,14 +19,18 @@
             <div class="hidden lg:flex items-center gap-1">
                 <a href="{{ url('/') }}"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Home</a>
-                <a href="{{ route('apartments.list') }}"
-                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Apartemen</a>
-                <a href="{{ route('inquiry.create') }}"
-                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Hubungi
-                    Kami</a>
+                <a href="{{ route('rooms.list') }}"
+                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">
+                    Room Sewa</a>
+                {{-- <a href="#"
+                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">
+                    Room Jual</a> --}}
                 <a href="{{ route('booking.track') }}"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Lacak
                     Booking</a>
+                <a href="{{ route('inquiry.create') }}"
+                    class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Hubungi
+                    Kami</a>
                 <a href="{{ route('help') }}"
                     class="nav-link px-4 py-2 text-sm font-medium rounded-lg transition-all {{ $isHome ? 'text-white/90 hover:text-white hover:bg-white/10' : 'text-slate-700 hover:text-brand hover:bg-slate-100/80' }}">Bantuan</a>
                 {{-- <a href="#"
@@ -78,19 +82,28 @@
         <div id="mobileMenu"
             class="hidden lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/50 animate-slideDown rounded-b-2xl shadow-lg">
             <div class="max-w-7xl mx-auto px-4 py-4 space-y-1">
+                <a href="{{ url('/') }}"
+                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Home</a>
+                <a href="{{ route('rooms.list') }}"
+                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Room
+                    Sewa</a>
                 <a href="#"
-                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Hotel</a>
-                <a href="{{ route('apartments.list') }}"
-                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Apartemen</a>
+                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Room
+                    Jual</a>
+                <a href="{{ route('booking.track') }}"
+                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Lacak
+                    Booking</a>
                 <a href="{{ route('inquiry.create') }}"
                     class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Hubungi
                     Kami</a>
-                <a href="#"
-                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Resort</a>
-                <a href="#"
-                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Penerbangan</a>
-                <div class="pt-2 border-t border-slate-200/50">
-                    @auth
+                <a href="{{ route('help') }}"
+                    class="block px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Bantuan</a>
+                @auth
+                    <div class="pt-2 border-t border-slate-200/50">
+                        @if (auth()->user()->is_admin)
+                            <a href="{{ route('admin.apartments.index') }}"
+                                class="block w-full text-left px-4 py-3 text-slate-700 hover:text-brand hover:bg-slate-50 rounded-xl transition-all text-sm font-medium">Dashboard</a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
@@ -98,14 +111,49 @@
                                 <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
                             </button>
                         </form>
-                    @else
-                        <a href="{{ route('login') }}"
-                            class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-light">
-                            <i data-lucide="user" class="w-4 h-4"></i> Masuk / Daftar
-                        </a>
-                    @endauth
-                </div>
+                    </div>
+                @endauth
             </div>
         </div>
     </div>
 </nav>
+
+<script>
+    // Expose globally so onclick="toggleMobileMenu()" works from inline HTML
+    window.toggleMobileMenu = function() {
+        var menu = document.getElementById('mobileMenu');
+        var icon = document.getElementById('menuIcon');
+        if (!menu) return;
+        menu.classList.toggle('hidden');
+        if (icon) {
+            var isMenu = icon.getAttribute('data-lucide') === 'menu';
+            icon.setAttribute('data-lucide', isMenu ? 'x' : 'menu');
+            if (window.lucide && typeof window.lucide.replace === 'function') {
+                try {
+                    window.lucide.replace();
+                } catch (e) {
+                    /* ignore */
+                }
+            }
+        }
+    };
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+        var menu = document.getElementById('mobileMenu');
+        var btn = document.querySelector('.nav-mobile-btn');
+        if (!menu || !btn) return;
+        if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.add('hidden');
+            var icon = document.getElementById('menuIcon');
+            if (icon) {
+                icon.setAttribute('data-lucide', 'menu');
+                if (window.lucide && typeof window.lucide.replace === 'function') {
+                    try {
+                        window.lucide.replace();
+                    } catch (e) {}
+                }
+            }
+        }
+    });
+</script>

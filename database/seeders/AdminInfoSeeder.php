@@ -15,7 +15,7 @@ class AdminInfoSeeder extends Seeder
                 'bank_name' => 'Bank Central Asia (BCA)',
                 'account_number' => '1234567890',
                 'account_holder' => 'PT IndoApartment Indonesia',
-                'whatsapp' => '081234567890',
+                'whatsapp' => '6281234567890',
                 'email' => 'admin@indoapart.com',
             ]
         );

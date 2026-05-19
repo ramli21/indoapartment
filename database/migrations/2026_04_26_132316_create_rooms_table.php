@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('apartments', function (Blueprint $table) {
-            $table->id();
+        Schema::create('rooms', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->string('judul');
             $table->decimal('luas', 8, 2)->nullable();
             $table->string('tipe');
             $table->string('gambar')->nullable();
             $table->json('fasilitas')->nullable();
+            $table->text('nama_tower')->nullable();
             $table->text('alamat');
             $table->text('alamat_google')->nullable();
-            $table->string('nama_tower');
             $table->integer('lantai');
             $table->string('nomor_kamar');
             $table->timestamps();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('apartments');
+        Schema::dropIfExists('rooms');
     }
 };

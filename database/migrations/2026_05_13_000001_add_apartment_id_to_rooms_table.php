@@ -9,15 +9,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('rooms', function (Blueprint $table) {
-            // Change gambar column to JSON for multiple images
-            $table->json('gambar')->nullable()->change();
+            $table->uuid('apartment_id')
+                ->nullable()
+                ->after('id');
+
+            $table->foreign('apartment_id')
+                ->references('id')
+                ->on('apartments')
+                ->nullOnDelete();
         });
     }
 
     public function down(): void
     {
         Schema::table('rooms', function (Blueprint $table) {
-            $table->string('gambar')->nullable()->change();
+            $table->dropForeign(['apartment_id']);
+            $table->dropColumn('apartment_id');
         });
     }
 };
+

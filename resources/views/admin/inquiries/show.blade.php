@@ -23,7 +23,7 @@
                             </div>
                             <h1 class="text-2xl font-serif font-semibold text-slate-800 mt-2">{{ $inquiry->subjek }}</h1>
                             <p class="text-sm text-slate-500 mt-1">
-                                {{ $inquiry->apartment->judul ?? 'Tidak ada apartemen dipilih' }}</p>
+                                {{ $inquiry->apartment->judul ?? 'Tidak ada apartemen dipilih' }}
                         </div>
 
                         <div class="text-right">

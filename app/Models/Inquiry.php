@@ -23,6 +23,9 @@ class Inquiry extends Model
 
     public function apartment()
     {
-        return $this->belongsTo(Apartment::class);
+        // Minimal-drift: Inquiry tetap terhubung ke Room via room_id
+        // Apartment diakses lewat Room.
+        return $this->belongsTo(Apartment::class, 'apartment_id');
     }
+
 }

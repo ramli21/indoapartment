@@ -22,7 +22,7 @@
                             @foreach ($apartments as $apt)
                                 <option value="{{ $apt->id }}"
                                     {{ old('apartment_id', $apartment?->id) == $apt->id ? 'selected' : '' }}>
-                                    {{ $apt->judul }} ({{ $apt->nama_tower }})
+                                    {{ $apt->nama }}
                                 </option>
                             @endforeach
                         </select>

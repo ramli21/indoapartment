@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Apartment;
 use App\Models\Booking;
+use App\Models\Room;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -142,56 +143,28 @@ class ApartmentController extends Controller
         return view('admin.apartments.owner_create');
     }
 
-    private function uploadImages(Request $request): ?array
+    private function uploadImages(Request $request): ?string
     {
-        $uploadedImages = [];
         if ($request->hasFile('gambar')) {
-            $images = $request->file('gambar');
-            // Ensure it's an array
-            if (!is_array($images)) {
-                $images = [$images];
-            }
-            foreach ($images as $image) {
-                $uploadedImages[] = $image->store('apartments', 'public');
-            }
+            $image = $request->file('gambar');
+            return $image->store('apartments', 'public');
         }
-        return $uploadedImages ?: null;
+
+        return null;
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'luas' => 'required|numeric|min:0',
-            'tipe' => 'required|string|max:100',
-            'harga_per_malam' => 'required|numeric|min:0',
-            'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|array|max:5',
-            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'fasilitas' => 'nullable|array',
-            'fasilitas.*' => 'string|max:100',
+            'nama' => 'required|string|max:255',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'alamat' => 'required|string',
-            'alamat_google' => 'nullable|string',
-            'nama_tower' => 'required|string|max:100',
-            'lantai' => 'required|integer|min:1',
-            'nomor_kamar' => 'required|string|max:50',
-            'tamu_dewasa' => 'required|integer|min:0',
-            'tamu_anak' => 'required|integer|min:0',
-            'jumlah_kamar' => 'required|integer|min:1',
-            'jumlah_kamar_mandi' => 'required|integer|min:1',
-            'check_in' => 'required|string|max:10',
-            'check_out' => 'required|string|max:10',
-            'status' => 'required|in:Tersedia,Terisi,Perawatan',
-            'tata_tertib' => 'nullable|string',
-            'owner_nama' => 'required|string|max:255',
-            'owner_wa' => 'required|string|max:20',
-            'owner_rekening' => 'required|string|max:100',
-            'owner_bank_name' => 'required|string|max:50',
+            'google_maps_embed' => 'required|string',
         ]);
 
-        $images = $this->uploadImages($request);
-        if ($images) {
-            $validated['gambar'] = $images;
+        $image = $this->uploadImages($request);
+        if ($image) {
+            $validated['gambar'] = $image;
         }
 
         Apartment::create($validated);
@@ -202,37 +175,15 @@ class ApartmentController extends Controller
     public function ownerStore(Request $request)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'luas' => 'required|numeric|min:0',
-            'tipe' => 'required|string|max:100',
-            'harga_per_malam' => 'required|numeric|min:0',
-            'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|array|max:5',
-            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'fasilitas' => 'nullable|array',
-            'fasilitas.*' => 'string|max:100',
+            'nama' => 'required|string|max:255',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'alamat' => 'required|string',
-            'alamat_google' => 'nullable|string',
-            'nama_tower' => 'required|string|max:100',
-            'lantai' => 'required|integer|min:1',
-            'nomor_kamar' => 'required|string|max:50',
-            'tamu_dewasa' => 'required|integer|min:0',
-            'tamu_anak' => 'required|integer|min:0',
-            'jumlah_kamar' => 'required|integer|min:1',
-            'jumlah_kamar_mandi' => 'required|integer|min:1',
-            'check_in' => 'required|string|max:10',
-            'check_out' => 'required|string|max:10',
-            'status' => 'required|in:Tersedia,Terisi,Perawatan',
-            'tata_tertib' => 'nullable|string',
-            'owner_nama' => 'required|string|max:255',
-            'owner_wa' => 'required|string|max:20',
-            'owner_rekening' => 'required|string|max:100',
-            'owner_bank_name' => 'required|string|max:50',
+            'google_maps_embed' => 'required|string',
         ]);
 
-        $images = $this->uploadImages($request);
-        if ($images) {
-            $validated['gambar'] = $images;
+        $image = $this->uploadImages($request);
+        if ($image) {
+            $validated['gambar'] = $image;
         }
 
         Apartment::create($validated);
@@ -253,45 +204,19 @@ class ApartmentController extends Controller
     public function update(Request $request, Apartment $apartment)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'luas' => 'required|numeric|min:0',
-            'tipe' => 'required|string|max:100',
-            'harga_per_malam' => 'required|numeric|min:0',
-            'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|array|max:5',
-            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'fasilitas' => 'nullable|array',
-            'fasilitas.*' => 'string|max:100',
+            'nama' => 'required|string|max:255',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'alamat' => 'required|string',
-            'alamat_google' => 'nullable|string',
-            'nama_tower' => 'required|string|max:100',
-            'lantai' => 'required|integer|min:1',
-            'nomor_kamar' => 'required|string|max:50',
-            'tamu_dewasa' => 'required|integer|min:0',
-            'tamu_anak' => 'required|integer|min:0',
-            'jumlah_kamar' => 'required|integer|min:1',
-            'jumlah_kamar_mandi' => 'required|integer|min:1',
-            'check_in' => 'required|string|max:10',
-            'check_out' => 'required|string|max:10',
-            'status' => 'required|in:Tersedia,Terisi,Perawatan',
-            'tata_tertib' => 'nullable|string',
-            'owner_nama' => 'required|string|max:255',
-            'owner_wa' => 'required|string|max:20',
-            'owner_rekening' => 'required|string|max:100',
-            'owner_bank_name' => 'required|string|max:50',
+            'google_maps_embed' => 'required|string',
         ]);
 
-        $images = $this->uploadImages($request);
-        if ($images) {
-            // Delete old images
-            if ($apartment->gambar && is_array($apartment->gambar)) {
-                foreach ($apartment->gambar as $oldImage) {
-                    if (Storage::disk('public')->exists($oldImage)) {
-                        Storage::disk('public')->delete($oldImage);
-                    }
-                }
+        $image = $this->uploadImages($request);
+        if ($image) {
+            // Delete old image
+            if ($apartment->gambar && Storage::disk('public')->exists($apartment->gambar)) {
+                Storage::disk('public')->delete($apartment->gambar);
             }
-            $validated['gambar'] = $images;
+            $validated['gambar'] = $image;
         }
 
         $apartment->update($validated);
@@ -301,12 +226,8 @@ class ApartmentController extends Controller
 
     public function destroy(Apartment $apartment)
     {
-        if ($apartment->gambar && is_array($apartment->gambar)) {
-            foreach ($apartment->gambar as $image) {
-                if (Storage::disk('public')->exists($image)) {
-                    Storage::disk('public')->delete($image);
-                }
-            }
+        if ($apartment->gambar && Storage::disk('public')->exists($apartment->gambar)) {
+            Storage::disk('public')->delete($apartment->gambar);
         }
         $apartment->delete();
 

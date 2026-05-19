@@ -52,7 +52,7 @@
 
             <p style="margin-top:12px">Ringkasan:</p>
             <ul>
-                <li>Apartemen: {{ $booking->apartment->judul }}</li>
+                <li>Apartemen: {{ $booking->room->judul }}</li>
                 <li>Tamu: {{ $booking->nama_tamu }} — {{ $booking->no_hp }}</li>
                 <li>Total: Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</li>
             </ul>

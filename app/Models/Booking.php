@@ -11,7 +11,7 @@ class Booking extends Model
 
   protected $fillable = [
     'booking_code',
-    'apartment_id',
+'room_id',
     'nama_tamu',
     'email_tamu',
     'no_hp',
@@ -39,10 +39,11 @@ class Booking extends Model
     'total_harga' => 'decimal:2',
   ];
 
-  public function apartment()
+  public function room()
   {
-    return $this->belongsTo(Apartment::class);
+    return $this->belongsTo(Room::class, 'room_id');
   }
+
 
   public function scopePending($query)
   {

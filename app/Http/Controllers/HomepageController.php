@@ -3,19 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Apartment;
+use App\Models\Room;
 use App\Models\AdminInfo;
+use App\Models\Apartment;
 
 class HomepageController extends Controller
 {
     public function index()
     {
         $adminInfo = AdminInfo::first();
-        $newest = Apartment::orderBy('created_at', 'desc')
+        $apartments = Apartment::orderBy('created_at', 'desc')
             ->take(8)
             ->get();
-
-        return view('index', ['newestApartments' => $newest, 'adminInfo' => $adminInfo]);
+        // dd($apartments);
+        return view('index', ['apartments' => $apartments, 'adminInfo' => $adminInfo]);
     }
 
     public function aboutUs()

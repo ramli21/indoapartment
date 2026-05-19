@@ -18,7 +18,7 @@
                 <div class="space-y-2">
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-600">Apartemen</span>
-                        <span class="text-slate-800 font-medium">{{ $booking->apartment->judul }}</span>
+                        <span class="text-slate-800 font-medium">{{ $booking->room->judul }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-600">Check-in</span>

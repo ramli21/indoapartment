@@ -23,15 +23,15 @@
                     <div class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-slate-600">Apartemen</span>
-                            <span class="text-slate-800 font-medium">{{ $booking->apartment->judul }}</span>
+                            <span class="text-slate-800 font-medium">{{ $booking->room->judul }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-slate-600">Tower</span>
-                            <span class="text-slate-800">{{ $booking->apartment->nama_tower }}</span>
+                            <span class="text-slate-800">{{ $booking->room->apartment->nama }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-slate-600">Kamar</span>
-                            <span class="text-slate-800">{{ $booking->apartment->nomor_kamar }}</span>
+                            <span class="text-slate-800">{{ $booking->room->nomor_kamar }}</span>
                         </div>
                         <div class="border-t border-slate-200 my-3"></div>
                         <div class="flex justify-between">
@@ -113,7 +113,7 @@
                             Bayar Sekarang
                         </a>
                     @endif
-                    <a href="{{ route('apartments.list') }}"
+                    <a href="{{ route('rooms.list') }}"
                         class="flex-1 px-4 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
                         <i data-lucide="home" class="w-4 h-4"></i>
                         Kembali ke Home

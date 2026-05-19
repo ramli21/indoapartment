@@ -57,16 +57,9 @@
             <div>
                 <h4 class="text-sm font-semibold text-white mb-4">Produk</h4>
                 <ul class="space-y-2.5">
-                    {{-- <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Hotel</a>
-                    </li> --}}
-                    <li><a href="{{ route('apartments.list') }}"
+                    <li><a href="{{ route('rooms.list') }}"
                             class="text-slate-400 text-sm hover:text-white transition-colors">Apartemen</a></li>
-                    {{-- <li><a href="#" class="text-slate-400 text-sm hover:text-white transition-colors">Villa</a>
-                    </li>
-                    <li><a href="#"
-                            class="text-slate-400 text-sm hover:text-white transition-colors">Penerbangan</a></li>
-                    <li><a href="#"
-                            class="text-slate-400 text-sm hover:text-white transition-colors">Aktivitas</a></li> --}}
+
                 </ul>
             </div>
             <div>
