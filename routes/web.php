@@ -53,6 +53,9 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     Route::resource('apartments', \App\Http\Controllers\ApartmentController::class);
     // tetap pertahankan CRUD room yang sudah ada (tidak diubah)
 
+    Route::get('/rooms', [RoomController::class, 'rooms'])->name('all.rooms');
+
+
     Route::get('/apartments/{id}/rooms', [RoomController::class, 'index'])->name('apartments.rooms.index');
     Route::get('/apartments/{id}/rooms/create', [RoomController::class, 'create'])->name('apartments.rooms.create');
     Route::post('/apartments/{id}/rooms', [RoomController::class, 'store'])->name('apartments.rooms.store');

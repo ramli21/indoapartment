@@ -41,7 +41,7 @@
             @endphp
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
                 <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
                     <div class="flex items-center justify-between mb-3">
                         <div class="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center">
@@ -75,7 +75,7 @@
                     <div class="text-xs text-slate-500 mt-1">Menunggu konfirmasi</div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+                {{-- <div class="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-shadow">
                     <div class="flex items-center justify-between mb-3">
                         <div class="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center">
                             <i data-lucide="image" class="w-5 h-5 text-brand"></i>
@@ -84,7 +84,7 @@
                     </div>
                     <div class="text-2xl font-bold text-slate-800">{{ $activeBanners }}</div>
                     <div class="text-xs text-slate-500 mt-1">Dari {{ $totalBanners }} banner</div>
-                </div>
+                </div> --}}
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -207,19 +207,19 @@
                             <div class="text-2xl font-bold text-slate-800 mt-1">{{ $totalInquiries }}</div>
                             <div class="text-xs text-slate-500 mt-1">Butuh penanganan dari admin</div>
                         </div>
-                        <div class="rounded-xl bg-slate-50 p-3">
+                        {{-- <div class="rounded-xl bg-slate-50 p-3">
                             <div class="text-xs text-slate-500">Total Banner</div>
                             <div class="text-2xl font-bold text-slate-800 mt-1">{{ $totalBanners }}</div>
                             <div class="text-xs text-slate-500 mt-1">Aktif: {{ $activeBanners }}</div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="mt-4 space-y-2">
-                        <a href="{{ route('admin.banners.index') }}"
+                        {{-- <a href="{{ route('admin.banners.index') }}"
                             class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-brand text-white text-sm font-medium hover:bg-brand-light transition-colors">
                             <i data-lucide="image" class="w-4 h-4"></i>
                             Kelola Banner
-                        </a>
+                        </a> --}}
                         <a href="{{ route('admin.help') }}"
                             class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 transition-colors">
                             <i data-lucide="help-circle" class="w-4 h-4"></i>

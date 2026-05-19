@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('layout')
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">

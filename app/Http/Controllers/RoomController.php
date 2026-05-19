@@ -11,6 +11,25 @@ use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
 {
+    public function rooms()
+    {
+        $statusFilter = request()->get('status');
+        $query = Room::with('apartment')->latest();
+
+        if ($statusFilter && in_array($statusFilter, ['Tersedia', 'Terisi', 'Perawatan', 'Pending'])) {
+            $query->where('status', $statusFilter);
+        }
+                
+        $rooms = $query->get();
+        $total = $rooms->count();
+        $tersedia = $rooms->where('status', 'Tersedia')->count();
+        $terisi = $rooms->where('status', 'Terisi')->count();
+        $perawatan = $rooms->where('status', 'Perawatan')->count();
+        $pending = $rooms->where('status', 'Pending')->count();
+
+        return view('admin.rooms.allRooms', compact('rooms', 'total', 'tersedia', 'terisi', 'perawatan', 'pending', 'statusFilter'));
+    }
+
     public function index(Request $request, $apartmentId)
     {
         $apartment = Apartment::findOrFail($apartmentId);
@@ -226,7 +245,6 @@ class RoomController extends Controller
             'jumlah_kamar_mandi' => 'required|integer|min:1',
             'check_in' => 'required|string|max:10',
             'check_out' => 'required|string|max:10',
-            'status' => 'required|in:Tersedia,Terisi,Perawatan',
             'tata_tertib' => 'nullable|string',
             'owner_nama' => 'required|string|max:255',
             'owner_wa' => 'required|string|max:20',
@@ -234,7 +252,7 @@ class RoomController extends Controller
             'owner_bank_name' => 'required|string|max:50',
         ]);
 
-
+        
         $images = $this->uploadImages($request);
         if ($images) {
             $validated['gambar'] = $images;
@@ -258,15 +276,16 @@ class RoomController extends Controller
     {
         $room = Room::findOrFail($room_id);
         $apartment = $room->apartment;
+        $apartments = Apartment::orderBy('nama')->get(['id', 'nama']);
 
-        return view('admin.rooms.edit', compact('room', 'apartment'));
+        return view('admin.rooms.edit', compact('room', 'apartment', 'apartments'));
     }
 
-    public function update(Request $request, $apartmentId, $room_id)
+    public function update(Request $request, $room_id)
     {
-        $apartment = Apartment::findOrFail($apartmentId);
-        $room = $apartment->rooms()->findOrFail($room_id);
+        $room = Room::findOrFail($room_id);
 
+        // dd($request->all());
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
@@ -308,7 +327,7 @@ class RoomController extends Controller
 
         $room->update($validated);
 
-        return redirect()->route('admin.apartments.rooms.index', $apartment->id)->with('success', 'Room berhasil diperbarui!');
+        return redirect()->route('admin.apartments.rooms.index', $room->apartment_id)->with('success', 'Room berhasil diperbarui!');
     }
 
     public function destroy($apartmentId, $room_id)

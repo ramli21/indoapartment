@@ -14,7 +14,7 @@ return new class extends Migration
             $table->integer('jumlah_kamar_mandi')->default(1)->after('jumlah_kamar');
             $table->string('check_in')->default('14:00')->after('jumlah_kamar_mandi');
             $table->string('check_out')->default('12:00')->after('check_in');
-            $table->enum('status', ['Tersedia', 'Terisi', 'Perawatan'])->default('Tersedia')->after('check_out');
+            $table->enum('status', ['Tersedia', 'Terisi', 'Perawatan', 'Pending'])->default('Pending')->after('check_out');
             $table->string('owner_nama')->nullable()->after('status');
             $table->string('owner_wa')->nullable()->after('owner_nama');
             $table->string('owner_rekening')->nullable()->after('owner_wa');

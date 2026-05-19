@@ -30,7 +30,7 @@ class BookingController extends Controller
         //         ->with('error', 'Apartemen ini sedang tidak tersedia.');
         // }
 
-        return view('booking.create', compact('room', 'apartment'));
+        return view('booking.create', compact('room'));
     }
 
     /**
@@ -656,7 +656,7 @@ class BookingController extends Controller
     public function cancelForm($booking_code)
     {
         $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
-        $booking->load('apartment');
+        $booking->load('room');
         
         // Only allow cancellation if not already cancelled or completed
         if (in_array($booking->status, ['cancelled', 'completed'])) {

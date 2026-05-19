@@ -27,7 +27,7 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="text-slate-600">Tower</span>
-                            <span class="text-slate-800">{{ $booking->room->nama_tower }}</span>
+                            <span class="text-slate-800">{{ $booking->room->apartment->nama }}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-slate-600">Kamar</span>
