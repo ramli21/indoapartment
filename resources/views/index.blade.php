@@ -17,7 +17,7 @@
 
                 </h1>
                 <p class="text-white/70 text-base sm:text-lg max-w-xl mx-auto">Jelajahi pilihan apartemen dan
-                    penginapan terbaik di bandung dengan harga terjangkau</p>
+                    penginapan terbaik dengan harga terjangkau</p>
             </div>
 
             <!-- Search Bar -->
@@ -116,7 +116,7 @@
     </section>
 
     <!-- Newest Apartments -->
-    <section class="py-16 md:py-20 bg-white">
+    <section class="py-16 md:pt-20 md:pb-10 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex items-end justify-between mb-8">
                 <div>
@@ -162,6 +162,13 @@
                     <p class="text-sm text-slate-500">Belum ada apartemen terbaru untuk ditampilkan.</p>
                 @endif
             </div>
+        </div>
+    </section>
+
+    <section class="py-6 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <img src="{{ asset('images/indoapart-img.jpeg') }}" alt="Customer Service"
+                class="w-full rounded-2xl object-cover">
         </div>
     </section>
 
@@ -262,8 +269,8 @@
                         <span
                             class="inline-flex items-center gap-1 bg-accent text-brand text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full w-fit mb-3">🔥
                             Flash Sale</span>
-                        <h3 class="text-white text-xl sm:text-2xl font-semibold leading-tight">Diskon hingga<br><span
-                                class="text-accent">70% OFF</span></h3>
+                        <h3 class="text-white text-xl sm:text-2xl font-semibold leading-tight">Diskon
+                            hingga<br><span class="text-accent">70% OFF</span></h3>
                         <p class="text-white/60 text-sm mt-2">Berlaku hingga 31 Des 2025</p>
                     </div>
                 </div>
@@ -289,7 +296,8 @@
     <section class="py-16 md:py-20 bg-brand">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="text-center mb-12">
-                <span class="text-xs font-medium tracking-[0.2em] uppercase text-accent/70">Mengapa IndoApart</span>
+                <span class="text-xs font-medium tracking-[0.2em] uppercase text-accent/70">Mengapa
+                    IndoApart</span>
                 <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-white mt-2">Kenapa Jutaan Orang<br
                         class="hidden sm:block"> Memilih Kami?</h2>
             </div>
@@ -326,7 +334,8 @@
                         <i data-lucide="rotate-ccw" class="w-7 h-7 text-accent"></i>
                     </div>
                     <h3 class="text-white font-semibold mb-2">Gratis Pembatalan</h3>
-                    <p class="text-white/50 text-sm leading-relaxed">Banyak pilihan apartemen dengan gratis pembatalan
+                    <p class="text-white/50 text-sm leading-relaxed">Banyak pilihan apartemen dengan gratis
+                        pembatalan
                         hingga 24 jam</p>
                 </div>
             </div>
@@ -351,7 +360,8 @@
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                     </div>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Pertama kali pakai IndoApart, langsung ketemu
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Pertama kali pakai IndoApart, langsung
+                        ketemu
                         hotel impian di Bali. Harganya jauh lebih murah dari platform lain. Proses bookingnya super
                         gampang!"</p>
                     <div class="flex items-center gap-3">
@@ -372,7 +382,8 @@
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                     </div>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Suka banget fitur bayar di tempatnya! Jadi
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Suka banget fitur bayar di tempatnya!
+                        Jadi
                         lebih aman dan nggak perlu khawatir. Customer servicenya juga responsif banget."</p>
                     <div class="flex items-center gap-3">
                         <div
@@ -392,7 +403,8 @@
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 text-yellow-400"></i>
                     </div>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Liburan keluarga ke Lombok jadi terencana
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Liburan keluarga ke Lombok jadi
+                        terencana
                         berkat StayGo. Bisa filter hotel yang ramah anak dan ada kolam renang. Recommended!"</p>
                     <div class="flex items-center gap-3">
                         <div
@@ -414,7 +426,8 @@
             <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
                 <div>
                     <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Hubungi Kami</span>
-                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-2 mb-4">Ada Pertanyaan?</h2>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-2 mb-4">Ada
+                        Pertanyaan?</h2>
                     <p class="text-slate-500 mb-8">Tim kami siap membantu Anda 24/7. Hubungi kami untuk informasi
                         apartemen, pemesanan, atau pertanyaan lainnya.</p>
 
@@ -476,7 +489,7 @@
                 </div>
 
                 <div class="hidden md:block relative">
-                    <img src="{{ asset('./images/bg-contact.jpeg') }}" alt="Customer Service"
+                    <img src="{{ asset('images/bg-contact.jpeg') }}" alt="Customer Service"
                         class="w-full rounded-2xl object-cover">
                     <div
                         class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl">
@@ -487,7 +500,8 @@
                                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                                 <span class="text-sm font-medium text-slate-700">Online 24/7</span>
                             </div>
-                            <p class="text-sm text-slate-600">Tim customer service kami siap membantu Anda kapan saja.</p>
+                            <p class="text-sm text-slate-600">Tim customer service kami siap membantu Anda kapan
+                                saja.</p>
                         </div>
                     </div>
                 </div>
