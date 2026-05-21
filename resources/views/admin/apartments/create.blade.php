@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <section class="pt-24 pb-12 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="mb-8">
                 <a href="{{ route('admin.apartments.index') }}"
                     class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors mb-4">
@@ -13,7 +13,7 @@
                 <p class="text-slate-500 mt-1">Isi formulir di bawah untuk menambahkan apartemen baru</p>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
+            <div class="bg-white rounded-2xl border border-slate-100 p-4 sm:p-8 shadow-sm">
                 <form action="{{ route('admin.apartments.store') }}" method="POST" enctype="multipart/form-data"
                     class="space-y-6">
                     @csrf

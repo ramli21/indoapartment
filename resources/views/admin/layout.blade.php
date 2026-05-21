@@ -66,7 +66,7 @@
     {{-- Use existing global navbar --}}
     @include('navbar')
 
-    <div class="pt-20">
+    <div class="bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex gap-4">
                 <aside class="hidden md:block w-64 shrink-0">
@@ -77,6 +77,15 @@
                     @yield('content')
                 </main>
             </div>
+        </div>
+    </div>
+
+    <!-- Admin Mobile Sidebar (popup) -->
+    <div id="adminMobileSidebar" class="fixed inset-0 z-50 hidden md:hidden">
+        <div class="absolute inset-0 bg-black/30" onclick="closeAdminSidebar()"></div>
+        <div id="adminMobilePanel"
+            class="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-2xl p-4 overflow-auto transform -translate-x-full transition-transform duration-200">
+            @include('admin.partials.sidebar')
         </div>
     </div>
 

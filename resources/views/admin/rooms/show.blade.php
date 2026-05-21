@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-4 pb-12 min-h-screen">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <section class="pt-24 pb-12 min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <div class="mb-6">
                 <a href="{{ route('admin.apartments.index') }}" class="text-sm text-slate-600 hover:underline">&larr; Kembali
                     ke daftar apartemen</a>

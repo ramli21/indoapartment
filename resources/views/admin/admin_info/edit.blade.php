@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-14 pb-12 bg-slate-50 min-h-screen">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+    <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <div class="mb-6">
                 <h1 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800">Pengaturan Admin</h1>
                 <p class="text-slate-500 mt-1">Atur informasi pembayaran dan kontak admin yang digunakan di notifikasi.</p>

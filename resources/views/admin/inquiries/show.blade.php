@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-8 pb-12">
+    <section class="pt-24 pb-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <!-- Back -->
             <div class="mb-6">

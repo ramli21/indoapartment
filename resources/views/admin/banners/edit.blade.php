@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <!-- Header -->
             <div class="mb-8">
                 <div class="flex items-center gap-4">

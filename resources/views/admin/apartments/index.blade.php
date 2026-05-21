@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="py-8 md:py-10 min-h-screen">
-        <div class="max-w-7xl mx-auto md:px-4">
+    <section class="pt-24 pb-12 min-h-screen">
+        <div class="max-w-4xl mx-auto md:px-4">
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div>

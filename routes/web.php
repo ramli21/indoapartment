@@ -87,7 +87,16 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     // Admin info (bank/contact) settings
     Route::get('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'edit'])->name('info.edit');
     Route::post('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'update'])->name('info.update');
+
+    // Users/Admin management
+    Route::get('/users', [\App\Http\Controllers\Admin\UserAdminController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [\App\Http\Controllers\Admin\UserAdminController::class, 'create'])->name('users.create');
+    Route::post('/users', [\App\Http\Controllers\Admin\UserAdminController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserAdminController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserAdminController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserAdminController::class, 'destroy'])->name('users.destroy');
 });
+
 
 // API Routes (for calendar and availability check)
 Route::middleware(['admin'])->prefix('api')->group(function () {

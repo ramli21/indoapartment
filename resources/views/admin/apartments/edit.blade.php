@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
+    <section class="pt-24 pb-12 min-h-screen">
         <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <div class="mb-8">
                 <a href="{{ route('admin.apartments.index') }}"
@@ -14,7 +14,7 @@
                         class="font-medium text-slate-700">{{ $apartment->nama }}</span></p>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
+            <div class="bg-white rounded-2xl border border-slate-100 p-4 sm:p-8 shadow-sm">
                 <form action="{{ route('admin.apartments.update', $apartment) }}" method="POST"
                     enctype="multipart/form-data" class="space-y-6">
                     @csrf

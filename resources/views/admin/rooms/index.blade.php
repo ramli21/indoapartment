@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-4 pb-12 min-h-screen">
-        <div class="max-w-7xl px-4 sm:px-6">
+    <section class="pt-24 pb-12 min-h-screen">
+        <div class="max-w-4xl px-4 sm:px-6">
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div>
@@ -113,7 +113,7 @@
                                 @foreach ($rooms as $room)
                                     <tr class="hover:bg-slate-50/50 transition-colors group">
                                         <!-- Gambar -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100">
                                                 @if ($room->gambar && is_array($room->gambar) && count($room->gambar) > 0)
                                                     <img src="{{ asset('storage/' . $room->gambar[0]) }}"
@@ -128,31 +128,31 @@
                                         </td>
 
                                         <!-- Apartemen -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div>
                                                 <div class="font-medium text-slate-800 text-sm">{{ $room->judul }}
                                                 </div>
                                                 <div class="text-xs text-slate-400 mt-0.5 line-clamp-1">
-                                                    {{ Str::limit($room->alamat, 40) }}</div>
+                                                    {{ Str::limit($room->apartment->alamat, 40) }}</div>
                                             </div>
                                         </td>
 
                                         <!-- Tipe -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <span class="px-2.5 py-1 bg-brand/10 text-brand text-xs font-medium rounded-lg">
                                                 {{ $room->tipe }}
                                             </span>
                                         </td>
 
                                         <!-- Harga -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="text-sm font-semibold text-slate-800">
                                                 Rp {{ number_format($room->harga_per_malam, 0, ',', '.') }}
                                             </div>
                                         </td>
 
                                         <!-- Status -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             @php
                                                 $statusConfig = [
                                                     'Tersedia' => [
@@ -181,21 +181,21 @@
                                         </td>
 
                                         <!-- Tower / Lantai -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="text-sm text-slate-700">{{ $room->nama_tower }}</div>
                                             <div class="text-xs text-slate-400">Lantai {{ $room->lantai }} • No.
                                                 {{ $room->nomor_kamar }}</div>
                                         </td>
 
                                         <!-- Kamar -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="text-sm text-slate-700">{{ $room->jumlah_kamar }} KT</div>
                                             <div class="text-xs text-slate-400">{{ $room->jumlah_kamar_mandi }} KM •
                                                 {{ $room->luas }} m²</div>
                                         </td>
 
                                         <!-- Tamu -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="text-sm text-slate-700">
                                                 {{ $room->tamu_dewasa + $room->tamu_anak }} orang</div>
                                             <div class="text-xs text-slate-400">{{ $room->tamu_dewasa }} dewasa •
@@ -203,13 +203,13 @@
                                         </td>
 
                                         <!-- Owner -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="text-sm text-slate-700">{{ $room->owner_nama }}</div>
                                             <div class="text-xs text-slate-400">{{ $room->owner_wa }}</div>
                                         </td>
 
                                         <!-- Aksi -->
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="flex items-center justify-end gap-1.5">
                                                 <a href="{{ route('admin.apartments.rooms.edit', [$room->id]) }}"
                                                     class="p-2 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"

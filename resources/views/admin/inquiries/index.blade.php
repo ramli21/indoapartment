@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-8 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <section class="pt-24 pb-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div>
@@ -45,7 +45,7 @@
 
             <!-- Filters -->
             <div class="bg-white rounded-xl border border-slate-100 p-4 shadow-sm mb-6">
-                <form method="GET" class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
+                <form method="GET" class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-2 items-end">
                     <div>
                         <label class="block text-xs font-medium text-slate-500 mb-1">Cari</label>
                         <input type="text" name="search" value="{{ request('search') }}"
@@ -64,11 +64,13 @@
                             </option>
                         </select>
                     </div>
-                    <div class="sm:col-span-3 lg:col-span-4"></div>
                     <div>
+
                         <button type="submit"
                             class="w-full bg-brand text-white px-4 py-2 rounded-lg font-medium hover:bg-brand-light transition-colors text-sm">Filter</button>
                     </div>
+
+
                 </form>
             </div>
 

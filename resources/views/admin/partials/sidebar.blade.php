@@ -7,8 +7,8 @@
     };
 @endphp
 
-<div class="sticky top-24">
-    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
+<div class="sticky md:top-24">
+    <div class="bg-white rounded-2xl md:border md:border-slate-100 md:shadow-sm md:p-4">
         <div class="flex items-center gap-3 mb-5">
             <div class="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center">
                 <i data-lucide="layout-dashboard" class="w-5 h-5 text-brand"></i>
@@ -76,6 +76,14 @@
                     Banner
                 </span>
             </a> --}}
+
+            <a href="{{ route('admin.users.index') }}"
+                class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors border {{ $isActive('admin.users') ? 'bg-brand text-white border-brand' : 'bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-100 text-slate-700' }}">
+                <span class="inline-flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    Users
+                </span>
+            </a>
 
             <a href="{{ route('admin.info.edit') }}"
                 class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors border {{ $isActive('admin.info.edit') ? 'bg-brand text-white border-brand' : 'bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-100 text-slate-700' }}">

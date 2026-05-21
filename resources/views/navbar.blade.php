@@ -71,6 +71,15 @@
                         Masuk
                     </a> --}}
                 @endauth
+                @auth
+                    @if (auth()->user()->is_admin)
+                        <button onclick="toggleAdminSidebar()"
+                            class="nav-admin-mobile-btn lg:hidden mr-2 w-10 h-10 flex items-center justify-center rounded-xl transition-colors {{ $isHome ? 'text-white/90 hover:bg-white/10' : 'text-slate-700 hover:bg-slate-100' }}"
+                            title="Menu Admin">
+                            <i data-lucide="layout-dashboard" class="w-5 h-5" id="adminMenuIcon"></i>
+                        </button>
+                    @endif
+                @endauth
                 <button onclick="toggleMobileMenu()"
                     class="nav-mobile-btn lg:hidden w-10 h-10 flex items-center justify-center rounded-xl transition-colors {{ $isHome ? 'text-white/90 hover:bg-white/10' : 'text-slate-700 hover:bg-slate-100' }}">
                     <i data-lucide="menu" class="w-5 h-5" id="menuIcon"></i>
@@ -154,6 +163,68 @@
                     } catch (e) {}
                 }
             }
+        }
+    });
+
+    // Admin sidebar mobile toggle helpers (open/close)
+    window.toggleAdminSidebar = function() {
+        var wrap = document.getElementById('adminMobileSidebar');
+        var panel = document.getElementById('adminMobilePanel');
+        var icon = document.getElementById('adminMenuIcon');
+        if (!wrap || !panel) return;
+        if (wrap.classList.contains('hidden')) {
+            wrap.classList.remove('hidden');
+            // trigger a small delay to allow transition
+            requestAnimationFrame(function() {
+                panel.classList.remove('-translate-x-full');
+                panel.classList.add('translate-x-0');
+            });
+            if (icon) icon.setAttribute('data-lucide', 'x');
+        } else {
+            panel.classList.remove('translate-x-0');
+            panel.classList.add('-translate-x-full');
+            panel.addEventListener('transitionend', function hide() {
+                wrap.classList.add('hidden');
+                panel.removeEventListener('transitionend', hide);
+            });
+            if (icon) icon.setAttribute('data-lucide', 'layout-dashboard');
+        }
+        if (window.lucide && typeof window.lucide.replace === 'function') {
+            try {
+                window.lucide.replace();
+            } catch (e) {}
+        }
+    };
+
+    window.closeAdminSidebar = function() {
+        var wrap = document.getElementById('adminMobileSidebar');
+        var panel = document.getElementById('adminMobilePanel');
+        var icon = document.getElementById('adminMenuIcon');
+        if (!wrap || !panel) return;
+        if (!wrap.classList.contains('hidden')) {
+            panel.classList.remove('translate-x-0');
+            panel.classList.add('-translate-x-full');
+            panel.addEventListener('transitionend', function hide() {
+                wrap.classList.add('hidden');
+                panel.removeEventListener('transitionend', hide);
+            });
+            if (icon) icon.setAttribute('data-lucide', 'layout-dashboard');
+            if (window.lucide && typeof window.lucide.replace === 'function') {
+                try {
+                    window.lucide.replace();
+                } catch (e) {}
+            }
+        }
+    };
+
+    // Close admin sidebar when clicking outside
+    document.addEventListener('click', function(e) {
+        var wrap = document.getElementById('adminMobileSidebar');
+        var panel = document.getElementById('adminMobilePanel');
+        var btn = document.querySelector('.nav-admin-mobile-btn');
+        if (!wrap || !panel || !btn) return;
+        if (!wrap.classList.contains('hidden') && !panel.contains(e.target) && !btn.contains(e.target)) {
+            closeAdminSidebar();
         }
     });
 </script>
