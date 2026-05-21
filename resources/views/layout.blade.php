@@ -335,6 +335,8 @@
             }
         });
     </script>
+
+    @stack('js-scripts')
 </body>
 
 </html>

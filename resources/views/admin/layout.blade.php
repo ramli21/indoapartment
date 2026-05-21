@@ -73,7 +73,7 @@
                     @include('admin.partials.sidebar')
                 </aside>
 
-                <main class="flex-1">
+                <main class="flex-1 w-full rounded-2xl p-0 md:p-4">
                     @yield('content')
                 </main>
             </div>

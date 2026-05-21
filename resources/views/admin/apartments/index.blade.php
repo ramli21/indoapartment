@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
 @section('content')
-    <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <section class="py-8 md:py-10 min-h-screen">
+        <div class="max-w-7xl mx-auto md:px-4">
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div>
@@ -35,28 +35,32 @@
 
             <!-- Table -->
             @if ($apartments->count() > 0)
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
+                <div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto -mx-4 sm:mx-0">
+                        <table class="min-w-[760px] w-full text-left table-auto">
                             <thead>
                                 <tr class="bg-slate-50 border-b border-slate-100">
-                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    <th
+                                        class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                         Gambar</th>
-                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    <th
+                                        class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                         Apartemen</th>
-                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    <th
+                                        class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                         Alamat</th>
-                                    <th class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    <th
+                                        class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                         Jumlah Room</th>
                                     <th
-                                        class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                                        class="px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right whitespace-nowrap">
                                         Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
                                 @foreach ($apartments as $apartment)
                                     <tr class="hover:bg-slate-50/50 transition-colors group">
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="w-16 h-12 rounded-lg overflow-hidden bg-slate-100">
                                                 @php
                                                     $imgs = $apartment->gambar ? $apartment->gambar : '-';
@@ -74,16 +78,16 @@
                                             </div>
                                         </td>
 
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="font-medium text-slate-800 text-sm">
                                                 {{ $apartment->nama ?? $apartment->judul }}</div>
                                         </td>
 
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="text-sm text-slate-700">{{ $apartment->alamat }}</div>
                                         </td>
 
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             @php
                                                 $total_room = $apartment->rooms->count();
                                             @endphp
@@ -93,7 +97,7 @@
                                             </span>
                                         </td>
 
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-4 whitespace-nowrap">
                                             <div class="flex items-center justify-end gap-1.5">
                                                 <a href="{{ route('admin.apartments.rooms.index', $apartment) }}"
                                                     class="p-2 text-brand bg-brand/5 hover:bg-brand/10 rounded-lg transition-colors"

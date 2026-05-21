@@ -1,5 +1,9 @@
 @extends('layout')
 
+@push('js-scripts')
+    {{-- <script src="{{ asset('js/search.js') }}"></script> --}}
+@endpush
+
 @section('content')
     <!-- Hero Section -->
     <section class="relative min-h-[680px] h-[75vh] flex items-end overflow-hidden">
@@ -48,7 +52,7 @@
                             <label
                                 class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1 px-3">Check-in</label>
                             <div
-                                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10 transition-all">
+                                class="flex items-center gap-2 ps-3 pe-8 py-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10 transition-all">
                                 <i data-lucide="calendar" class="w-4 h-4 text-slate-400 shrink-0"></i>
                                 <input type="date" id="checkin"
                                     class="w-full bg-transparent text-sm text-slate-700 outline-none">
@@ -59,7 +63,7 @@
                             <label
                                 class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1 px-3">Check-out</label>
                             <div
-                                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10 transition-all">
+                                class="flex items-center gap-2 ps-3 pe-8 py-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/10 transition-all">
                                 <i data-lucide="calendar" class="w-4 h-4 text-slate-400 shrink-0"></i>
                                 <input type="date" id="checkout"
                                     class="w-full bg-transparent text-sm text-slate-700 outline-none">
@@ -69,11 +73,20 @@
                         <div class="lg:col-span-2">
                             <label
                                 class="block text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1 px-3">Tamu</label>
-                            <button onclick="openGuestModal()"
+                            {{-- <button onclick="openGuestModal()"
                                 class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all text-left">
                                 <i data-lucide="users" class="w-4 h-4 text-slate-400 shrink-0"></i>
                                 <span id="guestDisplay" class="text-sm text-slate-700 truncate">2 Dewasa, 1 Kamar</span>
-                            </button>
+                            </button> --}}
+
+                            <select name="tamu" id="guestSelect"
+                                class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-all text-left">
+                                <option value="" disabled>Pilih jumlah tamu</option>
+                                <option value="1">1 Tamu</option>
+                                <option value="2">2 Tamu</option>
+                                <option value="3">3 Tamu</option>
+                                <option value="4">4 Tamu</option>
+                            </select>
                         </div>
                         <!-- Search Button -->
                         <div class="lg:col-span-2 flex items-end">
