@@ -9,6 +9,12 @@
                 <p class="text-slate-500 mt-1">Selesaikan pembayaran untuk booking Anda</p>
             </div>
 
+            @if (session('error'))
+                <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <!-- Booking Summary -->
             <div class="bg-white rounded-xl border border-slate-100 p-5 shadow-sm mb-6">
                 <div class="flex items-center justify-between mb-4">
@@ -42,6 +48,32 @@
                     </div>
                 </div>
             </div>
+            @if (isset($dokuAvailable) && $dokuAvailable)
+                <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                    <p class="text-sm text-yellow-700">Metode pembayaran Doku tersedia untuk booking ini. Klik tombol di
+                        bawah untuk langsung menuju halaman pembayaran Doku.</p>
+                </div>
+
+                <div class="mb-6">
+                    <form method="POST" action="{{ route('booking.processPayment', $booking->booking_code) }}"
+                        id="dokuForm">
+                        @csrf
+                        <input type="hidden" name="payment_method" value="doku">
+                        <button id="payDokuBtn" type="submit"
+                            class="w-full bg-emerald-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2">
+                            <svg id="payDokuSpinner" class="hidden animate-spin w-5 h-5 text-white"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            </svg>
+                            <i data-lucide="credit-card" class="w-5 h-5"></i>
+                            <span id="payDokuLabel">Bayar via Doku Rp
+                                {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
+                        </button>
+                    </form>
+                </div>
+            @endif
 
             <!-- Payment Form -->
             <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
@@ -56,7 +88,7 @@
                             <!-- Bank Transfer Option -->
                             <label class="relative cursor-pointer">
                                 <input type="radio" name="payment_method" value="bank_transfer" class="peer sr-only"
-                                    checked>
+                                    {{ isset($dokuAvailable) && $dokuAvailable ? '' : 'checked' }}>
                                 <div
                                     class="p-4 rounded-xl border-2 border-slate-200 peer-checked:border-brand peer-checked:bg-brand/5 transition-all">
                                     <div class="flex items-center gap-3 mb-2">
@@ -102,7 +134,8 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-slate-500">No. Rekening</span>
-                                <span class="text-slate-800 font-mono font-medium">{{ $paymentInfo->account_number }}</span>
+                                <span
+                                    class="text-slate-800 font-mono font-medium">{{ $paymentInfo->account_number }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-slate-500">Atas Nama</span>
@@ -154,9 +187,20 @@
                         <p class="text-xs text-slate-400 mt-1">Scan dengan aplikasi e-wallet atau mobile banking</p>
                     </div>
 
+                    <!-- Doku Section -->
+                    <div id="dokuDetails" class="hidden mb-6 p-4 bg-slate-50 rounded-xl">
+                        <h4 class="font-medium text-slate-800 mb-2 flex items-center gap-2">
+                            <i data-lucide="credit-card" class="w-4 h-4"></i>
+                            Pembayaran via Doku
+                        </h4>
+                        <p class="text-sm text-slate-600">Anda akan diarahkan ke halaman pembayaran Doku untuk
+                            menyelesaikan transaksi.</p>
+                    </div>
+
                     <!-- Payment Notes -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Catatan Pembayaran (Opsional)</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Catatan Pembayaran
+                            (Opsional)</label>
                         <textarea name="payment_notes" rows="2"
                             class="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm resize-none"
                             placeholder="Tambahkan catatan..."></textarea>
@@ -187,17 +231,32 @@
             const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
             const bankDetails = document.getElementById('bankDetails');
             const qrisDetails = document.getElementById('qrisDetails');
+            const dokuDetails = document.getElementById('dokuDetails');
 
             paymentMethodRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
                     if (this.value === 'bank_transfer') {
                         bankDetails.classList.remove('hidden');
                         qrisDetails.classList.add('hidden');
+                        if (dokuDetails) dokuDetails.classList.add('hidden');
                     } else if (this.value === 'qris') {
                         bankDetails.classList.add('hidden');
                         qrisDetails.classList.remove('hidden');
+                        if (dokuDetails) dokuDetails.classList.add('hidden');
+                    } else if (this.value === 'doku') {
+                        bankDetails.classList.add('hidden');
+                        qrisDetails.classList.add('hidden');
+                        if (dokuDetails) dokuDetails.classList.remove('hidden');
                     }
                 });
+            });
+
+            // On page load, show correct section based on selected radio
+            document.addEventListener('DOMContentLoaded', function() {
+                const checked = document.querySelector('input[name="payment_method"]:checked');
+                if (checked) {
+                    checked.dispatchEvent(new Event('change'));
+                }
             });
 
             // Image preview for payment proof
@@ -213,6 +272,47 @@
                     reader.readAsDataURL(file);
                 }
             });
+
+            // Pay button loading state
+            const payForm = document.getElementById('paymentForm');
+            const payButton = document.getElementById('payButton');
+            const paySpinner = document.getElementById('paySpinner');
+            const payLabel = document.getElementById('payLabel');
+            if (payForm && payButton) {
+                payForm.addEventListener('submit', function() {
+                    if (payButton.disabled) return;
+                    payButton.disabled = true;
+                    if (paySpinner) paySpinner.classList.remove('hidden');
+                    if (payLabel) payLabel.textContent = 'Memproses...';
+                });
+            }
+
+            // Doku quick-pay handling (open in new tab)
+            const dokuForm = document.getElementById('dokuForm');
+            const payDokuBtn = document.getElementById('payDokuBtn');
+            const payDokuSpinner = document.getElementById('payDokuSpinner');
+            const payDokuLabel = document.getElementById('payDokuLabel');
+            if (dokuForm && payDokuBtn) {
+                dokuForm.addEventListener('submit', function() {
+                    if (payDokuBtn.disabled) return;
+                    payDokuBtn.disabled = true;
+                    if (payDokuSpinner) payDokuSpinner.classList.remove('hidden');
+                    if (payDokuLabel) payDokuLabel.textContent = 'Mengalihkan ke Doku...';
+                });
+                // Safety: if payDokuBtn clicked directly, submit the form
+                payDokuBtn.addEventListener('click', function() {
+                    if (!dokuForm) return;
+                    // ensure a payment_method field exists
+                    if (!dokuForm.querySelector('[name="payment_method"]')) {
+                        const inp = document.createElement('input');
+                        inp.type = 'hidden';
+                        inp.name = 'payment_method';
+                        inp.value = 'doku';
+                        dokuForm.appendChild(inp);
+                    }
+                    dokuForm.submit();
+                });
+            }
         </script>
     @endpush
 @endsection

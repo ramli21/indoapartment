@@ -82,7 +82,7 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     Route::delete('/inquiries/{inquiry}', [InquiryController::class, 'destroy'])->name('inquiries.destroy');
 
     // Banner Routes
-    Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+    // Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
 
     // Admin info (bank/contact) settings
     Route::get('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'edit'])->name('info.edit');
@@ -95,6 +95,9 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserAdminController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserAdminController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserAdminController::class, 'destroy'])->name('users.destroy');
+    
+    // Payment Configs (manage payment gateway credentials)
+    Route::resource('payment-configs', \App\Http\Controllers\PaymentConfigController::class)->except(['show']);
 });
 
 
@@ -103,4 +106,11 @@ Route::middleware(['admin'])->prefix('api')->group(function () {
     Route::get('/bookings/schedule', [BookingController::class, 'getSchedule'])->name('api.bookings.schedule');
     Route::get('/bookings/availability', [BookingController::class, 'checkAvailability'])->name('api.bookings.availability');
     Route::post('/bookings/store', [BookingController::class, 'storeAdmin'])->name('api.bookings.store');
+});
+
+// Public API endpoints for payments
+Route::prefix('api')->group(function () {
+    Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'processPayment'])->name('api.checkout');
+    // Webhook endpoint for Doku - place here so it uses web middleware; you can also place in a dedicated api.php without CSRF
+    Route::post('/doku/webhook', [\App\Http\Controllers\DokuWebhookController::class, 'handleNotification'])->name('api.doku.webhook');
 });
