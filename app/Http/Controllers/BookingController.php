@@ -206,8 +206,6 @@ class BookingController extends Controller
                 // $result = $doku->createInvoice($amount, $invoiceNumber, $customer);
                 $result = $doku->createInvoice(5000, $randInvoice, $customer);
 
-
-
                 if (!empty($result['success']) && !empty($result['data'])) {
                     // try common keys: payment_url, redirect_url, virtual_account
                     $data = $result['data'];

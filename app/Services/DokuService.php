@@ -45,16 +45,7 @@ class DokuService
         $components[] = 'Request-Target:' . $targetPath;
         $components[] = 'Digest:' . $digest;
 
-        // $rawSignatureComponent = 
-        //     "Client-Id:" . $clientId . "\n" .
-        //     "Request-Id:" . $requestId . "\n" .
-        //     "Request-Timestamp:" . $timestamp . "\n" .
-        //     "Request-Target:" . $targetPath . "\n" .
-        //     "Bytes:" . $digest;
-
         $signingString = implode("\n", $components);
-
-        // dd($signingString);
 
         $signature = base64_encode(hash_hmac('sha256', $signingString, $sharedKey, true));
 
@@ -94,7 +85,6 @@ class DokuService
 
         
         $signature = $this->generateSignature($requestId, $path, $bodyJson, $timestamp);
-        // dd($bodyJson, "HMACSHA256=" . $signature);
 
         $headers = [
             'Content-Type' => 'application/json',
@@ -103,8 +93,6 @@ class DokuService
             'Request-Timestamp' => $timestamp,
             'Signature' => "HMACSHA256=" . $signature,
         ];
-
-        // dd($headers);
 
         try {
             $response = Http::withHeaders($headers)
@@ -115,10 +103,10 @@ class DokuService
                 return ['success' => true, 'data' => $response->json()];
             }
 
-            Log::warning('Doku createInvoice failed', ['status' => $response->status(), 'body' => $response->body()]);
+            Log::channel('doku_error')->warning('Doku createInvoice failed', ['status' => $response->status(), 'body' => $response->body(), 'request' => $body]);
             return ['success' => false, 'status' => $response->status(), 'body' => $response->body()];
         } catch (\Throwable $e) {
-            Log::error('Doku createInvoice error: ' . $e->getMessage());
+            Log::channel('doku_error')->error('Doku createInvoice error: ' . $e->getMessage(), ['exception' => $e]);
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }

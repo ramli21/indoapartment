@@ -35,7 +35,7 @@ function handleSearch() {
     if (guests) params.append("tamu", guests);
 
     // Redirect to list-apartments with filters
-    window.location.href = `/list-apartments?${params.toString()}`;
+    window.location.href = `/rooms?${params.toString()}`;
 }
 
 // Expose to global scope for onclick handlers

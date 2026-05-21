@@ -123,6 +123,22 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        'doku_error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/doku_error.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+            'replace_placeholders' => true,
+        ],
+
+        'doku_webhook' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/doku_webhook.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+            'replace_placeholders' => true,
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
