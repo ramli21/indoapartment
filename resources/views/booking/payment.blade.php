@@ -56,7 +56,7 @@
 
                 <div class="mb-6">
                     <form method="POST" action="{{ route('booking.processPayment', $booking->booking_code) }}"
-                        id="dokuForm">
+                        id="dokuForm" target="_blank">
                         @csrf
                         <input type="hidden" name="payment_method" value="doku">
                         <button id="payDokuBtn" type="submit"
