@@ -28,9 +28,7 @@ class CheckoutController extends Controller
             $invoice = $request->input('invoice_number');
             $customer = $request->input('customer', []);
 
-            $randInvoice = $invoice . '-' . Str::random(6);
-            $result = $this->doku->createInvoice(3500, $randInvoice, $customer);
-            // $result = $this->doku->createInvoice($amount, $invoice, $customer);
+            $result = $this->doku->createInvoice($amount, $invoice, $customer);
 
             dd($result);
 

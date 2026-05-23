@@ -201,10 +201,10 @@ class BookingController extends Controller
                 ];
 
                 // just for testing
-                $randInvoice = $invoiceNumber . '-' . Str::random(6);
+                // $randInvoice = $invoiceNumber . '-' . Str::random(6);
 
-                // $result = $doku->createInvoice($amount, $invoiceNumber, $customer);
-                $result = $doku->createInvoice(5000, $randInvoice, $customer);
+                $result = $doku->createInvoice($amount, $invoiceNumber, $customer);
+                // $result = $doku->createInvoice(5000, $randInvoice, $customer);
 
                 if (!empty($result['success']) && !empty($result['data'])) {
                     // try common keys: payment_url, redirect_url, virtual_account
