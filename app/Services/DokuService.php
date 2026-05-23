@@ -48,6 +48,8 @@ class DokuService
         $signingString = implode("\n", $components);
 
         $signature = base64_encode(hash_hmac('sha256', $signingString, $sharedKey, true));
+        
+        Log::channel('doku_webhook')->info('signature data', ['components' => $components, 'signature' => $signature]);
 
         return $signature;
     }
@@ -131,6 +133,9 @@ class DokuService
 
                 $signingString = implode("\n", $components);
                 $expected = base64_encode(hash_hmac('sha256', $signingString, $sharedKey, true));
+
+                Log::channel('doku_webhook')->info('webhook verify signature', ['components' => $components, 'signature' => $signature, 'expected' => $expected]);
+
                 return hash_equals($expected, $signature);
             }
         }
