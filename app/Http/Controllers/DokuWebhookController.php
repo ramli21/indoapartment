@@ -93,7 +93,32 @@ class DokuWebhookController extends Controller
                 // Return 200 OK as Doku expects; structure may vary by provider
                 return response()->json(['code' => '00', 'message' => 'OK']);
             } else {
-                Log::channel('doku_webhook')->warning('Doku webhook received with non-success status', ['status' => $status, 'payload' => $arrayData]);
+
+                $booking = Booking::where('booking_code', $orderData['invoiceNumber'])->first();
+                
+                if (!$booking) {
+                    Log::channel('doku_webhook')->error('Requested by doku : Booking not found', ['invoiceNumber' => $invoiceNumber, 'payload' => $arrayData]);
+                    return response()->json(['code' => '01', 'message' => 'Booking not found'], 404);
+                }
+                
+                $booking->status = 'cancel';
+                $booking->payment_method = 'doku';
+                $booking->payment_notes = "Payment failed via Doku channel $paymentChannel (ID: $channelId)";
+                $booking->cancel_reason = "Payment failed with status $status";
+                $booking->canceled_by = "system";
+                $booking->cancel_at = now();
+                $booking->save();
+                
+                self::StorePaymentLog(
+                    $orderData['invoiceNumber'],
+                    $originalRequestId,
+                    $amount,
+                    $paymentChannel,
+                    $status,
+                    $arrayData
+                );
+
+                Log::channel('doku_webhook')->info('Doku webhook received with non-success status', ['status' => $status, 'payload' => $arrayData]);
                 return response()->json(['code' => '99', 'message' => 'FAILED'], 400);
             }
 
