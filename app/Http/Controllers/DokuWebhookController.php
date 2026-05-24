@@ -50,7 +50,7 @@ class DokuWebhookController extends Controller
             }
 
             // Simulate updating transaction status
-            $payload = json_decode($body, true);
+            $arrayData = json_decode($body, true);
             // Example: find transaction by invoice id and update status (simulation)
 
             $orderData = data_get($arrayData, 'payload.order') ?? data_get($arrayData, 'request-all.order');
@@ -68,7 +68,7 @@ class DokuWebhookController extends Controller
                 $booking = Booking::where('booking_code', $invoiceNumber)->first();
                 
                 if (!$booking) {
-                    Log::channel('doku_webhook')->warning('Doku webhook received for non-existing booking', ['invoiceNumber' => $invoiceNumber, 'payload' => $payload]);
+                    Log::channel('doku_webhook')->warning('Doku webhook received for non-existing booking', ['invoiceNumber' => $invoiceNumber, 'payload' => $arrayData]);
                     return response()->json(['code' => '01', 'message' => 'Booking not found'], 404);
                 }
                 
@@ -76,7 +76,6 @@ class DokuWebhookController extends Controller
                 $booking->payment_method = 'doku';
                 $booking->paid_at = now();
                 $booking->payment_notes = "Payment successful via Doku channel $paymentChannel (ID: $channelId)";
-                $booking->raw_payload = json_encode($payload);
                 $booking->save();                
 
                 // store log of payment notification
@@ -85,7 +84,7 @@ class DokuWebhookController extends Controller
                     $amount,
                     $paymentChannel,
                     $status,
-                    $payload
+                    $arrayData
                 );
 
                 Log::channel('doku_webhook')->info('Booking marked as paid for invoice - ' . $invoiceNumber, ['invoiceNumber' => $invoiceNumber]);
@@ -93,7 +92,7 @@ class DokuWebhookController extends Controller
                 // Return 200 OK as Doku expects; structure may vary by provider
                 return response()->json(['code' => '00', 'message' => 'OK']);
             } else {
-                Log::channel('doku_webhook')->warning('Doku webhook received with non-success status', ['status' => $status, 'payload' => $payload]);
+                Log::channel('doku_webhook')->warning('Doku webhook received with non-success status', ['status' => $status, 'payload' => $arrayData]);
                 return response()->json(['code' => '99', 'message' => 'FAILED'], 400);
             }
 
