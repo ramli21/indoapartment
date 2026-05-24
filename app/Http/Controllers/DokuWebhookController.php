@@ -38,7 +38,12 @@ class DokuWebhookController extends Controller
             $valid = $this->doku->verifySignature($clientId, $requestId, $target, $timestamp, $signature, $body);
 
             if (!$valid) {
-                Log::channel('doku_webhook')->warning('Doku webhook signature invalid', ['clientId' => $clientId, 'requestId' => $requestId, 'request-all' => $request->all()]);
+                Log::channel('doku_webhook')->warning('Doku webhook signature invalid', ['clientId' => $clientId, 'requestId' => $requestId, 'request-all' => $request->all(), 'headers' => [
+                    'Client-Id' => $clientId,
+                    'Request-Id' => $requestId,
+                    'Signature' => $signature,
+                    'Request-Timestamp' => $timestamp,
+                ]]);
                 return response()->json(['message' => 'Invalid signature'], 403);
             }
 
