@@ -72,22 +72,56 @@ class DokuService
         $requestId = (string) Str::uuid();
         $timestamp = now()->toIso8601ZuluString();
 
+        // $body = [
+        //     'order' => [
+        //         'amount' => $amount,
+        //         'invoice_number' => $invoiceNumber,
+        //         'customer' => $customerDetails,
+        //     ],
+        //     'payment' => [
+        //         'payment_due_date' => 5, // in minutes
+        //     ],
+        //     "callbacks" => [
+        //         "url" => config("app.url") . "/payment/redirect"
+        //     ],
+        // ];
+
+        $callbackUrl = "https://indoapart.akhritech.com/payment/redirect";
+
         $body = [
-            'order' => [
-                'amount' => $amount,
-                'invoice_number' => $invoiceNumber,
-                'customer' => $customerDetails,
+            "order" => [
+                "amount" => $amount,
+                "invoice_number" => $invoiceNumber,
+                "currency" => "IDR",
+                "callback_url" => $callbackUrl,
+                "callback_url_cancel" => $callbackUrl,
+                "callback_url_result" => $callbackUrl,
+                "language" => "ID",
+                "auto_redirect" => true,
+                "disable_retry_payment" => true,
+                "recover_abandoned_cart" => true,
+                "expired_recovered_cart" => 2,
             ],
-            'payment' => [
-                'payment_due_date' => 5, // in minutes
+            "payment" => [
+                "payment_due_date" => 5,
+                "type" => "SALE",
+                "payment_method_types" => [
+                    "VIRTUAL_ACCOUNT_BCA",
+                    "VIRTUAL_ACCOUNT_BANK_MANDIRI",
+                    "VIRTUAL_ACCOUNT_BRI",
+                    "VIRTUAL_ACCOUNT_BNI",
+                    "CREDIT_CARD",
+                    "EMONEY_SHOPEEPAY",
+                    "EMONEY_OVO",
+                    "EMONEY_DANA",
+                    "QRIS"
+                ]
             ],
-            "callbacks" => [
-                "url" => config("app.url") . "/payment/redirect"
-            ],
+            "customer" => $customerDetails
         ];
 
-        $bodyJson = json_encode($body, JSON_UNESCAPED_SLASHES);
-
+        // $bodyJson = json_encode($body, JSON_UNESCAPED_SLASHES);
+        $bodyJson = json_encode($body);
         
         $signature = $this->generateSignature($requestId, $path, $bodyJson, $timestamp);
 
