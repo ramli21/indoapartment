@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\PaymentRedirectController;
+use App\Http\Controllers\DokuWebhookController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
 Route::get('/rooms', [RoomController::class, 'listRooms'])->name('rooms.list');
