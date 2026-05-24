@@ -81,6 +81,7 @@ class DokuWebhookController extends Controller
                 // store log of payment notification
                 self::StorePaymentLog(
                     $invoiceNumber,
+                    $originalRequestId,
                     $amount,
                     $paymentChannel,
                     $status,
@@ -102,10 +103,11 @@ class DokuWebhookController extends Controller
         }
     }
 
-    private function StorePaymentLog($invoiceId, $amount, $paymentChannel, $status, $rawPayload)
+    private function StorePaymentLog($invoiceId, $originalRequestId, $amount, $paymentChannel, $status, $rawPayload)
     {
         BookingPaymentLog::create([
             'id' => (string) \Illuminate\Support\Str::uuid(),
+            'original_request_id' => $originalRequestId,
             'invoice_number' => $invoiceId,
             'amount' => $amount,
             'payment_channel' => $paymentChannel,

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('booking_payment_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('invoice_number')->index();
-            $table->string('original_request_id')->unique();
+            $table->string('original_request_id')->unique()->nullable();
             $table->decimal('amount', 12, 2);
             $table->string('payment_channel');
             $table->string('status');
