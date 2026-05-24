@@ -57,8 +57,8 @@ class DokuWebhookController extends Controller
             $transactionData = data_get($arrayData, 'transaction') ?? data_get($arrayData, 'request-all.transaction');
             $channelData = data_get($arrayData, 'channel') ?? data_get($arrayData, 'request-all.channel');
             $invoiceNumber = $orderData['invoice_number'] ?? 'unknown';
-            $amount = $transactionData['amount'] ?? 0;
-            $paymentChannel = $channelData['payment_channel'] ?? 'unknown';
+            $amount = $orderData['amount'] ?? 0;
+            $paymentChannel = $channelData['id'] ?? 'unknown';
             $status = $transactionData['status'] ?? 'unknown';
 
             $originalRequestId = $transactionData['original_request_id'] ?? null;
@@ -105,6 +105,7 @@ class DokuWebhookController extends Controller
     private function StorePaymentLog($invoiceId, $amount, $paymentChannel, $status, $rawPayload)
     {
         BookingPaymentLog::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'invoice_number' => $invoiceId,
             'amount' => $amount,
             'payment_channel' => $paymentChannel,
