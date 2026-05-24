@@ -53,9 +53,9 @@ class DokuWebhookController extends Controller
             $arrayData = json_decode($body, true);
             // Example: find transaction by invoice id and update status (simulation)
 
-            $orderData = data_get($arrayData, 'payload.order') ?? data_get($arrayData, 'request-all.order');
-            $transactionData = data_get($arrayData, 'payload.transaction') ?? data_get($arrayData, 'request-all.transaction');
-            $channelData = data_get($arrayData, 'payload.channel') ?? data_get($arrayData, 'request-all.channel');
+            $orderData = data_get($arrayData, 'order') ?? data_get($arrayData, 'request-all.order');
+            $transactionData = data_get($arrayData, 'transaction') ?? data_get($arrayData, 'request-all.transaction');
+            $channelData = data_get($arrayData, 'channel') ?? data_get($arrayData, 'request-all.channel');
             $invoiceNumber = $orderData['invoice_number'] ?? 'unknown';
             $amount = $transactionData['amount'] ?? 0;
             $paymentChannel = $channelData['payment_channel'] ?? 'unknown';
