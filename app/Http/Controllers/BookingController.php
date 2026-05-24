@@ -159,12 +159,6 @@ class BookingController extends Controller
 
     public function directPayWithDoku(Booking $booking)
     {
-        // $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
-
-        if (!$booking->paid_at) {
-            return redirect()->back()->with('error', 'Gagal membuat link pembayaran, Silahkan coba lagi atau bisa melakukan pembayaran secara manual melalui transfer bank');
-        }
-
         // Handle Doku payment: create invoice/session and redirect or store VA info
         try {
             $doku = new DokuService();
