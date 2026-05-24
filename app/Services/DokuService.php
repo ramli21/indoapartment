@@ -136,7 +136,7 @@ class DokuService
 
                 Log::channel('doku_webhook')->info('webhook verify signature', ['components' => $components, 'signature' => $signature, 'expected' => $expected]);
 
-                return hash_equals($expected, $signature);
+                return hash_equals("HMACSHA256=" . $expected, $signature);
             }
         }
 
