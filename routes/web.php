@@ -47,6 +47,10 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/payment/redirect', [PaymentRedirectController::class, 'handleRedirect'])->name('payment.redirect');
+// Halaman sukses murni
+Route::get('/payment/success', [PaymentRedirectController::class, 'showSuccessPage'])->name('payment.success');
+
 // Apartments Routes (Admin only)
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');

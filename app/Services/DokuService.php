@@ -77,9 +77,10 @@ class DokuService
                 'amount' => $amount,
                 'invoice_number' => $invoiceNumber,
                 'customer' => $customerDetails,
+                'callback_url' => config("app.url") . "/payment/redirect", // your webhook endpoint to receive payment notifications
             ],
             'payment' => [
-                'payment_due_date' => 120, // in minutes
+                'payment_due_date' => 5, // in minutes
             ],
         ];
 
