@@ -21,8 +21,7 @@ class PaymentRedirectController extends Controller
         }
 
         // 2. Cek status invoice terbaru di database
-        $booking = DB::table('bookings')
-            ->where('booking_code', $invoiceNumber)
+        $booking = Booking::where('booking_code', $invoiceNumber)
             ->first();
 
         if (!$booking) {
