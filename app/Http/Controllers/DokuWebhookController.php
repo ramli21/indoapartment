@@ -56,7 +56,7 @@ class DokuWebhookController extends Controller
             $orderData = data_get($arrayData, 'order') ?? data_get($arrayData, 'request-all.order');
             $transactionData = data_get($arrayData, 'transaction') ?? data_get($arrayData, 'request-all.transaction');
             $channelData = data_get($arrayData, 'channel') ?? data_get($arrayData, 'request-all.channel');
-            $invoiceNumber = $orderData['invoice_number'] ?? 'unknown';
+            $invoiceNumber = $orderData['invoice_number'] ?? $orderData['invoiceNumber'] ?? 'unknown';
             $amount = $orderData['amount'] ?? 0;
             $paymentChannel = $channelData['id'] ?? 'unknown';
             $status = $transactionData['status'] ?? 'unknown';
@@ -93,9 +93,7 @@ class DokuWebhookController extends Controller
                 // Return 200 OK as Doku expects; structure may vary by provider
                 return response()->json(['code' => '00', 'message' => 'OK']);
             } else {
-
-                $booking = Booking::where('booking_code', 'ON9J3S')->first();
-                // $booking = Booking::where('booking_code', $orderData['invoiceNumber'])->first();
+                $booking = Booking::where('booking_code', $invoiceNumber)->first();
                 
                 if (!$booking) {
                     Log::channel('doku_webhook')->error('Requested by doku : Booking not found', ['invoiceNumber' => $invoiceNumber, 'payload' => $arrayData]);
@@ -111,8 +109,7 @@ class DokuWebhookController extends Controller
                 $booking->save();
                 
                 self::StorePaymentLog(
-                    // $orderData['invoiceNumber'],
-                    'ON9J3S',
+                    $invoiceNumber,
                     $originalRequestId,
                     $amount,
                     $paymentChannel,
