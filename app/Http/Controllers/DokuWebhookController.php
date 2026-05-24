@@ -89,6 +89,8 @@ class DokuWebhookController extends Controller
                 );
 
                 Log::channel('doku_webhook')->info('Booking marked as paid for invoice - ' . $invoiceNumber, ['invoiceNumber' => $invoiceNumber]);
+                
+                $this->sendPaymentEmails($booking);
 
                 // Return 200 OK as Doku expects; structure may vary by provider
                 return response()->json(['code' => '00', 'message' => 'OK']);
@@ -140,5 +142,48 @@ class DokuWebhookController extends Controller
         ]);
 
         return true;
+    }
+
+    /**
+     * Send payment received emails to user and admin
+     */
+    private function sendPaymentEmails(Booking $booking)
+    {
+        $booking->load('room');
+
+
+        // 1. Send thank-you email to user
+        try {
+            Mail::to($booking->email_tamu)->send(new UserPaymentReceived($booking));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send user payment email: ' . $e->getMessage());
+        }
+
+        // 2. Notify admin (prefer AdminInfo email)
+        $adminEmail = false;
+        try {
+            $adminInfo = AdminInfo::first();
+            if ($adminInfo && !empty($adminInfo->email)) {
+                $adminEmail = $adminInfo->email;
+            }
+        } catch (\Exception $e) {
+            // ignore
+        }
+
+        if (!$adminEmail) {
+            $adminEmail = config('app.admin_email', false);
+        }
+        if (!$adminEmail) {
+            $admin = User::where('is_admin', true)->first();
+            $adminEmail = $admin?->email;
+        }
+
+        if ($adminEmail) {
+            try {
+                Mail::to($adminEmail)->send(new AdminPaymentReceived($booking));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send admin payment email: ' . $e->getMessage());
+            }
+        }
     }
 }

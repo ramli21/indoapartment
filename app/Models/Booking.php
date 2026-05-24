@@ -65,4 +65,9 @@ class Booking extends Model
   {
     return $query->where('status', 'cancelled');
   }
+
+  public function payment_logs()
+  {
+    return $this->hasMany(BookingPaymentLog::class, 'invoice_number', 'booking_code');
+  }
 }

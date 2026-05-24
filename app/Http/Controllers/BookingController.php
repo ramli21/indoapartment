@@ -157,6 +157,46 @@ class BookingController extends Controller
 
     }
 
+    public function directPayWithDoku(Booking $booking)
+    {
+        // $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
+
+        if (!$booking->paid_at) {
+            return redirect()->back()->with('error', 'Gagal membuat link pembayaran, Silahkan coba lagi atau bisa melakukan pembayaran secara manual melalui transfer bank');
+        }
+
+        // Handle Doku payment: create invoice/session and redirect or store VA info
+        try {
+            $doku = new DokuService();
+            $amount = (float) $booking->total_harga;
+            $invoiceNumber = $booking->booking_code;
+            $customer = [
+                'name' => $booking->nama_tamu,
+                'email' => $booking->email_tamu,
+                'phone' => $booking->no_hp,
+            ];
+
+            $result = $doku->createInvoice($amount, $invoiceNumber, $customer);
+
+            if (!empty($result['success']) && !empty($result['data'])) {
+                // try common keys: payment_url, redirect_url, virtual_account
+                $data = $result['data'];
+                $payment = $result['data']['response']['payment'];
+
+                if (!empty($payment['url'])) {
+                    return redirect()->away($payment['url']);
+                }
+            }
+
+            Log::error('Doku payment creation failed', ['result' => $result, 'booking_code' => $booking_code]);
+
+            return redirect()->back()->with('error', 'Gagal membuat pembayaran via Doku, atau bisa melakukan pembayaran secara manual melalui transfer bank');
+        } catch (\Throwable $e) {
+            \Log::error('Doku payment error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyambungkan ke Doku.');
+        }
+    }
+
     /**
      * Process payment
      */
@@ -185,63 +225,6 @@ class BookingController extends Controller
         // For QRIS, mark as paid immediately (instant payment)
         if ($request->payment_method === 'qris') {
             $validated['paid_at'] = now();
-        }
-
-        // Handle Doku payment: create invoice/session and redirect or store VA info
-        if ($request->payment_method === 'doku') {
-            // call DokuService to create invoice
-            try {
-                $doku = new DokuService();
-                $amount = (float) $booking->total_harga;
-                $invoiceNumber = $booking->booking_code;
-                $customer = [
-                    'name' => $booking->nama_tamu,
-                    'email' => $booking->email_tamu,
-                    'phone' => $booking->no_hp,
-                ];
-
-                // just for testing
-                // $randInvoice = $invoiceNumber . '-' . Str::random(6);
-
-                $result = $doku->createInvoice($amount, $invoiceNumber, $customer);
-                // $result = $doku->createInvoice(5000, $randInvoice, $customer);
-
-                if (!empty($result['success']) && !empty($result['data'])) {
-                    // try common keys: payment_url, redirect_url, virtual_account
-                    $data = $result['data'];
-                    // store raw response for debugging/audit if column exists
-                    try {
-                        if (\Illuminate\Support\Facades\Schema::hasColumn('bookings', 'payment_response')) {
-                            $booking->update(['payment_response' => json_encode($data)]);
-                        }
-                    } catch (\Throwable $e) {
-                        // ignore if schema helper not available
-                    }
-                    
-                    $payment = $result['data']['response']['payment'];
-
-                    if (!empty($payment['url'])) {
-                        return redirect()->away($payment['url']);
-                    }
-                    // if (!empty($data['redirect_url'])) {
-                    //     return redirect($data['redirect_url']);
-                    // }
-                    // if (!empty($data['virtual_account'])) {
-                    //     // store VA and mark pending; in this example we save payment_notes
-                    //     $validated['payment_notes'] = 'VA: ' . $data['virtual_account'];
-                    //     // do not mark paid yet
-                    // }
-
-                    // Fallback: return JSON or redirect to success with message
-                    return redirect()->route('booking.success', $booking->booking_code)
-                        ->with('success', 'Pembayaran Doku dibuat. Silakan lanjutkan sesuai instruksi.');
-                }
-
-                return redirect()->back()->with('error', 'Gagal membuat pembayaran via Doku.');
-            } catch (\Throwable $e) {
-                \Log::error('Doku payment error: ' . $e->getMessage());
-                return redirect()->back()->with('error', 'Terjadi kesalahan saat menyambungkan ke Doku.');
-            }
         }
 
         $validated['payment_notes'] = $request->payment_notes ? strip_tags($request->payment_notes) : null;

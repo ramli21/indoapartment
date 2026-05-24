@@ -24,6 +24,8 @@ Route::post('/booking/{room}/store', [BookingController::class, 'store'])->name(
 Route::get('/booking/{booking:booking_code}/success', [BookingController::class, 'success'])->name('booking.success');
 Route::get('/booking/{booking:booking_code}/payment', [BookingController::class, 'payment'])->name('booking.payment');
 Route::post('/booking/{booking:booking_code}/payment', [BookingController::class, 'processPayment'])->name('booking.processPayment');
+Route::get('/booking/{booking:booking_code}/pay-doku', [BookingController::class, 'directPayWithDoku'])->name('direct.pay.doku');
+
 
 // Public Track Booking Route (no login required)
 Route::get('/lacak-booking', [BookingController::class, 'track'])->name('booking.track');
