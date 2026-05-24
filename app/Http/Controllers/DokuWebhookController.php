@@ -119,7 +119,7 @@ class DokuWebhookController extends Controller
                 );
 
                 Log::channel('doku_webhook')->info('Doku webhook received with non-success status', ['status' => $status, 'payload' => $arrayData]);
-                return response()->json(['code' => '99', 'message' => 'FAILED'], 400);
+                return response()->json(['code' => '00', 'message' => 'OK'], 200);
             }
 
         } catch (\Throwable $e) {
