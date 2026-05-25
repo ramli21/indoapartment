@@ -67,7 +67,7 @@
                     </div>
                 @endif
 
-                @if (session('error'))
+                @if (session('error') || !$dokuAvailable)
                     <!-- Payment Form -->
                     <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
                         <form method="POST" action="{{ route('booking.processPayment', $booking->booking_code) }}"

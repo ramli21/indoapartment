@@ -73,10 +73,10 @@ class PaymentConfigController extends Controller
     {
         try {
             $paymentConfig->delete();
-            return response()->json(['message' => 'Deleted']);
+            return redirect()->back()->with('success', 'Payment config deleted');
         } catch (\Throwable $e) {
             Log::error('PaymentConfig delete error: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to delete payment config'], 500);
+            return redirect()->back()->with('error', 'Failed to delete payment config');
         }
     }
 }

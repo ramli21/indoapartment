@@ -72,7 +72,7 @@
                         <div class="flex justify-between">
                             <span class="text-slate-600">Status</span>
                             <span
-                                class="inline-flex px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full capitalize">
+                                class="inline-flex px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full capitalize">
                                 {{ $booking->status }}
                             </span>
                         </div>
