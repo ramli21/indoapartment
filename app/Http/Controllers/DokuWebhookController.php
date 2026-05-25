@@ -108,7 +108,7 @@ class DokuWebhookController extends Controller
                     return response()->json(['code' => '01', 'message' => 'Booking not found'], 404);
                 }
                 
-                $booking->status = 'cancel';
+                $booking->status = 'cancelled';
                 $booking->payment_method = 'doku';
                 $booking->payment_notes = "Payment failed via Doku channel $paymentChannel (ID: $channelId)";
                 $booking->cancel_reason = "Payment failed with status $status";
