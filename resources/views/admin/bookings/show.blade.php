@@ -302,10 +302,10 @@
                                     <div class="text-xs text-slate-500">Original Request ID</div>
                                     <div class="text-slate-800 font-mono">{{ $log->original_request_id ?? '-' }}</div>
                                 </div>
-                                <div class="md:col-span-2">
+                                {{-- <div class="md:col-span-2">
                                     <div class="text-xs text-slate-500">Raw Payload</div>
                                     <pre class="mt-1 p-2 bg-slate-50 rounded text-xs whitespace-pre-wrap">{{ $log->raw_payload }}</pre>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     @endforeach
