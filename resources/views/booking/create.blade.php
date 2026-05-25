@@ -90,7 +90,8 @@
                                 {{ $room->judul }}</h1>
                             <div class="flex items-center gap-1.5 text-slate-500 mb-4">
                                 <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i>
-                                <span class="text-sm">{{ $room->apartment->alamat }}</span>
+                                <span
+                                    class="text-sm">{{ $room->apartment->nama . ' - ' . $room->apartment->alamat }}</span>
                             </div>
 
                             <!-- Price -->
@@ -120,7 +121,7 @@
                                 <div class="p-3 bg-slate-50 rounded-xl text-center">
                                     <i data-lucide="building" class="w-5 h-5 text-brand mx-auto mb-1"></i>
                                     <div class="text-xs text-slate-500">Tower</div>
-                                    <div class="text-sm font-semibold text-slate-800">{{ $room->apartment->nama }}</div>
+                                    <div class="text-sm font-semibold text-slate-800">{{ $room->nama_tower }}</div>
                                 </div>
                                 <div class="p-3 bg-slate-50 rounded-xl text-center">
                                     <i data-lucide="door-open" class="w-5 h-5 text-brand mx-auto mb-1"></i>

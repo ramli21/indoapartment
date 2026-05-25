@@ -54,7 +54,7 @@
                         @php
                             $statusLabels = [
                                 'pending' => ['text' => 'Pending', 'class' => 'bg-amber-100 text-amber-700'],
-                                'confirmed' => ['text' => 'Confirmed', 'class' => 'bg-emerald-100 text-emerald-700'],
+                                'confirmed' => ['text' => 'Confirmed', 'class' => 'bg-green-100 text-green-700'],
                                 'completed' => ['text' => 'Completed', 'class' => 'bg-brand text-white'],
                                 'cancelled' => ['text' => 'Cancelled', 'class' => 'bg-slate-100 text-slate-600'],
                             ];

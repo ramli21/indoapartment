@@ -11,7 +11,7 @@ class Booking extends Model
 
   protected $fillable = [
     'booking_code',
-'room_id',
+    'room_id',
     'nama_tamu',
     'email_tamu',
     'no_hp',
@@ -27,6 +27,7 @@ class Booking extends Model
     'payment_proof',
     'paid_at',
     'payment_notes',
+    'raw_payload',
     'cancel_reason',
     'cancelled_by',
     'cancelled_at',
@@ -63,5 +64,10 @@ class Booking extends Model
   public function scopeCancelled($query)
   {
     return $query->where('status', 'cancelled');
+  }
+
+  public function payment_logs()
+  {
+    return $this->hasMany(BookingPaymentLog::class, 'invoice_number', 'booking_code');
   }
 }

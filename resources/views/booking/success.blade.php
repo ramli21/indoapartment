@@ -9,6 +9,12 @@
                     <i data-lucide="check" class="w-8 h-8 text-emerald-500"></i>
                 </div>
 
+                @if (session('error'))
+                    <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <h1 class="text-2xl font-serif font-semibold text-slate-800 mb-2">Booking Berhasil!</h1>
                 <p class="text-slate-500 mb-8">Nomor booking Anda:</p>
 
@@ -66,7 +72,7 @@
                         <div class="flex justify-between">
                             <span class="text-slate-600">Status</span>
                             <span
-                                class="inline-flex px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full capitalize">
+                                class="inline-flex px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full capitalize">
                                 {{ $booking->status }}
                             </span>
                         </div>

@@ -16,9 +16,18 @@ use App\Mail\AdminPaymentReceived;
 use App\Mail\OwnerBookingNotification;
 use Illuminate\Support\Str;
 use App\Models\AdminInfo;
+use App\Models\PaymentConfig;
+use App\Services\DokuService;
 
 class BookingController extends Controller
 {
+    protected DokuService $doku;
+
+    public function __construct(DokuService $doku)
+    {
+        $this->doku = $doku;
+    }
+
     /**
      * Show booking form for a room
      */
@@ -141,8 +150,45 @@ class BookingController extends Controller
                 ->with('info', 'Booking ini sudah lunas.');
         }
 
-        return view('booking.payment', compact('booking', 'room', 'paymentInfo'));
+        $dokuConfig = PaymentConfig::where('provider_name', 'doku')->orderBy('id', 'desc')->first();
+        $dokuAvailable = (bool) $dokuConfig;
 
+        return view('booking.payment', compact('booking', 'room', 'paymentInfo', 'dokuAvailable'));
+
+    }
+
+    public function directPayWithDoku(Booking $booking)
+    {
+        // Handle Doku payment: create invoice/session and redirect or store VA info
+        try {
+            $doku = new DokuService();
+            $amount = (float) $booking->total_harga;
+            $invoiceNumber = $booking->booking_code;
+            $customer = [
+                'name' => $booking->nama_tamu,
+                'email' => $booking->email_tamu,
+                'phone' => $booking->no_hp,
+            ];
+
+            $result = $doku->createInvoice($amount, $invoiceNumber, $customer);
+
+            if (!empty($result['success']) && !empty($result['data'])) {
+                // try common keys: payment_url, redirect_url, virtual_account
+                $data = $result['data'];
+                $payment = $result['data']['response']['payment'];
+
+                if (!empty($payment['url'])) {
+                    return redirect()->away($payment['url']);
+                }
+            }
+
+            Log::error('Doku payment creation failed', ['result' => $result, 'booking_code' => $booking_code]);
+
+            return redirect()->back()->with('error', 'Gagal membuat pembayaran via Doku, atau bisa melakukan pembayaran secara manual melalui transfer bank');
+        } catch (\Throwable $e) {
+            \Log::error('Doku payment error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyambungkan ke Doku.');
+        }
     }
 
     /**
@@ -152,8 +198,13 @@ class BookingController extends Controller
     {
         $booking = Booking::where('booking_code', $booking_code)->firstOrFail();
 
+        // allow doku if configured
+        $dokuConfig = PaymentConfig::where('provider_name', 'doku')->orderBy('id', 'desc')->first();
+        $paymentMethods = ['bank_transfer', 'qris'];
+        if ($dokuConfig) $paymentMethods[] = 'doku';
+
         $validated = $request->validate([
-            'payment_method' => 'required|in:bank_transfer,qris',
+            'payment_method' => ['required', 'in:' . implode(',', $paymentMethods)],
             'payment_notes' => 'nullable|string|max:500',
             'payment_proof' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
