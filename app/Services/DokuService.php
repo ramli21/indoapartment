@@ -103,7 +103,7 @@ class DokuService
                 "expired_recovered_cart" => 2,
             ],
             "payment" => [
-                "payment_due_date" => 5,
+                "payment_due_date" => 120,
                 "type" => "SALE",
                 "payment_method_types" => [
                     "VIRTUAL_ACCOUNT_BCA",

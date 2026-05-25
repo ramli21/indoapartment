@@ -60,15 +60,16 @@ class RoomController extends Controller
 
         $apartment = Apartment::where('nama', $request->get('apartment'))->first();
 
-        // dd($apartment);
-
         $query = empty($apartment) ? Room::whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']) : $apartment->rooms()->whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']);
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
-                    ->orWhere('nama_tower', 'like', "%{$search}%");
+                    ->orWhere('nama_tower', 'like', "%{$search}%")
+                    ->orWhereHas('apartment', function ($qa) use ($search) {
+                        $qa->where('nama', 'like', "%{$search}%");
+                    });
             });
         }
 
