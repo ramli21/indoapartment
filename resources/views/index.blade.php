@@ -528,15 +528,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="rounded-2xl bg-brand p-8 sm:p-12 flex flex-col md:flex-row items-center gap-6">
                 <div class="flex-1 text-white">
-                    <h3 class="text-2xl font-semibold">Owner? Daftarkan Apartemen Anda di IndoApartment
+                    <h3 class="text-2xl font-semibold">Daftarkan Apartemen Anda di IndoApart.com
                     </h3>
                     <p class="text-white/90 mt-2">Gabung bersama ribuan owner lain untuk tingkatkan
                         okupansi dan pendapatan. Mudah diatur, dukungan penuh dari tim kami.</p>
                 </div>
                 <div class="flex gap-3">
                     <a href="{{ route('rooms.owner.create') }}"
-                        class="inline-flex items-center gap-2 px-5 py-3 bg-white text-brand rounded-xl font-medium hover:opacity-95 transition">Daftarkan
-                        Apartemen Anda</a>
+                        class="inline-flex items-center gap-2 px-5 py-3 bg-white text-brand rounded-xl font-medium hover:opacity-95 transition">Pasang
+                        Iklan Gratis</a>
                     <a href="https://wa.me/{{ $adminInfo->whatsapp }}?text=Halo%20Admin,%20saya%20ingin%20mendaftar%20sebagai%20owner%20apartemen"
                         class="inline-flex items-center gap-2 px-5 py-3 bg-white/20 text-white rounded-xl font-medium hover:opacity-90 transition">Hubungi
                         Admin</a>

@@ -63,13 +63,33 @@ class RoomController extends Controller
         $query = empty($apartment) ? Room::whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']) : $apartment->rooms()->whereIn('status', ['Tersedia', 'Perawatan', 'Terisi']);
 
         if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
+            $search = trim($request->search);
+
+            // normalize by removing common apartment words so "Apartment Sudirman",
+            // "Apartemen Sudirman" and "Sudirman" all match
+            $normalized = preg_replace('/\b(apartment|apartemen|apartement|apt|apart)\b/i', '', $search);
+            $normalized = trim($normalized);
+
+            $query->where(function ($q) use ($search, $normalized) {
+                // search room title and tower
                 $q->where('judul', 'like', "%{$search}%")
-                    ->orWhere('nama_tower', 'like', "%{$search}%")
-                    ->orWhereHas('apartment', function ($qa) use ($search) {
-                        $qa->where('nama', 'like', "%{$search}%");
-                    });
+                    ->orWhere('nama_tower', 'like', "%{$search}%");
+
+                if (!empty($normalized)) {
+                    $q->orWhere('judul', 'like', "%{$normalized}%")
+                      ->orWhere('nama_tower', 'like', "%{$normalized}%");
+                }
+
+                // search apartment name and address
+                $q->orWhereHas('apartment', function ($qa) use ($search, $normalized) {
+                    $qa->where('nama', 'like', "%{$search}%")
+                       ->orWhere('alamat', 'like', "%{$search}%");
+
+                    if (!empty($normalized)) {
+                        $qa->orWhere('nama', 'like', "%{$normalized}%")
+                           ->orWhere('alamat', 'like', "%{$normalized}%");
+                    }
+                });
             });
         }
 
