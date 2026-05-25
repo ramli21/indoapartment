@@ -112,8 +112,8 @@ class DokuWebhookController extends Controller
                 $booking->payment_method = 'doku';
                 $booking->payment_notes = "Payment failed via Doku channel $paymentChannel (ID: $channelId)";
                 $booking->cancel_reason = "Payment failed with status $status";
-                $booking->canceled_by = "system";
-                $booking->cancel_at = now();
+                $booking->cancelled_by = "system";
+                $booking->cancelled_at = now();
                 $booking->save();
                 
                 self::StorePaymentLog(

@@ -168,6 +168,15 @@
                                     <div class="text-sm text-slate-800">{{ $booking->payment_notes }}</div>
                                 </div>
                             @endif
+                            @if ($booking->payment_logs->count())
+                                <div class="md:col-span-2 mt-3">
+                                    <button type="button" onclick="openPaymentLogsModal()"
+                                        class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors text-sm">
+                                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                                        Lihat Log Pembayaran ({{ $booking->payment_logs->count() }})
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -242,4 +251,88 @@
             </div>
         </div>
     </section>
+    <!-- Payment Logs Modal -->
+    <div id="paymentLogsModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50" onclick="closePaymentLogsModal()"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between p-4 border-b border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800">Log Pembayaran</h3>
+                    <button onclick="closePaymentLogsModal()" class="text-slate-400 hover:text-slate-600">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div class="p-4 space-y-3">
+                    @foreach ($booking->payment_logs()->latest()->get() as $log)
+                        <div class="p-3 border rounded-lg">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <div class="text-xs text-slate-500">Waktu</div>
+                                    <div class="text-sm font-medium text-slate-800">
+                                        {{ \Carbon\Carbon::parse($log->created_at)->format('d F Y, H:i:s') }}</div>
+                                </div>
+                                <div class="text-right">
+                                    @php
+                                        $isSuccess = str_contains(strtoupper($log->status ?? ''), 'SUCCESS');
+                                    @endphp
+                                    <div class="text-xs text-slate-500">Status</div>
+                                    <div class="text-sm font-medium">
+                                        @if ($isSuccess)
+                                            <span
+                                                class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">{{ $log->status }}</span>
+                                        @else
+                                            <span
+                                                class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-red-50 text-red-600">{{ $log->status }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-3 mt-3 text-sm">
+                                <div>
+                                    <div class="text-xs text-slate-500">Channel</div>
+                                    <div class="text-slate-800">{{ $log->payment_channel ?? '-' }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-500">Amount</div>
+                                    <div class="text-slate-800">Rp {{ number_format($log->amount, 0, ',', '.') }}</div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <div class="text-xs text-slate-500">Original Request ID</div>
+                                    <div class="text-slate-800 font-mono">{{ $log->original_request_id ?? '-' }}</div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <div class="text-xs text-slate-500">Raw Payload</div>
+                                    <pre class="mt-1 p-2 bg-slate-50 rounded text-xs whitespace-pre-wrap">{{ $log->raw_payload }}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="flex justify-end gap-2 p-4 border-t border-slate-100">
+                    <button onclick="closePaymentLogsModal()"
+                        class="px-4 py-2 rounded-lg text-sm bg-slate-100 hover:bg-slate-200">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openPaymentLogsModal() {
+            document.getElementById('paymentLogsModal').classList.remove('hidden');
+        }
+
+        function closePaymentLogsModal() {
+            document.getElementById('paymentLogsModal').classList.add('hidden');
+        }
+        // close with Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const m = document.getElementById('paymentLogsModal');
+                if (m && !m.classList.contains('hidden')) closePaymentLogsModal();
+            }
+        });
+    </script>
 @endsection
