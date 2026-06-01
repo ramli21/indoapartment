@@ -129,6 +129,161 @@
         </div>
     </section>
 
+    <!-- List Product (Rooms carousel) -->
+    <section class="py-5 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            {{-- <div class="flex items-end justify-between mb-6">
+                <div>
+                    <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Pilihan</span>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-1">List Room</h2>
+                </div>
+            </div> --}}
+
+            @if (isset($randomRooms) && $randomRooms->count())
+                <div class="relative">
+                    <div id="productCarousel" class="overflow-hidden">
+                        <div class="carousel-track flex will-change-transform">
+                            @foreach ($randomRooms as $room)
+                                @php
+                                    $thumb = null;
+                                    if (is_array($room->gambar) && count($room->gambar)) {
+                                        $thumb = asset('storage/' . $room->gambar[0]);
+                                    } elseif (is_string($room->gambar) && $room->gambar) {
+                                        $thumb = asset('storage/' . $room->gambar);
+                                    } else {
+                                        $thumb = 'https://picsum.photos/seed/room' . $loop->index . '/300/200';
+                                    }
+                                @endphp
+
+                                <a href="{{ route('booking.create', ['room' => $room->slug ?? $room->id]) }}"
+                                    class="carousel-item flex-none w-1/2 sm:w-1/3 lg:w-1/4 pr-3">
+                                    <div class="bg-white rounded-2xl border border-slate-100 p-3 flex gap-3 items-center">
+                                        <div class="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-slate-100">
+                                            <img src="{{ $thumb }}" class="w-full h-full object-cover"
+                                                alt="{{ $room->judul }}">
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-xs text-slate-400">{{ $room->apartment->nama ?? '—' }}</div>
+                                            <h3 class="font-semibold text-slate-800 line-clamp-1">{{ $room->judul }}</h3>
+                                            <div class="text-sm text-brand font-medium mt-1">Rp
+                                                {{ number_format((float) $room->harga_per_malam, 0, ',', '.') }}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <button id="prevProduct" aria-label="Previous"
+                        class="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/90 shadow flex items-center justify-center">
+                        <i data-lucide="chevron-left" class="w-4 h-4 text-slate-700"></i>
+                    </button>
+                    <button id="nextProduct" aria-label="Next"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/90 shadow flex items-center justify-center">
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-700"></i>
+                    </button>
+                </div>
+            @else
+                <p class="text-sm text-slate-500">Belum ada room untuk ditampilkan.</p>
+            @endif
+        </div>
+    </section>
+
+    @push('js-scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const carousel = document.getElementById('productCarousel');
+                if (!carousel) return;
+                const track = carousel.querySelector('.carousel-track');
+                const originals = Array.from(track.children);
+                if (!originals.length) return;
+
+                // clone items for infinite effect
+                originals.forEach(node => track.appendChild(node.cloneNode(true)));
+                originals.slice().reverse().forEach(node => track.insertBefore(node.cloneNode(true), track.firstChild));
+
+                const items = Array.from(track.children);
+                let index = originals.length;
+
+                function updateTrack(animate = true) {
+                    const item = track.querySelector('.carousel-item');
+                    const itemWidth = item.getBoundingClientRect().width;
+                    if (!animate) track.style.transition = 'none';
+                    else track.style.transition = 'transform 500ms ease';
+                    track.style.transform = `translateX(${-index * itemWidth}px)`;
+                    if (!animate) requestAnimationFrame(() => {
+                        track.style.transition = 'transform 500ms ease';
+                    });
+                }
+
+                // initial position
+                updateTrack(false);
+
+                // autoplay
+                let autoplay = setInterval(() => {
+                    index++;
+                    updateTrack(true);
+                }, 3000);
+
+                function resetAutoplay() {
+                    if (autoplay) clearInterval(autoplay);
+                    autoplay = setInterval(() => {
+                        index++;
+                        updateTrack(true);
+                    }, 3000);
+                }
+
+                // handle bounds and reset without animation
+                const totalOriginal = originals.length;
+                track.addEventListener('transitionend', () => {
+                    if (index >= items.length - totalOriginal) {
+                        index = totalOriginal;
+                        updateTrack(false);
+                    } else if (index < totalOriginal) {
+                        index = items.length - (2 * totalOriginal);
+                        updateTrack(false);
+                    }
+                });
+
+                // navigation buttons
+                const prevBtn = document.getElementById('prevProduct');
+                const nextBtn = document.getElementById('nextProduct');
+                if (prevBtn) prevBtn.addEventListener('click', () => {
+                    index--;
+                    updateTrack(true);
+                    resetAutoplay();
+                });
+                if (nextBtn) nextBtn.addEventListener('click', () => {
+                    index++;
+                    updateTrack(true);
+                    resetAutoplay();
+                });
+
+                // responsive: recalc on resize
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => updateTrack(false), 150);
+                });
+
+                // touch swipe
+                let startX = 0;
+                let currentX = 0;
+                carousel.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+                carousel.addEventListener('touchmove', e => currentX = e.touches[0].clientX);
+                carousel.addEventListener('touchend', () => {
+                    const diff = startX - currentX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) index++;
+                        else index--;
+                        updateTrack(true);
+                        resetAutoplay();
+                    }
+                });
+            });
+        </script>
+    @endpush
+
     <!-- Newest Apartments -->
     <section class="py-16 md:pt-20 md:pb-10 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">

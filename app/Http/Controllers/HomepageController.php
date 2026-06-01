@@ -15,8 +15,10 @@ class HomepageController extends Controller
         $apartments = Apartment::orderBy('created_at', 'desc')
             ->take(8)
             ->get();
-        // dd($apartments);
-        return view('index', ['apartments' => $apartments, 'adminInfo' => $adminInfo]);
+        // random rooms for product list (20 items)
+        $randomRooms = Room::with('apartment')->inRandomOrder()->get();
+
+        return view('index', ['apartments' => $apartments, 'adminInfo' => $adminInfo, 'randomRooms' => $randomRooms]);
     }
 
     public function aboutUs()
