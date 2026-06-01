@@ -52,6 +52,9 @@
                     <li><a href="{{ route('inquiry.create') }}"
                             class="text-slate-400 text-sm hover:text-white transition-colors">Hubungi
                             Kami</a></li>
+                    <li><a href="{{ route('terms') }}"
+                            class="text-slate-400 text-sm hover:text-white transition-colors">Syarat &amp; Ketentuan</a>
+                    </li>
                 </ul>
             </div>
             <div>

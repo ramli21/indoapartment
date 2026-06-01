@@ -29,6 +29,12 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $view->with('adminInfo', AdminInfo::getFirst());
         });
+
+        // Protect log-viewer routes with a simple password gate middleware.
+        // This pushes the middleware into the web group at runtime so package routes
+        // under /log-viewer are also protected.
+        $router = $this->app->make('router');
+        $router->pushMiddlewareToGroup('web', \App\Http\Middleware\ProtectLogViewer::class);
     }
 }
 

@@ -55,6 +55,7 @@ class BookingController extends Controller
             'check_out' => 'required|date|after:check_in',
             'jumlah_tamu' => 'required|integer|min:1|max:' . ($room->tamu_dewasa + $room->tamu_anak),
             'catatan' => 'nullable|string|max:1000',
+            'is_terms_accepted' => 'accepted',
         ]);
 
         // Check for overlapping bookings (only pending/confirmed block)
@@ -107,6 +108,8 @@ class BookingController extends Controller
             'total_harga' => $totalHarga,
             'catatan' => $sanitized['catatan'],
             'status' => 'pending',
+            'is_terms_accepted' => true,
+            'terms_accepted_at' => now(),
         ]);
 
         // Update room status to Terisi (occupied)

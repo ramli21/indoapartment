@@ -294,16 +294,29 @@
                                 </div>
                             </div>
 
+                            <!-- Terms acceptance -->
+                            <div class="mb-4 text-sm text-slate-600">
+                                <label class="inline-flex items-start gap-3">
+                                    <input type="checkbox" id="termsCheckbox" name="is_terms_accepted" value="1"
+                                        class="mt-1 w-4 h-4" />
+                                    <span class="text-sm">Saya menyetujui <a href="{{ route('terms') }}" target="_blank"
+                                            rel="noopener noreferrer" class="text-blue-600 hover:underline">Syarat &amp;
+                                            Ketentuan</a> dan <a href="{{ route('terms') }}#privacy" target="_blank"
+                                            rel="noopener noreferrer" class="text-blue-600 hover:underline">Kebijakan
+                                            Privasi</a></span>
+                                </label>
+                                @error('is_terms_accepted')
+                                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Submit -->
-                            <button type="submit"
-                                class="w-full bg-brand text-white py-3 rounded-xl font-medium hover:bg-brand-light transition-colors flex items-center justify-center gap-2">
+                            <button type="submit" id="bookingSubmit"
+                                class="w-full bg-brand text-white py-3 rounded-xl font-medium hover:bg-brand-light transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                                disabled>
                                 <i data-lucide="calendar-check" class="w-4 h-4"></i>
                                 Booking Sekarang
                             </button>
-
-                            <p class="text-xs text-slate-400 text-center mt-3">
-                                Dengan booking, Anda setuju dengan syarat & ketentuan
-                            </p>
                         </form>
                     </div>
                 </div>
@@ -399,6 +412,18 @@
             });
 
             checkOutInput.addEventListener('change', calculatePrice);
+
+            // Terms checkbox handling: enable submit only when checked
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            const bookingSubmit = document.getElementById('bookingSubmit');
+            if (termsCheckbox && bookingSubmit) {
+                termsCheckbox.addEventListener('change', function() {
+                    bookingSubmit.disabled = !this.checked;
+                });
+                // ensure it's unchecked by default
+                termsCheckbox.checked = false;
+                bookingSubmit.disabled = true;
+            }
         });
     </script>
     <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>

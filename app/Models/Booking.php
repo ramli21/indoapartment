@@ -31,6 +31,8 @@ class Booking extends Model
     'cancel_reason',
     'cancelled_by',
     'cancelled_at',
+    'is_terms_accepted',
+    'terms_accepted_at',
   ];
 
   protected $casts = [
@@ -38,6 +40,8 @@ class Booking extends Model
     'check_out' => 'date',
     'harga_per_malam' => 'decimal:2',
     'total_harga' => 'decimal:2',
+    'is_terms_accepted' => 'boolean',
+    'terms_accepted_at' => 'datetime',
   ];
 
   public function room()

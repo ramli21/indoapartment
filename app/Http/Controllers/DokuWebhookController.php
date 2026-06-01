@@ -59,6 +59,13 @@ class DokuWebhookController extends Controller
 
             // Simulate updating transaction status
             $arrayData = json_decode($body, true);
+            $sensitiveKeys = [
+                'customer.name', // Mencegah penyimpanan PII (UU PDP)
+                'customer.email',
+                'card_payment.masked_card_number', // Mencegah pelanggaran PCI-DSS
+                'card_payment.authentication_id'
+            ];
+            $arrayData = Arr::except($arrayData, $sensitiveKeys);
             // Example: find transaction by invoice id and update status (simulation)
 
             $orderData = data_get($arrayData, 'order') ?? data_get($arrayData, 'request-all.order');
@@ -84,7 +91,7 @@ class DokuWebhookController extends Controller
                 $booking->payment_method = 'doku';
                 $booking->paid_at = now();
                 $booking->payment_notes = "Payment successful via Doku channel $paymentChannel (ID: $channelId)";
-                $booking->save();                
+                $booking->save();  
 
                 // store log of payment notification
                 self::StorePaymentLog(

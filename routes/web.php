@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\RoomController;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
@@ -17,6 +18,26 @@ Route::get('/apartments/{apartment}', [RoomController::class, 'apartmentRooms'])
 Route::get('/bantuan', function () {
     return view('help');
 })->name('help');
+
+// Terms & Conditions page
+Route::get('/term-of-services', function () {
+    return view('term-of-services');
+})->name('terms');
+
+// Log viewer login handler (used by ProtectLogViewer middleware)
+Route::post('/log-viewer-login', function (Request $request) {
+    $request->validate(['password' => 'required']);
+
+    $expected = env('LOG_VIEWER_PASSWORD', 'change-me');
+    // timing-safe compare
+    if (is_string($expected) && hash_equals((string)$expected, (string)$request->password)) {
+        $request->session()->put('log_viewer_authenticated', true);
+        $target = $request->session()->pull('log_viewer_target', url('/log-viewer'));
+        return redirect($target);
+    }
+
+    return back()->withErrors(['password' => 'Password salah']);
+});
 
 // Public Booking Routes
 Route::get('/booking/{room}/create', [BookingController::class, 'create'])->name('booking.create');
@@ -36,9 +57,9 @@ Route::get('/booking/{booking:booking_code}/cancel', [BookingController::class, 
 Route::post('/booking/{booking:booking_code}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
 
 // Public Inquiry Routes
-Route::get('/hubungi-kami', [InquiryController::class, 'create'])->name('inquiry.create');
-Route::post('/hubungi-kami', [InquiryController::class, 'store'])->name('inquiry.store');
-Route::get('/hubungi-kami/terkirim', [InquiryController::class, 'success'])->name('inquiry.success');
+Route::get('/contact-us', [InquiryController::class, 'create'])->name('inquiry.create');
+Route::post('/contact-us', [InquiryController::class, 'store'])->name('inquiry.store');
+Route::get('/contact-us/terkirim', [InquiryController::class, 'success'])->name('inquiry.success');
 
 // Route::get('/contact', [HomepageController::class, 'contact']);
 
