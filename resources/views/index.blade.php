@@ -157,14 +157,19 @@
 
                                 <a href="{{ route('booking.create', ['room' => $room->slug ?? $room->id]) }}"
                                     class="carousel-item flex-none w-1/2 sm:w-1/3 lg:w-1/4 pr-3">
-                                    <div class="bg-white rounded-2xl border border-slate-100 p-3 flex gap-3 items-center">
-                                        <div class="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-slate-100">
+                                    <div
+                                        class="bg-white rounded-2xl border border-slate-100 p-3 sm:flex gap-3 items-center">
+                                        <div
+                                            class="w-full h-20 sm:w-20 sm:h-20 flex-shrink-0 rounded-md overflow-hidden bg-slate-100 mb-1 sm:mb-0">
                                             <img src="{{ $thumb }}" class="w-full h-full object-cover"
                                                 alt="{{ $room->judul }}">
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="text-xs text-slate-400">{{ $room->apartment->nama ?? '—' }}</div>
-                                            <h3 class="font-semibold text-slate-800 line-clamp-1">{{ $room->judul }}</h3>
+                                            <h3
+                                                class="font-semibold text-slate-800 sm:line-clamp-2 line-clamp-3 text-sm sm:text-base">
+                                                {{ $room->judul }}
+                                            </h3>
                                             <div class="text-sm text-brand font-medium mt-1">Rp
                                                 {{ number_format((float) $room->harga_per_malam, 0, ',', '.') }}</div>
                                         </div>
