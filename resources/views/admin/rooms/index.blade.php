@@ -24,6 +24,15 @@
             </div>
 
             <!-- Alert -->
+            @if (session('error'))
+                <div
+                    class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-fadeIn">
+                    <i data-lucide="x-circle" class="w-5 h-5 shrink-0"></i>
+                    <span class="text-sm font-medium">{{ session('error') }}</span>
+                </div>
+            @endif
+
+            <!-- Alert -->
             @if (session('success'))
                 <div
                     class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-700 animate-fadeIn">
@@ -216,8 +225,7 @@
                                                     title="Edit">
                                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                                 </a>
-                                                <form
-                                                    action="{{ route('admin.apartments.rooms.destroy', [$apartment->id, $room->id]) }}"
+                                                <form action="{{ route('admin.apartments.rooms.destroy', [$room->id]) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Yakin ingin menghapus room ini?')">
                                                     @csrf

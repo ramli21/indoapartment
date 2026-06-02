@@ -351,10 +351,14 @@ class RoomController extends Controller
         return redirect()->route('admin.apartments.rooms.index', $room->apartment_id)->with('success', 'Room berhasil diperbarui!');
     }
 
-    public function destroy($apartmentId, $room_id)
+    public function destroy($room_id)
     {
-        $apartment = Apartment::findOrFail($apartmentId);
-        $room = $apartment->rooms()->findOrFail($room_id);
+        // $apartment = Apartment::findOrFail($apartmentId);
+        $room = Room::find($room_id);
+
+        if (!$room) {
+            return redirect()->back()->with('error', 'Ops, terjadi kesalahan. Room tidak ditemukan!');
+        }
 
         if ($room->gambar && is_array($room->gambar)) {
             foreach ($room->gambar as $image) {
@@ -366,7 +370,7 @@ class RoomController extends Controller
 
         $room->delete();
 
-        return redirect()->route('admin.apartments.rooms.index', $apartment->id)->with('success', 'Room berhasil dihapus!');
+        return redirect()->back()->with('success', 'Room berhasil dihapus!');
     }
 }
 
