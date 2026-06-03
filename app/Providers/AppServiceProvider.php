@@ -6,6 +6,7 @@ use App\Models\AdminInfo;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Opcodes\LogViewer\Facades\LogViewer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,13 @@ class AppServiceProvider extends ServiceProvider
         // under /log-viewer are also protected.
         $router = $this->app->make('router');
         $router->pushMiddlewareToGroup('web', \App\Http\Middleware\ProtectLogViewer::class);
+
+        // Use the session-based password gate implemented in routes/web.php.
+        // This tells the LogViewer package to use our callback for authorization
+        // so that the package will accept the session flag set by the login POST.
+        LogViewer::auth(function ($request) {
+            return $request->session()->get('log_viewer_authenticated', false);
+        });
     }
 }
 
