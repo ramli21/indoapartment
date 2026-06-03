@@ -387,7 +387,7 @@
                         <!-- Pagination -->
                         @if ($rooms->hasPages())
                             <div class="mt-8">
-                                {{ $room->links('pagination::tailwind') }}
+                                {{ $rooms->links('pagination::tailwind') }}
                             </div>
                         @endif
                     @else
