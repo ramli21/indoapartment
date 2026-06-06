@@ -20,6 +20,47 @@
         </div>
     </section>
 
+    <script>
+        // Share button handler: prefers Web Share API, falls back to clipboard
+        document.addEventListener('DOMContentLoaded', function() {
+            function showShareFeedback(btn, text = 'Tersalin') {
+                const tip = document.createElement('span');
+                tip.className = 'absolute -top-8 right-0 bg-slate-800 text-white text-xs px-2 py-1 rounded-md z-50';
+                tip.textContent = text;
+                btn.appendChild(tip);
+                setTimeout(() => tip.remove(), 1600);
+            }
+
+            document.querySelectorAll('.share-btn').forEach(btn => {
+                btn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const link = btn.getAttribute('data-link') || window.location.href;
+                    // Try Web Share API
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({
+                                title: document.title,
+                                url: link
+                            });
+                            showShareFeedback(btn, 'Terkirim');
+                            return;
+                        } catch (err) {
+                            // user canceled or failed, fall back to clipboard
+                        }
+                    }
+                    // Fallback: copy to clipboard
+                    try {
+                        await navigator.clipboard.writeText(link);
+                        showShareFeedback(btn, 'Tautan disalin');
+                    } catch (err) {
+                        showShareFeedback(btn, 'Gagal disalin');
+                    }
+                });
+            });
+        });
+    </script>
+
     <!-- Mobile Filter Popup -->
     <div id="filterPopup" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/40" onclick="closeFilterPopup()"></div>
@@ -349,6 +390,11 @@
                                                 Tersedia
                                             </span>
                                         </div>
+                                        <button type="button"
+                                            class="share-btn absolute right-3 bottom-3 w-8 h-8 rounded-full bg-white/90 shadow flex items-center justify-center text-sm text-slate-700 hover:bg-white transition"
+                                            data-link="{{ route('booking.create', $room) }}" aria-label="Share">
+                                            <i data-lucide="share-2" class="w-4 h-4"></i>
+                                        </button>
                                     </div>
                                     <div class="p-4">
                                         <div class="flex items-center justify-between mb-1">
@@ -387,7 +433,7 @@
                         <!-- Pagination -->
                         @if ($rooms->hasPages())
                             <div class="mt-8">
-                                {{ $room->links('pagination::tailwind') }}
+                                {{ $rooms->links('pagination::tailwind') }}
                             </div>
                         @endif
                     @else

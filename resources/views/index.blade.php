@@ -132,12 +132,6 @@
     <!-- List Product (Rooms carousel) -->
     <section class="py-5 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            {{-- <div class="flex items-end justify-between mb-6">
-                <div>
-                    <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Pilihan</span>
-                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-1">List Room</h2>
-                </div>
-            </div> --}}
 
             @if (isset($randomRooms) && $randomRooms->count())
                 <div class="relative">
@@ -158,7 +152,7 @@
                                 <a href="{{ route('booking.create', ['room' => $room->slug ?? $room->id]) }}"
                                     class="carousel-item flex-none w-1/2 sm:w-1/3 lg:w-1/4 pr-3">
                                     <div
-                                        class="bg-white rounded-2xl border border-slate-100 p-3 sm:flex gap-3 items-center">
+                                        class="bg-white rounded-2xl border border-slate-100 p-3 sm:flex gap-3 items-center relative">
                                         <div
                                             class="w-full h-20 sm:w-20 sm:h-20 flex-shrink-0 rounded-md overflow-hidden bg-slate-100 mb-1 sm:mb-0">
                                             <img src="{{ $thumb }}" class="w-full h-full object-cover"
@@ -173,6 +167,12 @@
                                             <div class="text-sm text-brand font-medium mt-1">Rp
                                                 {{ number_format((float) $room->harga_per_malam, 0, ',', '.') }}</div>
                                         </div>
+                                        <button type="button"
+                                            class="copy-link-btn absolute right-3 bottom-3 w-8 h-8 rounded-full bg-white/90 shadow flex items-center justify-center text-sm text-slate-700 hover:bg-white transition"
+                                            data-link="{{ route('booking.create', ['room' => $room->slug ?? $room->id]) }}"
+                                            aria-label="Copy link">
+                                            <i data-lucide="copy" class="w-4 h-4"></i>
+                                        </button>
                                     </div>
                                 </a>
                             @endforeach
@@ -284,6 +284,31 @@
                         updateTrack(true);
                         resetAutoplay();
                     }
+                });
+
+                // Copy link buttons
+                function showCopyFeedback(btn, text = 'Disalin') {
+                    const tip = document.createElement('span');
+                    tip.className = 'absolute -top-8 right-0 bg-slate-800 text-white text-xs px-2 py-1 rounded-md z-50';
+                    tip.textContent = text;
+                    btn.appendChild(tip);
+                    setTimeout(() => tip.remove(), 1600);
+                }
+
+                const copyButtons = document.querySelectorAll('.copy-link-btn');
+                copyButtons.forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const link = btn.getAttribute('data-link');
+                        if (!link) return;
+                        try {
+                            await navigator.clipboard.writeText(link);
+                            showCopyFeedback(btn, 'Tautan disalin');
+                        } catch (err) {
+                            showCopyFeedback(btn, 'Gagal disalin');
+                        }
+                    });
                 });
             });
         </script>
