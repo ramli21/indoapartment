@@ -324,6 +324,12 @@
         </div>
     </section>
 
+    <!-- Floating Share Button -->
+    <button id="floatingShareBtn" aria-label="Share this listing"
+        class="fixed right-5 bottom-20 z-50 w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center shadow-lg hover:bg-brand-light transition">
+        <i data-lucide="share-2" class="w-5 h-5"></i>
+    </button>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Image slider init - make images global (safe init)
@@ -424,6 +430,53 @@
                 termsCheckbox.checked = false;
                 bookingSubmit.disabled = true;
             }
+        });
+    </script>
+    <script>
+        // Floating share button behaviour (Web Share API with clipboard fallback)
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('floatingShareBtn');
+            if (!btn) return;
+
+            function showFloatingTip(text) {
+                const tip = document.createElement('div');
+                tip.className = 'absolute bg-slate-800 text-white text-xs px-2 py-1 rounded-md z-60';
+                tip.style.right = '0px';
+                tip.style.top = '-40px';
+                tip.textContent = text;
+                btn.style.position = 'fixed';
+                btn.appendChild(tip);
+                setTimeout(() => {
+                    try {
+                        tip.remove();
+                    } catch (e) {}
+                }, 1600);
+            }
+
+            btn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const link = '{{ url()->current() }}';
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: document.title,
+                            url: link
+                        });
+                        showFloatingTip('Terkirim');
+                        return;
+                    } catch (err) {
+                        // fall back to clipboard
+                    }
+                }
+
+                try {
+                    await navigator.clipboard.writeText(link);
+                    showFloatingTip('Tautan disalin');
+                } catch (err) {
+                    showFloatingTip('Gagal disalin');
+                }
+            });
         });
     </script>
     <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
