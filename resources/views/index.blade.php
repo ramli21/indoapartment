@@ -536,7 +536,7 @@
                     </div>
                     <p class="text-slate-600 text-sm leading-relaxed mb-4">"Pertama kali pakai IndoApart, langsung
                         ketemu
-                        hotel impian di Bali. Harganya jauh lebih murah dari platform lain. Proses bookingnya super
+                        apartemen impian di Bandung. Harganya jauh lebih murah dari platform lain. Proses bookingnya super
                         gampang!"</p>
                     <div class="flex items-center gap-3">
                         <div
@@ -565,7 +565,7 @@
                             RN</div>
                         <div>
                             <p class="text-sm font-medium text-slate-700">Rina Nurhayati</p>
-                            <p class="text-xs text-slate-400">Bandung</p>
+                            <p class="text-xs text-slate-400">Jakarta</p>
                         </div>
                     </div>
                 </div>
@@ -577,9 +577,9 @@
                         <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
                         <i data-lucide="star" class="w-4 h-4 text-yellow-400"></i>
                     </div>
-                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Liburan keluarga ke Lombok jadi
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">"Liburan keluarga ke Bandung jadi
                         terencana
-                        berkat StayGo. Bisa filter hotel yang ramah anak dan ada kolam renang. Recommended!"</p>
+                        berkat IndoApart. Bisa filter apartemen yang ramah anak dan ada kolam renang. Recommended!"</p>
                     <div class="flex items-center gap-3">
                         <div
                             class="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-semibold text-sm">
