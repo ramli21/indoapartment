@@ -130,8 +130,18 @@
     </section>
 
     <!-- List Product (Rooms carousel) -->
-    <section class="py-5 bg-white">
+    <section class="py-16 md:py-20 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-end justify-between mb-8">
+                <div>
+                    <span class="text-xs font-medium tracking-[0.2em] uppercase text-brand/60">Tersedia</span>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-semibold text-slate-800 mt-1">Ruangan Tersedia</h2>
+                </div>
+                <a href="{{ route('rooms.list') }}"
+                    class="hidden sm:flex items-center gap-1 text-sm font-medium text-brand hover:underline">
+                    Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
 
             @if (isset($randomRooms) && $randomRooms->count())
                 <div class="relative">
@@ -193,126 +203,6 @@
             @endif
         </div>
     </section>
-
-    @push('js-scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const carousel = document.getElementById('productCarousel');
-                if (!carousel) return;
-                const track = carousel.querySelector('.carousel-track');
-                const originals = Array.from(track.children);
-                if (!originals.length) return;
-
-                // clone items for infinite effect
-                originals.forEach(node => track.appendChild(node.cloneNode(true)));
-                originals.slice().reverse().forEach(node => track.insertBefore(node.cloneNode(true), track.firstChild));
-
-                const items = Array.from(track.children);
-                let index = originals.length;
-
-                function updateTrack(animate = true) {
-                    const item = track.querySelector('.carousel-item');
-                    const itemWidth = item.getBoundingClientRect().width;
-                    if (!animate) track.style.transition = 'none';
-                    else track.style.transition = 'transform 500ms ease';
-                    track.style.transform = `translateX(${-index * itemWidth}px)`;
-                    if (!animate) requestAnimationFrame(() => {
-                        track.style.transition = 'transform 500ms ease';
-                    });
-                }
-
-                // initial position
-                updateTrack(false);
-
-                // autoplay
-                let autoplay = setInterval(() => {
-                    index++;
-                    updateTrack(true);
-                }, 3000);
-
-                function resetAutoplay() {
-                    if (autoplay) clearInterval(autoplay);
-                    autoplay = setInterval(() => {
-                        index++;
-                        updateTrack(true);
-                    }, 3000);
-                }
-
-                // handle bounds and reset without animation
-                const totalOriginal = originals.length;
-                track.addEventListener('transitionend', () => {
-                    if (index >= items.length - totalOriginal) {
-                        index = totalOriginal;
-                        updateTrack(false);
-                    } else if (index < totalOriginal) {
-                        index = items.length - (2 * totalOriginal);
-                        updateTrack(false);
-                    }
-                });
-
-                // navigation buttons
-                const prevBtn = document.getElementById('prevProduct');
-                const nextBtn = document.getElementById('nextProduct');
-                if (prevBtn) prevBtn.addEventListener('click', () => {
-                    index--;
-                    updateTrack(true);
-                    resetAutoplay();
-                });
-                if (nextBtn) nextBtn.addEventListener('click', () => {
-                    index++;
-                    updateTrack(true);
-                    resetAutoplay();
-                });
-
-                // responsive: recalc on resize
-                let resizeTimeout;
-                window.addEventListener('resize', () => {
-                    clearTimeout(resizeTimeout);
-                    resizeTimeout = setTimeout(() => updateTrack(false), 150);
-                });
-
-                // touch swipe
-                let startX = 0;
-                let currentX = 0;
-                carousel.addEventListener('touchstart', e => startX = e.touches[0].clientX);
-                carousel.addEventListener('touchmove', e => currentX = e.touches[0].clientX);
-                carousel.addEventListener('touchend', () => {
-                    const diff = startX - currentX;
-                    if (Math.abs(diff) > 50) {
-                        if (diff > 0) index++;
-                        else index--;
-                        updateTrack(true);
-                        resetAutoplay();
-                    }
-                });
-
-                // Copy link buttons
-                function showCopyFeedback(btn, text = 'Disalin') {
-                    const tip = document.createElement('span');
-                    tip.className = 'absolute -top-8 right-0 bg-slate-800 text-white text-xs px-2 py-1 rounded-md z-50';
-                    tip.textContent = text;
-                    btn.appendChild(tip);
-                    setTimeout(() => tip.remove(), 1600);
-                }
-
-                const copyButtons = document.querySelectorAll('.copy-link-btn');
-                copyButtons.forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const link = btn.getAttribute('data-link');
-                        if (!link) return;
-                        try {
-                            await navigator.clipboard.writeText(link);
-                            showCopyFeedback(btn, 'Tautan disalin');
-                        } catch (err) {
-                            showCopyFeedback(btn, 'Gagal disalin');
-                        }
-                    });
-                });
-            });
-        </script>
-    @endpush
 
     <!-- Newest Apartments -->
     <section class="py-16 md:pt-20 md:pb-10 bg-white">
@@ -746,3 +636,123 @@
         </div>
     </section> --}}
 @endsection
+
+@push('js-scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.getElementById('productCarousel');
+            if (!carousel) return;
+            const track = carousel.querySelector('.carousel-track');
+            const originals = Array.from(track.children);
+            if (!originals.length) return;
+
+            // clone items for infinite effect
+            originals.forEach(node => track.appendChild(node.cloneNode(true)));
+            originals.slice().reverse().forEach(node => track.insertBefore(node.cloneNode(true), track.firstChild));
+
+            const items = Array.from(track.children);
+            let index = originals.length;
+
+            function updateTrack(animate = true) {
+                const item = track.querySelector('.carousel-item');
+                const itemWidth = item.getBoundingClientRect().width;
+                if (!animate) track.style.transition = 'none';
+                else track.style.transition = 'transform 500ms ease';
+                track.style.transform = `translateX(${-index * itemWidth}px)`;
+                if (!animate) requestAnimationFrame(() => {
+                    track.style.transition = 'transform 500ms ease';
+                });
+            }
+
+            // initial position
+            updateTrack(false);
+
+            // autoplay
+            let autoplay = setInterval(() => {
+                index++;
+                updateTrack(true);
+            }, 5000);
+
+            function resetAutoplay() {
+                if (autoplay) clearInterval(autoplay);
+                autoplay = setInterval(() => {
+                    index++;
+                    updateTrack(true);
+                }, 5000);
+            }
+
+            // handle bounds and reset without animation
+            const totalOriginal = originals.length;
+            track.addEventListener('transitionend', () => {
+                if (index >= items.length - totalOriginal) {
+                    index = totalOriginal;
+                    updateTrack(false);
+                } else if (index < totalOriginal) {
+                    index = items.length - (2 * totalOriginal);
+                    updateTrack(false);
+                }
+            });
+
+            // navigation buttons
+            const prevBtn = document.getElementById('prevProduct');
+            const nextBtn = document.getElementById('nextProduct');
+            if (prevBtn) prevBtn.addEventListener('click', () => {
+                index--;
+                updateTrack(true);
+                resetAutoplay();
+            });
+            if (nextBtn) nextBtn.addEventListener('click', () => {
+                index++;
+                updateTrack(true);
+                resetAutoplay();
+            });
+
+            // responsive: recalc on resize
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => updateTrack(false), 150);
+            });
+
+            // touch swipe
+            let startX = 0;
+            let currentX = 0;
+            carousel.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+            carousel.addEventListener('touchmove', e => currentX = e.touches[0].clientX);
+            carousel.addEventListener('touchend', () => {
+                const diff = startX - currentX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) index++;
+                    else index--;
+                    updateTrack(true);
+                    resetAutoplay();
+                }
+            });
+
+            // Copy link buttons
+            function showCopyFeedback(btn, text = 'Disalin') {
+                const tip = document.createElement('span');
+                tip.className = 'absolute -top-8 right-0 bg-slate-800 text-white text-xs px-2 py-1 rounded-md z-50';
+                tip.textContent = text;
+                btn.appendChild(tip);
+                setTimeout(() => tip.remove(), 1600);
+            }
+
+            const copyButtons = document.querySelectorAll('.copy-link-btn');
+            copyButtons.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const link = btn.getAttribute('data-link');
+                    if (!link) return;
+                    try {
+                        await navigator.clipboard.writeText(link);
+                        showCopyFeedback(btn, 'Tautan disalin');
+                    } catch (err) {
+                        showCopyFeedback(btn, 'Gagal disalin');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

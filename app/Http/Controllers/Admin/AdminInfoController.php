@@ -38,6 +38,8 @@ class AdminInfoController extends Controller
             'account_holder' => 'nullable|string|max:255',
             'whatsapp' => 'nullable|string|max:50',
             'email' => 'nullable|email|max:255',
+            'ppn' => 'nullable|numeric|min:0|max:100',
+            'admin_fee' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $info = AdminInfo::first();

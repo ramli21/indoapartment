@@ -26,7 +26,7 @@
 
 @section('content')
     <section class="pt-24 pb-12 bg-slate-50 min-h-screen">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
             <!-- Breadcrumb -->
             <div class="mb-6">
                 <a href="{{ route('rooms.list') }}"
@@ -36,9 +36,9 @@
                 </a>
             </div>
 
-            <div class="grid lg:grid-cols-3 gap-6">
+            <div class="grid lg:grid-cols-5 gap-6">
                 <!-- Apartment Details -->
-                <div class="lg:col-span-2">
+                <div class="lg:col-span-3">
                     <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
                         <!-- Image Slider -->
                         <div class="relative">
@@ -175,7 +175,7 @@
                 </div>
 
                 <!-- Booking Form -->
-                <div class="lg:col-span-1">
+                <div class="lg:col-span-2">
                     <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm sticky top-24">
                         <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
                             <i data-lucide="calendar-check" class="w-5 h-5 text-brand"></i>
@@ -185,45 +185,64 @@
                         <form action="{{ route('booking.store', $room->slug) }}" method="POST" id="bookingForm">
                             @csrf
 
-                            <!-- Name -->
-                            <div class="mb-4">
-                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                    Nama Tamu
-                                </label>
-                                <input type="text" name="nama_tamu" required
-                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
-                                    placeholder="Nama lengkap">
-                                @error('nama_tamu')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <!-- Name -->
+                                <div class="mb-4">
+                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                        Nama Tamu
+                                    </label>
+                                    <input type="text" name="nama_tamu" required
+                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
+                                        placeholder="Nama lengkap">
+                                    @error('nama_tamu')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-4">
+                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                        Email
+                                    </label>
+                                    <input type="email" name="email_tamu" required
+                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
+                                        placeholder="email@example.com">
+                                    @error('email_tamu')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
-                            <!-- Email -->
-                            <div class="mb-4">
-                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                    Email
-                                </label>
-                                <input type="email" name="email_tamu" required
-                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
-                                    placeholder="email@example.com">
-                                @error('email_tamu')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <!-- Phone -->
+                                <div class="mb-4">
+                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                        No. WhatsApp
+                                    </label>
+                                    <input type="tel" name="no_hp" required
+                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
+                                        placeholder="0812 3456 7890">
+                                    @error('no_hp')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
 
-                            <!-- Phone -->
-                            <div class="mb-4">
-                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                    No. WhatsApp
-                                </label>
-                                <input type="tel" name="no_hp" required
-                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
-                                    placeholder="0812 3456 7890">
-                                @error('no_hp')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
+                                <!-- Guests -->
+                                <div class="mb-4">
+                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+                                        Jumlah Tamu (Max: {{ $room->tamu_dewasa + $room->tamu_anak }})
+                                    </label>
+                                    <select name="jumlah_tamu" required
+                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
+                                        @for ($i = 1; $i <= $room->tamu_dewasa + $room->tamu_anak; $i++)
+                                            <option value="{{ $i }}">{{ $i }} Tamu</option>
+                                        @endfor
+                                    </select>
+                                    @error('jumlah_tamu')
+                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
-
                             <!-- Dates -->
                             <div class="grid grid-cols-2 gap-3 mb-4">
                                 <div>
@@ -248,21 +267,6 @@
                                 </div>
                             </div>
 
-                            <!-- Guests -->
-                            <div class="mb-4">
-                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                    Jumlah Tamu (Max: {{ $room->tamu_dewasa + $room->tamu_anak }})
-                                </label>
-                                <select name="jumlah_tamu" required
-                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
-                                    @for ($i = 1; $i <= $room->tamu_dewasa + $room->tamu_anak; $i++)
-                                        <option value="{{ $i }}">{{ $i }} Tamu</option>
-                                    @endfor
-                                </select>
-                                @error('jumlah_tamu')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
 
                             <!-- Notes -->
                             <div class="mb-5">
@@ -279,6 +283,13 @@
 
                             <!-- Price Summary -->
                             <div class="mb-5 p-4 bg-brand/5 rounded-xl border border-brand/10">
+                                <div class="hidden">
+                                    <input type="hidden" name="ppn" id="ppnPercent"
+                                        value="{{ $adminInfo->ppn ?? 0 }}" />
+                                    <input type="hidden" name="admin_fee" id="adminFeePercent"
+                                        value="{{ $adminInfo->admin_fee ?? 0 }}" />
+                                </div>
+
                                 <div class="flex justify-between text-sm mb-2">
                                     <span class="text-slate-600">Harga per malam</span>
                                     <span class="text-slate-800">Rp
@@ -288,11 +299,28 @@
                                     <span class="text-slate-600">Jumlah malam</span>
                                     <span class="text-slate-800" id="jumlahMalam">0 malam</span>
                                 </div>
+
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600">Subtotal</span>
+                                    <span class="text-slate-800" id="subtotalHarga">Rp 0</span>
+                                </div>
+
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600">PPN ({{ $adminInfo->ppn ?? 0 }}%)</span>
+                                    <span class="text-slate-800" id="ppnAmount">Rp 0</span>
+                                </div>
+
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600">Admin Fee ({{ $adminInfo->admin_fee ?? 0 }}%)</span>
+                                    <span class="text-slate-800" id="adminFeeAmount">Rp 0</span>
+                                </div>
+
                                 <div class="flex justify-between text-sm mb-2">
                                     <span class="text-slate-600">Total</span>
                                     <span class="text-slate-800" id="totalHarga">Rp 0</span>
                                 </div>
                             </div>
+
 
                             <!-- Terms acceptance -->
                             <div class="mb-4 text-sm text-slate-600">
@@ -342,8 +370,16 @@
             const checkInInput = document.getElementById('checkIn');
             const checkOutInput = document.getElementById('checkOut');
             const jumlahMalamDisplay = document.getElementById('jumlahMalam');
+            const subtotalHargaDisplay = document.getElementById('subtotalHarga');
+            const ppnAmountDisplay = document.getElementById('ppnAmount');
+            const adminFeeAmountDisplay = document.getElementById('adminFeeAmount');
             const totalHargaDisplay = document.getElementById('totalHarga');
+
             const hargaPerMalam = {{ (float) $room->harga_per_malam }};
+            const ppnPercentEl = document.getElementById('ppnPercent');
+            const adminFeePercentEl = document.getElementById('adminFeePercent');
+            const ppnPercent = Number(ppnPercentEl?.value ?? 0);
+            const adminFeePercent = Number(adminFeePercentEl?.value ?? 0);
 
             // Set min date to today
             const today = new Date().toISOString().split('T')[0];
@@ -377,9 +413,10 @@
                 // So we enforce disabling by clearing value if selected date is blocked.
                 inputEl.addEventListener('change', function() {
                     if (this.value && bookedDates.includes(this.value)) {
+                        const blocked = this.value;
                         this.value = '';
 
-                        alert('Tanggal ' + this.value +
+                        alert('Tanggal ' + blocked +
                             ' sudah dibooking. Silakan pilih tanggal lain (check-in 14:00, check-out 12:00).'
                         );
                     }
@@ -397,12 +434,22 @@
                 if (checkInInput.value && checkOutInput.value && checkOut > checkIn) {
                     const diffTime = checkOut - checkIn;
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    const total = diffDays * hargaPerMalam;
+                    const subtotal = diffDays * hargaPerMalam;
+                    const ppnAmount = subtotal * (ppnPercent / 100);
+                    const adminFeeAmount = subtotal * (adminFeePercent / 100);
+                    const total = subtotal + ppnAmount + adminFeeAmount;
 
                     jumlahMalamDisplay.textContent = diffDays + ' malam';
+                    subtotalHargaDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
+                    ppnAmountDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(ppnAmount);
+                    adminFeeAmountDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(
+                        adminFeeAmount);
                     totalHargaDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
                 } else {
                     jumlahMalamDisplay.textContent = '0 malam';
+                    subtotalHargaDisplay.textContent = 'Rp 0';
+                    ppnAmountDisplay.textContent = 'Rp 0';
+                    adminFeeAmountDisplay.textContent = 'Rp 0';
                     totalHargaDisplay.textContent = 'Rp 0';
                 }
             }

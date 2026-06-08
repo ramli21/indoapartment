@@ -65,10 +65,29 @@
                         </div>
                         <div class="border-t border-slate-200 my-3"></div>
                         <div class="flex justify-between">
+                            @php
+                                $checkIn = \Carbon\Carbon::parse($booking->check_in);
+                                $checkOut = \Carbon\Carbon::parse($booking->check_out);
+                                $jumlahMalam = $checkIn->diffInDays($checkOut);
+                            @endphp
+                            <span class="text-slate-600">Sub Total</span>
+                            <span class="text-slate-800">Rp
+                                {{ number_format($booking->harga_per_malam * $jumlahMalam, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">PPN</span>
+                            <span class="text-slate-800">{{ $booking->ppn }}%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Admin Fee</span>
+                            <span class="text-slate-800">{{ $booking->admin_fee }}%</span>
+                        </div>
+                        <div class="flex justify-between">
                             <span class="text-slate-600">Total Pembayaran</span>
                             <span class="text-lg font-bold text-brand">Rp
                                 {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
                         </div>
+                        <div class="border-t border-slate-200 my-3"></div>
                         <div class="flex justify-between">
                             <span class="text-slate-600">Status</span>
                             <span

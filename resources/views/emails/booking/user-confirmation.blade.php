@@ -73,6 +73,26 @@
                         <td style="text-align:right; font-weight:600;">Rp
                             {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</td>
                     </tr>
+                    @php
+                        $subTotal = $booking->harga_per_malam * $booking->jumlah_malam;
+                        $ppnAmount = ($subTotal * $booking->ppn) / 100;
+                        $adminFeeAmount = ($subTotal * $booking->admin_fee) / 100;
+                    @endphp
+                    <tr>
+                        <td class="muted">Sub Total</td>
+                        <td style="text-align:right; font-weight:600;">Rp
+                            {{ number_format($subTotal, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">PPN</td>
+                        <td style="text-align:right; font-weight:600;">Rp
+                            {{ number_format($ppnAmount, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="muted">Admin Fee</td>
+                        <td style="text-align:right; font-weight:600;">Rp
+                            {{ number_format($adminFeeAmount, 0, ',', '.') }}</td>
+                    </tr>
                     <tr>
                         <td class="muted">Total</td>
                         <td style="text-align:right; font-size:18px; font-weight:700; color:#16a34a;">Rp
@@ -85,7 +105,8 @@
         <tr>
             <td style="padding-top:16px; color:#64748b; font-size:14px;">
                 <p style="margin:0;">Simpan kode booking ini untuk referensi Anda. Anda dapat melacak booking anytime di:
-                    <strong>/lacak-booking</strong></p>
+                    <strong>/lacak-booking</strong>
+                </p>
             </td>
         </tr>
 

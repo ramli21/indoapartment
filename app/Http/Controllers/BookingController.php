@@ -39,7 +39,12 @@ class BookingController extends Controller
         //         ->with('error', 'Apartemen ini sedang tidak tersedia.');
         // }
 
-        return view('booking.create', compact('room'));
+        $adminInfo = AdminInfo::first();
+        if (!$adminInfo || empty($adminInfo->email)) {
+            \Log::warning('Admin email not configured in AdminInfo. Booking confirmation emails may not be sent to admin.');
+        }
+
+        return view('booking.create', compact('room', 'adminInfo'));
     }
 
     /**
@@ -56,6 +61,8 @@ class BookingController extends Controller
             'jumlah_tamu' => 'required|integer|min:1|max:' . ($room->tamu_dewasa + $room->tamu_anak),
             'catatan' => 'nullable|string|max:1000',
             'is_terms_accepted' => 'accepted',
+            'ppn' => 'nullable|numeric|min:0|max:100',
+            'admin_fee' => 'nullable|numeric|min:0|max:100',
         ]);
 
         // Check for overlapping bookings (only pending/confirmed block)
@@ -80,6 +87,8 @@ class BookingController extends Controller
             'check_out' => $validated['check_out'],
             'jumlah_tamu' => (int) $validated['jumlah_tamu'],
             'catatan' => $validated['catatan'] ? strip_tags($validated['catatan']) : null,
+            'ppn' => $validated['ppn'] ?? 0,
+            'admin_fee' => $validated['admin_fee'] ?? 0,
         ];
 
         // Calculate total price
@@ -87,7 +96,9 @@ class BookingController extends Controller
         $checkOut = \Carbon\Carbon::parse($validated['check_out']);
         $jumlahMalam = $checkIn->diffInDays($checkOut);
         $hargaPerMalam = (float) $room->harga_per_malam;
-        $totalHarga = $hargaPerMalam * $jumlahMalam;
+        $ppnAmount = ($hargaPerMalam * $sanitized['ppn']) / 100;
+        $adminFeeAmount = ($hargaPerMalam * $sanitized['admin_fee']) / 100;
+        $totalHarga = $hargaPerMalam * $jumlahMalam + ($ppnAmount * $jumlahMalam) + ($adminFeeAmount * $jumlahMalam);
 
         // Generate unique 6-char alphanumeric booking code
         do {
@@ -110,6 +121,8 @@ class BookingController extends Controller
             'status' => 'pending',
             'is_terms_accepted' => true,
             'terms_accepted_at' => now(),
+            'ppn' => $sanitized['ppn'],
+            'admin_fee' => $sanitized['admin_fee'],
         ]);
 
         // Update room status to Terisi (occupied)
@@ -210,6 +223,8 @@ class BookingController extends Controller
             'payment_method' => ['required', 'in:' . implode(',', $paymentMethods)],
             'payment_notes' => 'nullable|string|max:500',
             'payment_proof' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'ppn' => 'nullable|numeric|min:0|max:100',
+            'admin_fee' => 'nullable|numeric|min:0|max:100',
         ]);
 
         // Handle payment proof upload for bank transfer

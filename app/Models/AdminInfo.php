@@ -15,6 +15,8 @@ class AdminInfo extends Model
         'account_holder',
         'whatsapp',
         'email',
+        'ppn',
+        'admin_fee',
     ];
 
     public static function getFirst()

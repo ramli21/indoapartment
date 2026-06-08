@@ -86,7 +86,7 @@ class DokuService
         //     ],
         // ];
 
-        $callbackUrl = "https://indoapart.akhritech.com/payment/redirect?invoice_number=" . urlencode($invoiceNumber);
+        $callbackUrl = config('app.url') . "/payment/redirect?invoice_number=" . urlencode($invoiceNumber);
 
         $body = [
             "order" => [

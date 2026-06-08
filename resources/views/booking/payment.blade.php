@@ -39,6 +39,29 @@
                         <span class="text-slate-600">Durasi</span>
                         <span class="text-slate-800">{{ $booking->jumlah_malam }} malam</span>
                     </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-600">Harga per Malam</span>
+                        <span class="text-slate-800">Rp
+                            {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        @php
+                            $checkIn = \Carbon\Carbon::parse($booking->check_in);
+                            $checkOut = \Carbon\Carbon::parse($booking->check_out);
+                            $jumlahMalam = $checkIn->diffInDays($checkOut);
+                        @endphp
+                        <span class="text-slate-600">Sub Total</span>
+                        <span class="text-slate-800">Rp
+                            {{ number_format($booking->harga_per_malam * $jumlahMalam, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-600">PPN</span>
+                        <span class="text-slate-800">{{ $booking->ppn }}%</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-600">Admin Fee</span>
+                        <span class="text-slate-800">{{ $booking->admin_fee }}%</span>
+                    </div>
                     <div class="border-t border-slate-200 pt-2 mt-2">
                         <div class="flex justify-between">
                             <span class="text-slate-600 font-medium">Total Pembayaran</span>

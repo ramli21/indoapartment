@@ -142,6 +142,43 @@
                             </table>
 
                             <!-- Total -->
+                            @php
+                                $subTotal = $booking->harga_per_malam * $booking->jumlah_malam;
+                                $ppnAmount = ($subTotal * $booking->ppn) / 100;
+                                $adminFeeAmount = ($subTotal * $booking->admin_fee) / 100;
+                            @endphp
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                style="border-collapse:collapse; margin-top:20px; background:#f0fdf4; padding:15px; border-radius:8px;">
+                                <tr>
+                                    <td style="padding:0; color:#64748b; font-size:14px; width:50%;">Sub Total</td>
+                                    <td
+                                        style="padding:0; text-align:right; color:#16a34a; font-weight:800; font-size:24px; width:50%;">
+                                        Rp {{ number_format($subTotal, 0, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0; color:#64748b; font-size:14px; width:50%;">PPN
+                                        ({{ $booking->ppn }}%)</td>
+                                    <td
+                                        style="padding:0; text-align:right; color:#16a34a; font-weight:800; font-size:24px; width:50%;">
+                                        Rp {{ number_format($ppnAmount, 0, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0; color:#64748b; font-size:14px; width:50%;">Admin Fee
+                                        ({{ $booking->admin_fee }}%)</td>
+                                    <td
+                                        style="padding:0; text-align:right; color:#16a34a; font-weight:800; font-size:24px; width:50%;">
+                                        Rp {{ number_format($adminFeeAmount, 0, ',', '.') }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0; color:#64748b; font-size:14px; width:50%;">Total
+                                        Pembayaran</td>
+                                    <td
+                                        style="padding:0; text-align:right; color:#16a34a; font-weight:800; font-size:24px; width:50%;">
+                                        Rp {{ number_format($booking->total_harga, 0, ',', '.') }}</td>
+                                </tr>
+                            </table>
+
+                            <!-- Total -->
                             <div style="background:#f0fdf4; padding:15px; border-radius:8px; margin-top:20px;">
                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
                                     style="border-collapse:collapse;">

@@ -64,6 +64,20 @@
                                 placeholder="admin@indoapart.com" />
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">PPN (%)</label>
+                            <input type="number" name="ppn" value="{{ old('ppn', $info->ppn ?? '') }}"
+                                class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-brand outline-none text-sm"
+                                placeholder="10" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Admin Fee (%)</label>
+                            <input type="number" name="admin_fee" value="{{ old('admin_fee', $info->admin_fee ?? '') }}"
+                                class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-brand outline-none text-sm"
+                                placeholder="5" />
+                        </div>
+
                         <div class="pt-4">
                             <button type="submit" class="px-4 py-2 bg-brand text-white rounded-lg">Simpan</button>
                         </div>

@@ -68,6 +68,11 @@
                                     <div class="text-xs text-slate-500">No. HP</div>
                                     <div class="text-sm text-slate-800">{{ $booking->no_hp }}</div>
                                 </div>
+                                <div>
+                                    <div class="text-xs text-slate-500">Harga per Malam</div>
+                                    <div class="text-sm font-medium text-slate-800">Rp
+                                        {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -92,14 +97,16 @@
                                     <div class="text-xs text-slate-500">Jumlah Tamu</div>
                                     <div class="text-sm font-medium text-slate-800">{{ $booking->jumlah_tamu }} Tamu</div>
                                 </div>
-                                <div>
-                                    <div class="text-xs text-slate-500">Harga per Malam</div>
-                                    <div class="text-sm font-medium text-slate-800">Rp
-                                        {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
+
+                    @php
+                        $subTotal = $booking->harga_per_malam * $booking->jumlah_malam;
+                        $ppnAmount = ($subTotal * $booking->ppn) / 100;
+                        $adminFeeAmount = ($subTotal * $booking->admin_fee) / 100;
+                    @endphp
 
                     <!-- Notes -->
                     @if ($booking->catatan)
@@ -108,6 +115,30 @@
                             <p class="text-sm text-slate-600">{{ $booking->catatan }}</p>
                         </div>
                     @endif
+
+                    <div class="mt-6 p-4 bg-slate-50 rounded-xl">
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Sub Total</span>
+                            <span class="text-slate-800">Rp
+                                {{ number_format($subTotal, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">PPN</span>
+                            <span class="text-slate-800">Rp
+                                {{ number_format($ppnAmount, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Admin Fee</span>
+                            <span class="text-slate-800">Rp
+                                {{ number_format($adminFeeAmount, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-600">Total Pembayaran</span>
+                            <span class="text-lg font-bold text-brand">Rp
+                                {{ number_format($booking->total_harga, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+
 
                     <!-- Payment Info -->
                     <div class="mt-6 p-4 bg-slate-50 rounded-xl">
@@ -181,7 +212,7 @@
                     </div>
 
                     <!-- Owner Contact -->
-                    {{-- <div class="mt-6 p-4 bg-brand/5 rounded-xl border border-brand/10">
+                    <div class="mt-6 p-4 bg-brand/5 rounded-xl border border-brand/10">
                         <h3 class="text-sm font-medium text-brand mb-3 flex items-center gap-2">
                             <i data-lucide="building" class="w-4 h-4"></i>
                             Informasi Owner
@@ -204,7 +235,7 @@
                                 <div class="text-slate-800 font-mono">{{ $booking->room->owner_rekening }}</div>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
 
                     <!-- Status Update -->
                     <div class="mt-6 pt-6 border-t border-slate-100">
