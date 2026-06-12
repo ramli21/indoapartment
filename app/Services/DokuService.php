@@ -105,17 +105,17 @@ class DokuService
             "payment" => [
                 "payment_due_date" => 120,
                 "type" => "SALE",
-                "payment_method_types" => [
-                    "VIRTUAL_ACCOUNT_BCA",
-                    "VIRTUAL_ACCOUNT_BANK_MANDIRI",
-                    "VIRTUAL_ACCOUNT_BRI",
-                    "VIRTUAL_ACCOUNT_BNI",
-                    "CREDIT_CARD",
-                    "EMONEY_SHOPEEPAY",
-                    "EMONEY_OVO",
-                    "EMONEY_DANA",
-                    "QRIS"
-                ]
+                // "payment_method_types" => [
+                //     "VIRTUAL_ACCOUNT_BCA",
+                //     "VIRTUAL_ACCOUNT_BANK_MANDIRI",
+                //     "VIRTUAL_ACCOUNT_BRI",
+                //     "VIRTUAL_ACCOUNT_BNI",
+                //     "CREDIT_CARD",
+                //     "EMONEY_SHOPEEPAY",
+                //     "EMONEY_OVO",
+                //     "EMONEY_DANA",
+                //     "QRIS"
+                // ]
             ],
             "customer" => $customerDetails
         ];

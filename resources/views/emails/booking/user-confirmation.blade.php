@@ -68,7 +68,7 @@
             <td style="padding-top:12px;">
                 <table width="100%" cellpadding="8" cellspacing="0" role="presentation"
                     style="background:#f0fdf4; border-radius:6px;">
-                    <tr>
+                    <tr width="50%">
                         <td class="muted">Harga per malam</td>
                         <td style="text-align:right; font-weight:600;">Rp
                             {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</td>
