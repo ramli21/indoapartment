@@ -11,6 +11,7 @@ use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\PaymentRedirectController;
 use App\Http\Controllers\DokuWebhookController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\RoomImageController;
 
 Route::get('/', [HomepageController::class, 'index'])->name('home');
 Route::get('/rooms', [RoomController::class, 'listRooms'])->name('rooms.list');
@@ -66,6 +67,11 @@ Route::get('/contact-us/terkirim', [InquiryController::class, 'success'])->name(
 // Public Owner Registration Routes (no login required)
 Route::get('/daftarkan-apartemen', [RoomController::class, 'ownerCreate'])->name('rooms.owner.create');
 Route::post('/daftarkan-apartemen', [RoomController::class, 'ownerStore'])->name('rooms.owner.store');
+
+// Public Dropzone Upload Routes
+Route::post('/rooms/upload-image', [RoomImageController::class, 'upload'])->name('rooms.uploadImage');
+Route::post('/rooms/delete-image', [RoomImageController::class, 'delete'])->name('rooms.deleteImage');
+
 
 
 // Admin Login Routes (public)

@@ -138,6 +138,7 @@
                                 <label for="gambar" class="block text-sm font-medium text-slate-700 mb-2">Gambar
                                     Apartemen <span class="text-xs text-slate-400 font-normal">(Maksimal 5 gambar,
                                         upload baru akan mengganti semua gambar lama)</span></label>
+
                                 @if ($room->gambar && is_array($room->gambar) && count($room->gambar) > 0)
                                     <div class="mb-3 flex flex-wrap gap-2">
                                         @foreach ($room->gambar as $img)
@@ -149,20 +150,24 @@
                                         @endforeach
                                     </div>
                                 @endif
+
                                 <div class="relative">
-                                    <input type="file" name="gambar[]" id="gambar" accept="image/*" multiple
-                                        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-brand file:text-white hover:file:bg-brand-light file:transition-colors cursor-pointer bg-slate-50 border border-slate-200 rounded-xl">
+                                    <div id="room-dropzone"
+                                        class="dz-message block w-full text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-xl p-4 cursor-pointer">
+                                        Upload gambar (Dropzone)
+                                    </div>
+                                    <input type="hidden" name="gambar_json" id="gambar_json" value="[]">
                                 </div>
-                                <p class="mt-1 text-xs text-slate-400">Format: JPG, PNG, WEBP. Maksimal 2MB per gambar.
-                                    Bisa pilih lebih dari 1 gambar. Kosongkan jika tidak ingin mengubah gambar.</p>
+
+                                <p class="mt-1 text-xs text-slate-400">Upload gambar ukuran besar akan diunggah via API
+                                    menggunakan Dropzone.</p>
                                 @error('gambar')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
-                                @error('gambar.*')
-                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                                @enderror
+
                                 <div id="image-preview" class="flex flex-wrap gap-2 mt-3"></div>
                             </div>
+
 
                             <!-- Deskripsi -->
                             <div class="sm:col-span-2">
@@ -472,26 +477,99 @@
         </div>
     </section>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" />
+
     <script>
-        document.getElementById('gambar').addEventListener('change', function(e) {
-            const preview = document.getElementById('image-preview');
-            preview.innerHTML = '';
-            const files = e.target.files;
-            if (files.length > 5) {
-                alert('Maksimal 5 gambar!');
-                this.value = '';
-                return;
-            }
-            for (let i = 0; i < files.length; i++) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const div = document.createElement('div');
-                    div.className = 'relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200';
-                    div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
-                    preview.appendChild(div);
+        Dropzone.autoDiscover = false;
+
+        const dropzoneEl = document.getElementById('room-dropzone');
+        const previewEl = document.getElementById('image-preview');
+        const gambarJsonEl = document.getElementById('gambar_json');
+
+        const maxImages = 5;
+
+        const uploaded = [];
+
+        function syncHiddenInput() {
+            gambarJsonEl.value = JSON.stringify(uploaded);
+        }
+
+        function renderPreviews() {
+            // saat edit, previewEl hanya untuk hasil upload baru
+            previewEl.innerHTML = '';
+
+            uploaded.forEach((item, idx) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200';
+
+                const img = document.createElement('img');
+                img.src = '{{ asset('storage') }}/' + item.path;
+                img.alt = 'Preview';
+                img.className = 'w-full h-full object-cover';
+                wrapper.appendChild(img);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className =
+                    'absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs';
+                removeBtn.innerHTML = '×';
+                removeBtn.addEventListener('click', () => {
+                    fetch('{{ route('rooms.deleteImage') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            path: item.path,
+                            room_id: {{ $room->id }}
+                        })
+                    }).finally(() => {
+                        uploaded.splice(idx, 1);
+                        syncHiddenInput();
+                        renderPreviews();
+                    });
+                });
+
+                wrapper.appendChild(removeBtn);
+                previewEl.appendChild(wrapper);
+            });
+        }
+
+        if (dropzoneEl) {
+            const dz = new Dropzone(dropzoneEl, {
+                url: '{{ route('rooms.uploadImage') }}',
+                method: 'post',
+                paramName: 'gambar',
+                maxFiles: maxImages,
+                addRemoveLinks: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                uploadMultiple: false,
+                parallelUploads: 5,
+                init: function() {
+                    this.on('sending', function(file, xhr, formData) {
+                        formData.append('room_id', {{ $room->id }});
+                    });
+
+                    this.on('success', function(file, response) {
+                        if (response && response.status === 'success' && response.path) {
+                            uploaded.push({
+                                path: response.path
+                            });
+                            syncHiddenInput();
+                            renderPreviews();
+                        }
+                    });
+
+                    this.on('maxfilesexceeded', function() {
+                        this.removeAllFiles();
+                    });
                 }
-                reader.readAsDataURL(files[i]);
-            }
-        });
+            });
+        }
     </script>
 @endsection

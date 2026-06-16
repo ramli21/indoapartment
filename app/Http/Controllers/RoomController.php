@@ -188,6 +188,8 @@ class RoomController extends Controller
     private function uploadImages(Request $request): ?array
     {
         $uploadedImages = [];
+
+        // legacy multi upload via form submit
         if ($request->hasFile('gambar')) {
             $images = $request->file('gambar');
             if (!is_array($images)) {
@@ -201,10 +203,81 @@ class RoomController extends Controller
         return $uploadedImages ?: null;
     }
 
+    private function parseGambarJson(Request $request): ?array
+    {
+        $raw = $request->input('gambar_json');
+        if (!$raw) {
+            return null;
+        }
+
+        if (!is_string($raw)) {
+            return null;
+        }
+
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded)) {
+            return null;
+        }
+
+        $paths = [];
+        foreach ($decoded as $item) {
+            if (is_string($item)) {
+                $paths[] = $item;
+            } elseif (is_array($item) && isset($item['path']) && is_string($item['path'])) {
+                $paths[] = $item['path'];
+            }
+        }
+
+        $paths = array_values(array_filter($paths));
+
+        return $paths ?: null;
+    }
+
+
+
     public function store(Request $request, $apartmentId)
     {
         $apartment = Apartment::findOrFail($apartmentId);
         // $request->all();
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'numeric' => ':attribute harus berupa angka.',
+            'integer' => ':attribute harus berupa bilangan bulat.',
+            'string' => ':attribute harus berupa teks.',
+            'min' => ':attribute minimal bernilai :min.',
+            'max' => ':attribute maksimal :max.',
+            'gambar.max' => 'Maksimal unggah gambar adalah 5 file.',
+            'gambar.*.max' => 'Ukuran gambar maksimal adalah 3MB per file.',
+            'gambar.*.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.*.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+        ];
+
+        $attributes = [
+            'judul' => 'Judul Kamar',
+            'luas' => 'Luas Kamar',
+            'tipe' => 'Tipe Kamar',
+            'harga_per_malam' => 'Harga per Malam',
+            'deskripsi' => 'Deskripsi',
+            'gambar' => 'Gambar',
+            'fasilitas' => 'Fasilitas',
+            'nama_tower' => 'Nama Tower',
+            'lantai' => 'Lantai',
+            'nomor_kamar' => 'Nomor Kamar',
+            'tamu_dewasa' => 'Kapasitas Dewasa',
+            'tamu_anak' => 'Kapasitas Anak',
+            'jumlah_kamar' => 'Jumlah Kamar',
+            'jumlah_kamar_mandi' => 'Jumlah Kamar Mandi',
+            'check_in' => 'Waktu Check-in',
+            'check_out' => 'Waktu Check-out',
+            'status' => 'Status Kamar',
+            'tata_tertib' => 'Tata Tertib',
+            'owner_nama' => 'Nama Pemilik',
+            'owner_wa' => 'Nomor WhatsApp Pemilik',
+            'owner_rekening' => 'Nomor Rekening Pemilik',
+            'owner_bank_name' => 'Nama Bank Pemilik',
+        ];
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
@@ -212,7 +285,7 @@ class RoomController extends Controller
             'harga_per_malam' => 'required|numeric|min:0',
             'deskripsi' => 'nullable|string',
             'gambar' => 'nullable|array|max:5',
-            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:3072',
             'fasilitas' => 'nullable|array',
             'fasilitas.*' => 'string|max:100',
             'nama_tower' => 'required|string|max:255',
@@ -230,14 +303,20 @@ class RoomController extends Controller
             'owner_wa' => 'required|string|max:20',
             'owner_rekening' => 'required|string|max:100',
             'owner_bank_name' => 'required|string|max:50',
-        ]);
+        ], $messages, $attributes);
 
         $images = $this->uploadImages($request);
         if ($images) {
             $validated['gambar'] = $images;
         }
 
+        $paths = $this->parseGambarJson($request);
+        if ($paths) {
+            $validated['gambar'] = $paths;
+        }
+
         $validated['apartment_id'] = $apartment->id;
+
 
         Room::create($validated);
 
@@ -246,6 +325,45 @@ class RoomController extends Controller
 
     public function ownerStore(Request $request)
     {
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'numeric' => ':attribute harus berupa angka.',
+            'integer' => ':attribute harus berupa bilangan bulat.',
+            'string' => ':attribute harus berupa teks.',
+            'min' => ':attribute minimal bernilai :min.',
+            'max' => ':attribute maksimal :max.',
+            'exists' => ':attribute tidak ditemukan di sistem.',
+            'gambar.max' => 'Maksimal unggah gambar adalah 5 file.',
+            'gambar.*.max' => 'Ukuran gambar maksimal adalah 3MB per file.',
+            'gambar.*.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.*.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+        ];
+
+        $attributes = [
+            'apartment_id' => 'Apartemen',
+            'judul' => 'Judul Kamar',
+            'luas' => 'Luas Kamar',
+            'tipe' => 'Tipe Kamar',
+            'harga_per_malam' => 'Harga per Malam',
+            'deskripsi' => 'Deskripsi',
+            'gambar' => 'Gambar',
+            'fasilitas' => 'Fasilitas',
+            'nama_tower' => 'Nama Tower',
+            'lantai' => 'Lantai',
+            'nomor_kamar' => 'Nomor Kamar',
+            'tamu_dewasa' => 'Kapasitas Dewasa',
+            'tamu_anak' => 'Kapasitas Anak',
+            'jumlah_kamar' => 'Jumlah Kamar',
+            'jumlah_kamar_mandi' => 'Jumlah Kamar Mandi',
+            'check_in' => 'Waktu Check-in',
+            'check_out' => 'Waktu Check-out',
+            'tata_tertib' => 'Tata Tertib',
+            'owner_nama' => 'Nama Pemilik',
+            'owner_wa' => 'Nomor WhatsApp Pemilik',
+            'owner_rekening' => 'Nomor Rekening Pemilik',
+            'owner_bank_name' => 'Nama Bank Pemilik',
+        ];
+
         $validated = $request->validate([
             'apartment_id' => 'required|exists:apartments,id',
             'judul' => 'required|string|max:255',
@@ -254,7 +372,7 @@ class RoomController extends Controller
             'harga_per_malam' => 'required|numeric|min:0',
             'deskripsi' => 'nullable|string',
             'gambar' => 'nullable|array|max:5',
-            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:3072',
             'fasilitas' => 'nullable|array',
             'fasilitas.*' => 'string|max:100',
             'nama_tower' => 'required|string|max:255',
@@ -271,7 +389,7 @@ class RoomController extends Controller
             'owner_wa' => 'required|string|max:20',
             'owner_rekening' => 'required|string|max:100',
             'owner_bank_name' => 'required|string|max:50',
-        ]);
+        ], $messages, $attributes);
 
         
         $images = $this->uploadImages($request);
@@ -307,6 +425,45 @@ class RoomController extends Controller
         $room = Room::findOrFail($room_id);
 
         // dd($request->all());
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'numeric' => ':attribute harus berupa angka.',
+            'integer' => ':attribute harus berupa bilangan bulat.',
+            'string' => ':attribute harus berupa teks.',
+            'min' => ':attribute minimal bernilai :min.',
+            'max' => ':attribute maksimal :max.',
+            'gambar.max' => 'Maksimal unggah gambar adalah 5 file.',
+            'gambar.*.max' => 'Ukuran gambar maksimal adalah 3MB per file.',
+            'gambar.*.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.*.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+        ];
+
+        $attributes = [
+            'judul' => 'Judul Kamar',
+            'luas' => 'Luas Kamar',
+            'tipe' => 'Tipe Kamar',
+            'harga_per_malam' => 'Harga per Malam',
+            'deskripsi' => 'Deskripsi',
+            'gambar' => 'Gambar',
+            'fasilitas' => 'Fasilitas',
+            'nama_tower' => 'Nama Tower',
+            'lantai' => 'Lantai',
+            'nomor_kamar' => 'Nomor Kamar',
+            'tamu_dewasa' => 'Kapasitas Dewasa',
+            'tamu_anak' => 'Kapasitas Anak',
+            'jumlah_kamar' => 'Jumlah Kamar',
+            'jumlah_kamar_mandi' => 'Jumlah Kamar Mandi',
+            'check_in' => 'Waktu Check-in',
+            'check_out' => 'Waktu Check-out',
+            'status' => 'Status Kamar',
+            'tata_tertib' => 'Tata Tertib',
+            'owner_nama' => 'Nama Pemilik',
+            'owner_wa' => 'Nomor WhatsApp Pemilik',
+            'owner_rekening' => 'Nomor Rekening Pemilik',
+            'owner_bank_name' => 'Nama Bank Pemilik',
+        ];
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
@@ -314,7 +471,7 @@ class RoomController extends Controller
             'harga_per_malam' => 'required|numeric|min:0',
             'deskripsi' => 'nullable|string',
             'gambar' => 'nullable|array|max:5',
-            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:3072',
             'fasilitas' => 'nullable|array',
             'fasilitas.*' => 'string|max:100',
             'nama_tower' => 'required|string|max:255',
@@ -332,7 +489,7 @@ class RoomController extends Controller
             'owner_wa' => 'required|string|max:20',
             'owner_rekening' => 'required|string|max:100',
             'owner_bank_name' => 'required|string|max:50',
-        ]);
+        ], $messages, $attributes);
 
         $images = $this->uploadImages($request);
         if ($images) {
@@ -345,6 +502,19 @@ class RoomController extends Controller
             }
             $validated['gambar'] = $images;
         }
+
+        $paths = $this->parseGambarJson($request);
+        if ($paths) {
+            if ($room->gambar && is_array($room->gambar)) {
+                foreach ($room->gambar as $oldImage) {
+                    if (Storage::disk('public')->exists($oldImage)) {
+                        Storage::disk('public')->delete($oldImage);
+                    }
+                }
+            }
+            $validated['gambar'] = $paths;
+        }
+
 
         $room->update($validated);
 
