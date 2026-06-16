@@ -205,6 +205,20 @@ class RoomController extends Controller
     {
         $apartment = Apartment::findOrFail($apartmentId);
         // $request->all();
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'numeric' => ':attribute harus berupa angka.',
+            'integer' => ':attribute harus berupa bilangan bulat.',
+            'string' => ':attribute harus berupa teks.',
+            'min' => ':attribute minimal bernilai :min.',
+            'max' => ':attribute maksimal :max.',
+            'gambar.max' => 'Maksimal unggah gambar adalah 5 file.',
+            'gambar.*.max' => 'Ukuran gambar maksimal adalah 2MB per file.',
+            'gambar.*.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.*.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+        ];
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
@@ -230,7 +244,7 @@ class RoomController extends Controller
             'owner_wa' => 'required|string|max:20',
             'owner_rekening' => 'required|string|max:100',
             'owner_bank_name' => 'required|string|max:50',
-        ]);
+        ], $messages);
 
         $images = $this->uploadImages($request);
         if ($images) {
@@ -246,6 +260,20 @@ class RoomController extends Controller
 
     public function ownerStore(Request $request)
     {
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'numeric' => ':attribute harus berupa angka.',
+            'integer' => ':attribute harus berupa bilangan bulat.',
+            'string' => ':attribute harus berupa teks.',
+            'min' => ':attribute minimal bernilai :min.',
+            'max' => ':attribute maksimal :max.',
+            'gambar.max' => 'Maksimal unggah gambar adalah 5 file.',
+            'gambar.*.max' => 'Ukuran gambar maksimal adalah 2MB per file.',
+            'gambar.*.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.*.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+        ];
+
         $validated = $request->validate([
             'apartment_id' => 'required|exists:apartments,id',
             'judul' => 'required|string|max:255',
@@ -271,9 +299,8 @@ class RoomController extends Controller
             'owner_wa' => 'required|string|max:20',
             'owner_rekening' => 'required|string|max:100',
             'owner_bank_name' => 'required|string|max:50',
-        ]);
+        ], $messages);
 
-        
         $images = $this->uploadImages($request);
         if ($images) {
             $validated['gambar'] = $images;
@@ -306,7 +333,20 @@ class RoomController extends Controller
     {
         $room = Room::findOrFail($room_id);
 
-        // dd($request->all());
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'numeric' => ':attribute harus berupa angka.',
+            'integer' => ':attribute harus berupa bilangan bulat.',
+            'string' => ':attribute harus berupa teks.',
+            'min' => ':attribute minimal bernilai :min.',
+            'max' => ':attribute maksimal :max.',
+            'gambar.max' => 'Maksimal unggah gambar adalah 5 file.',
+            'gambar.*.max' => 'Ukuran gambar maksimal adalah 2MB per file.',
+            'gambar.*.image' => 'File yang diunggah harus berupa gambar.',
+            'gambar.*.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+        ];
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'luas' => 'required|numeric|min:0',
@@ -332,7 +372,7 @@ class RoomController extends Controller
             'owner_wa' => 'required|string|max:20',
             'owner_rekening' => 'required|string|max:100',
             'owner_bank_name' => 'required|string|max:50',
-        ]);
+        ], $messages);
 
         $images = $this->uploadImages($request);
         if ($images) {
