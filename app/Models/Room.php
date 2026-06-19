@@ -61,12 +61,24 @@ class Room extends Model
             if (empty($room->id)) {
                 $room->id = (string) Str::uuid();
             }
-            $room->slug = Str::slug($room->judul);
+            $base = Str::slug($room->judul) ?: (string) Str::uuid();
+            $slug = $base;
+            $counter = 1;
+            while (self::where('slug', $slug)->exists()) {
+                $slug = $base . '-' . $counter++;
+            }
+            $room->slug = $slug;
         });
 
         static::updating(function ($room) {
             if ($room->isDirty('judul')) {
-                $room->slug = Str::slug($room->judul);
+                $base = Str::slug($room->judul) ?: (string) Str::uuid();
+                $slug = $base;
+                $counter = 1;
+                while (self::where('slug', $slug)->where('id', '!=', $room->id)->exists()) {
+                    $slug = $base . '-' . $counter++;
+                }
+                $room->slug = $slug;
             }
         });
     }
