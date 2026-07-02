@@ -305,6 +305,17 @@
                                     <span class="text-slate-800" id="subtotalHarga">Rp 0</span>
                                 </div>
 
+                                <!-- Dynamic Discount Row -->
+                                <div id="discountRow" class="flex justify-between text-sm mb-2 text-rose-600 hidden">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        Diskon (<span id="discountTypeLabel">none</span>)
+                                        <span id="discountBadge" class="hidden px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-semibold rounded-full uppercase tracking-wider">
+                                            Voucher Berhasil Dipasang
+                                        </span>
+                                    </span>
+                                    <span>-Rp <span id="discountAmount">0</span></span>
+                                </div>
+
                                 <div class="flex justify-between text-sm mb-2">
                                     <span class="text-slate-600">PPN ({{ $adminInfo->ppn ?? 0 }}%)</span>
                                     <span class="text-slate-800" id="ppnAmount">Rp 0</span>
@@ -315,9 +326,24 @@
                                     <span class="text-slate-800" id="adminFeeAmount">Rp 0</span>
                                 </div>
 
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-slate-600">Total</span>
-                                    <span class="text-slate-800" id="totalHarga">Rp 0</span>
+                                <div class="flex justify-between text-base font-bold text-brand pt-2 border-t border-brand/10 mt-2">
+                                    <span>Total Pembayaran</span>
+                                    <span id="totalHarga">Rp 0</span>
+                                </div>
+
+                                <!-- Voucher Input Section -->
+                                <div class="mt-4 pt-4 border-t border-brand/10">
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Punya Kode Voucher?</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="voucherCodeInput" placeholder="Contoh: PROMO20" 
+                                            class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all uppercase font-mono">
+                                        <button type="button" id="applyVoucherBtn"
+                                            class="bg-brand text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-brand-light transition-colors whitespace-nowrap">
+                                            Terapkan
+                                        </button>
+                                    </div>
+                                    <div id="voucherMessage" class="text-xs mt-2 hidden"></div>
+                                    <input type="hidden" name="voucher_code" id="appliedVoucherCode" value="">
                                 </div>
                             </div>
 
@@ -427,6 +453,136 @@
             disableDateInput(checkOutInput);
 
 
+            // Voucher logic variables
+            const voucherCodeInput = document.getElementById('voucherCodeInput');
+            const applyVoucherBtn = document.getElementById('applyVoucherBtn');
+            const voucherMessage = document.getElementById('voucherMessage');
+            const discountRow = document.getElementById('discountRow');
+            const discountTypeLabel = document.getElementById('discountTypeLabel');
+            const discountBadge = document.getElementById('discountBadge');
+            const discountAmountDisplay = document.getElementById('discountAmount');
+            const appliedVoucherCodeHidden = document.getElementById('appliedVoucherCode');
+
+            let currentAppliedVoucher = '';
+
+            // Update DOM pricing function
+            function updatePriceDisplay(subtotal, discountVal, discountType) {
+                const discountedSubtotal = Math.max(0, subtotal - discountVal);
+                const ppnAmount = discountedSubtotal * (ppnPercent / 100);
+                const adminFeeAmount = discountedSubtotal * (adminFeePercent / 100);
+                const total = discountedSubtotal + ppnAmount + adminFeeAmount;
+
+                subtotalHargaDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
+                ppnAmountDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(ppnAmount);
+                adminFeeAmountDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(adminFeeAmount);
+                totalHargaDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+
+                if (discountVal > 0) {
+                    discountRow.classList.remove('hidden');
+                    discountAmountDisplay.textContent = new Intl.NumberFormat('id-ID').format(discountVal);
+                    discountTypeLabel.textContent = discountType;
+                    
+                    if (discountType === 'Voucher') {
+                        discountBadge.classList.remove('hidden');
+                    } else {
+                        discountBadge.classList.add('hidden');
+                    }
+                } else {
+                    discountRow.classList.add('hidden');
+                    discountBadge.classList.add('hidden');
+                }
+            }
+
+            // Apply voucher API caller
+            async function applyVoucher(code, nights, silent = false) {
+                if (!code || nights <= 0) return;
+
+                if (!silent) {
+                    applyVoucherBtn.disabled = true;
+                    applyVoucherBtn.textContent = 'Memuat...';
+                    voucherMessage.classList.add('hidden');
+                }
+
+                try {
+                    const response = await fetch('/api/v1/checkout/apply-voucher', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value || ''
+                        },
+                        body: JSON.stringify({
+                            room_id: '{{ $room->id }}',
+                            nights: nights,
+                            voucher_code: code
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        const discountVal = parseFloat(result.data.discount_amount);
+                        currentAppliedVoucher = code;
+                        appliedVoucherCodeHidden.value = code;
+
+                        // Tampilkan info sukses
+                        voucherMessage.className = 'text-xs mt-2 text-emerald-600 font-semibold';
+                        voucherMessage.textContent = `Voucher "${code}" berhasil dipasang! Hemat Rp ${new Intl.NumberFormat('id-ID').format(discountVal)}`;
+                        voucherMessage.classList.remove('hidden');
+
+                        const subtotal = nights * hargaPerMalam;
+                        updatePriceDisplay(subtotal, discountVal, 'Voucher');
+                    } else {
+                        // Gagal memvalidasi/menerapkan voucher
+                        currentAppliedVoucher = '';
+                        appliedVoucherCodeHidden.value = '';
+
+                        if (!silent) {
+                            voucherMessage.className = 'text-xs mt-2 text-rose-600 font-semibold';
+                            voucherMessage.textContent = result.message || 'Voucher tidak valid untuk pemesanan ini.';
+                            voucherMessage.classList.remove('hidden');
+                        }
+
+                        // Fallback ke diskon otomatis (global/unit)
+                        fetchAutomaticDiscount(nights);
+                    }
+                } catch (e) {
+                    console.error('Error applying voucher:', e);
+                    if (!silent) {
+                        voucherMessage.className = 'text-xs mt-2 text-rose-600 font-semibold';
+                        voucherMessage.textContent = 'Gagal terhubung ke server untuk memvalidasi voucher.';
+                        voucherMessage.classList.remove('hidden');
+                    }
+                    currentAppliedVoucher = '';
+                    appliedVoucherCodeHidden.value = '';
+                    fetchAutomaticDiscount(nights);
+                } finally {
+                    if (!silent) {
+                        applyVoucherBtn.disabled = false;
+                        applyVoucherBtn.textContent = 'Terapkan';
+                    }
+                }
+            }
+
+            // Fetch global or room-specific discount when no voucher is applied
+            async function fetchAutomaticDiscount(nights) {
+                const subtotal = nights * hargaPerMalam;
+                try {
+                    const response = await fetch(`/api/v1/rooms/{{ $room->id }}/calculate-price?nights=${nights}`);
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        const discountVal = parseFloat(result.data.discount_amount);
+                        const discountType = result.data.applied_type; // 'Global', 'Room', atau 'None'
+                        updatePriceDisplay(subtotal, discountVal, discountType);
+                    } else {
+                        updatePriceDisplay(subtotal, 0, 'none');
+                    }
+                } catch (e) {
+                    console.error('Error fetching automatic discount:', e);
+                    updatePriceDisplay(subtotal, 0, 'none');
+                }
+            }
+
             function calculatePrice() {
                 const checkIn = new Date(checkInInput.value);
                 const checkOut = new Date(checkOutInput.value);
@@ -434,23 +590,23 @@
                 if (checkInInput.value && checkOutInput.value && checkOut > checkIn) {
                     const diffTime = checkOut - checkIn;
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    const subtotal = diffDays * hargaPerMalam;
-                    const ppnAmount = subtotal * (ppnPercent / 100);
-                    const adminFeeAmount = subtotal * (adminFeePercent / 100);
-                    const total = subtotal + ppnAmount + adminFeeAmount;
 
                     jumlahMalamDisplay.textContent = diffDays + ' malam';
-                    subtotalHargaDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
-                    ppnAmountDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(ppnAmount);
-                    adminFeeAmountDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(
-                        adminFeeAmount);
-                    totalHargaDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+
+                    if (currentAppliedVoucher) {
+                        // Revalidasi voucher yang terpasang secara silent jika tanggal berubah
+                        applyVoucher(currentAppliedVoucher, diffDays, true);
+                    } else {
+                        // Ambil diskon otomatis (global/unit)
+                        fetchAutomaticDiscount(diffDays);
+                    }
                 } else {
                     jumlahMalamDisplay.textContent = '0 malam';
                     subtotalHargaDisplay.textContent = 'Rp 0';
                     ppnAmountDisplay.textContent = 'Rp 0';
                     adminFeeAmountDisplay.textContent = 'Rp 0';
                     totalHargaDisplay.textContent = 'Rp 0';
+                    discountRow.classList.add('hidden');
                 }
             }
 
@@ -465,6 +621,32 @@
             });
 
             checkOutInput.addEventListener('change', calculatePrice);
+
+            // Event listener untuk tombol 'Terapkan' voucher
+            applyVoucherBtn.addEventListener('click', function() {
+                const code = voucherCodeInput.value.trim().toUpperCase();
+                const checkIn = new Date(checkInInput.value);
+                const checkOut = new Date(checkOutInput.value);
+
+                if (!checkInInput.value || !checkOutInput.value || checkOut <= checkIn) {
+                    voucherMessage.className = 'text-xs mt-2 text-rose-600 font-semibold';
+                    voucherMessage.textContent = 'Silakan pilih tanggal check-in & check-out terlebih dahulu.';
+                    voucherMessage.classList.remove('hidden');
+                    return;
+                }
+
+                const diffTime = checkOut - checkIn;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (!code) {
+                    voucherMessage.className = 'text-xs mt-2 text-rose-600 font-semibold';
+                    voucherMessage.textContent = 'Masukkan kode voucher terlebih dahulu.';
+                    voucherMessage.classList.remove('hidden');
+                    return;
+                }
+
+                applyVoucher(code, diffDays);
+            });
 
             // Terms checkbox handling: enable submit only when checked
             const termsCheckbox = document.getElementById('termsCheckbox');

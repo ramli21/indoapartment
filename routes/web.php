@@ -129,6 +129,16 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     
     // Payment Configs (manage payment gateway credentials)
     Route::resource('payment-configs', \App\Http\Controllers\PaymentConfigController::class)->except(['show']);
+
+    // Discount & Voucher Management Routes (Non-API)
+    Route::get('/discounts', [\App\Http\Controllers\Admin\DiscountWebController::class, 'index'])->name('discounts.index');
+    Route::post('/discounts', [\App\Http\Controllers\Admin\DiscountWebController::class, 'storeDiscount'])->name('discounts.storeDiscount');
+    Route::put('/discounts/{discount}', [\App\Http\Controllers\Admin\DiscountWebController::class, 'updateDiscount'])->name('discounts.updateDiscount');
+    Route::delete('/discounts/{discount}', [\App\Http\Controllers\Admin\DiscountWebController::class, 'destroyDiscount'])->name('discounts.destroyDiscount');
+
+    Route::post('/vouchers', [\App\Http\Controllers\Admin\DiscountWebController::class, 'storeVoucher'])->name('vouchers.storeVoucher');
+    Route::put('/vouchers/{voucher}', [\App\Http\Controllers\Admin\DiscountWebController::class, 'updateVoucher'])->name('vouchers.updateVoucher');
+    Route::delete('/vouchers/{voucher}', [\App\Http\Controllers\Admin\DiscountWebController::class, 'destroyVoucher'])->name('vouchers.destroyVoucher');
 });
 
 

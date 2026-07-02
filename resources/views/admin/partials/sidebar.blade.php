@@ -44,6 +44,14 @@
                 </span>
             </a>
 
+            <a href="{{ route('admin.discounts.index') }}"
+                class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors border {{ $isActive('admin.discounts') ? 'bg-brand text-white border-brand' : 'bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-100 text-slate-700' }}">
+                <span class="inline-flex items-center gap-2 text-sm font-medium">
+                    <i data-lucide="percent" class="w-4 h-4"></i>
+                    Kelola Diskon
+                </span>
+            </a>
+
 
             <a href="{{ route('admin.bookings.index') }}"
                 class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors border {{ $isActive('admin.bookings') ? 'bg-brand text-white border-brand' : 'bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-100 text-slate-700' }}">
