@@ -50,7 +50,7 @@ class BookingController extends Controller
     /**
      * Store a new booking
      */
-    public function store(Request $request, Room $room)
+    public function store(Request $request, Room $room, \App\Services\DiscountService $discountService)
     {
         $validated = $request->validate([
             'nama_tamu' => 'required|string|max:255|regex:/^[a-zA-Z0-9\s\.\-\']+$/',
@@ -63,6 +63,7 @@ class BookingController extends Controller
             'is_terms_accepted' => 'accepted',
             'ppn' => 'nullable|numeric|min:0|max:100',
             'admin_fee' => 'nullable|numeric|min:0|max:100',
+            'voucher_code' => 'nullable|string|max:50',
         ]);
 
         // Check for overlapping bookings (only pending/confirmed block)
@@ -89,16 +90,37 @@ class BookingController extends Controller
             'catatan' => $validated['catatan'] ? strip_tags($validated['catatan']) : null,
             'ppn' => $validated['ppn'] ?? 0,
             'admin_fee' => $validated['admin_fee'] ?? 0,
+            'voucher_code' => $validated['voucher_code'] ? strtoupper(trim(strip_tags($validated['voucher_code']))) : null,
         ];
 
-        // Calculate total price
-        $checkIn = \Carbon\Carbon::parse($validated['check_in']);
-        $checkOut = \Carbon\Carbon::parse($validated['check_out']);
+        // Calculate nights and base subtotal
+        $checkIn = \Carbon\Carbon::parse($sanitized['check_in']);
+        $checkOut = \Carbon\Carbon::parse($sanitized['check_out']);
         $jumlahMalam = $checkIn->diffInDays($checkOut);
         $hargaPerMalam = (float) $room->harga_per_malam;
-        $ppnAmount = ($hargaPerMalam * $sanitized['ppn']) / 100;
-        $adminFeeAmount = ($hargaPerMalam * $sanitized['admin_fee']) / 100;
-        $totalHarga = $hargaPerMalam * $jumlahMalam + ($ppnAmount * $jumlahMalam) + ($adminFeeAmount * $jumlahMalam);
+        $baseSubtotal = $hargaPerMalam * $jumlahMalam;
+
+        // Calculate Discount
+        $discountData = $discountService->calculateFinalPrice($room->id, $baseSubtotal, $sanitized['voucher_code']);
+        
+        $discountAmount = $discountData['discount_amount'];
+        $discountType = $discountData['applied_type']; // 'Voucher', 'Room', 'Global', or 'None'
+        $discountedSubtotal = $discountData['final_price'];
+
+        // If a voucher was actually applied and valid, increment its usage
+        if ($discountType === 'Voucher' && $sanitized['voucher_code']) {
+            $voucher = \App\Models\Voucher::where('code', $sanitized['voucher_code'])->first();
+            if ($voucher) {
+                $voucher->incrementUsage();
+            }
+        }
+
+        // Calculate Taxes based on discounted subtotal
+        $ppnAmount = ($discountedSubtotal * $sanitized['ppn']) / 100;
+        $adminFeeAmount = ($discountedSubtotal * $sanitized['admin_fee']) / 100;
+        
+        // Final Total Price
+        $totalHarga = $discountedSubtotal + $ppnAmount + $adminFeeAmount;
 
         // Generate unique 6-char alphanumeric booking code
         do {
@@ -116,6 +138,9 @@ class BookingController extends Controller
             'jumlah_tamu' => $sanitized['jumlah_tamu'],
             'harga_per_malam' => $hargaPerMalam,
             'jumlah_malam' => $jumlahMalam,
+            'discount_amount' => $discountAmount,
+            'discount_type' => $discountType !== 'None' ? $discountType : null,
+            'voucher_code' => $discountType === 'Voucher' ? $sanitized['voucher_code'] : null,
             'total_harga' => $totalHarga,
             'catatan' => $sanitized['catatan'],
             'status' => 'pending',

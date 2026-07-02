@@ -120,6 +120,15 @@
                                 <span class="text-slate-600">Lama menginap</span>
                                 <span class="text-slate-800">{{ $booking->jumlah_malam }} malam</span>
                             </div>
+                            @if($booking->discount_amount > 0)
+                            <div class="flex justify-between text-sm">
+                                <span class="text-emerald-600">Diskon 
+                                    @if($booking->discount_type === 'Voucher') ({{ $booking->voucher_code }}) @endif
+                                </span>
+                                <span class="text-emerald-600">-Rp
+                                    {{ number_format($booking->discount_amount, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
                             <div class="flex justify-between text-sm border-t border-slate-200 pt-2 mt-2">
                                 <span class="text-slate-800 font-medium">Total Pembayaran</span>
                                 <span class="text-brand font-semibold">Rp

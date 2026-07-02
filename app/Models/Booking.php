@@ -21,6 +21,9 @@ class Booking extends Model
         'harga_per_malam',
         'jumlah_malam',
         'total_harga',
+        'discount_amount',
+        'discount_type',
+        'voucher_code',
         'catatan',
         'status',
         'payment_method',
@@ -42,6 +45,7 @@ class Booking extends Model
         'check_out' => 'date',
         'harga_per_malam' => 'decimal:2',
         'total_harga' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'is_terms_accepted' => 'boolean',
         'terms_accepted_at' => 'datetime',
     ];

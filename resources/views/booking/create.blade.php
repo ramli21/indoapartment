@@ -174,206 +174,249 @@
                     </div>
                 </div>
 
-                <!-- Booking Form -->
+                <!-- Sticky Sidebar Card (Desktop) -->
                 <div class="lg:col-span-2">
-                    <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm sticky top-24">
-                        <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                            <i data-lucide="calendar-check" class="w-5 h-5 text-brand"></i>
-                            Formulir Booking
-                        </h2>
+                    <div class="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm sticky top-24 hidden md:block">
+                        <div class="flex items-baseline gap-2 mb-4">
+                            <span class="text-2xl font-bold text-brand">Rp {{ number_format($room->harga_per_malam, 0, ',', '.') }}</span>
+                            <span class="text-sm text-slate-500">/ malam</span>
+                        </div>
 
-                        <form action="{{ route('booking.store', $room->slug) }}" method="POST" id="bookingForm">
-                            @csrf
-
-                            <div class="grid grid-cols-2 gap-3 mb-4">
-                                <!-- Name -->
-                                <div class="mb-4">
-                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                        Nama Tamu
-                                    </label>
-                                    <input type="text" name="nama_tamu" required
-                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
-                                        placeholder="Nama lengkap">
-                                    @error('nama_tamu')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <!-- Email -->
-                                <div class="mb-4">
-                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                        Email
-                                    </label>
-                                    <input type="email" name="email_tamu" required
-                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
-                                        placeholder="email@example.com">
-                                    @error('email_tamu')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                        <div class="border-t border-slate-100 pt-4 space-y-3 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Tipe Kamar</span>
+                                <span class="font-medium text-slate-800">{{ $room->tipe }}</span>
                             </div>
-
-                            <div class="grid grid-cols-2 gap-3 mb-4">
-                                <!-- Phone -->
-                                <div class="mb-4">
-                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                        No. WhatsApp
-                                    </label>
-                                    <input type="tel" name="no_hp" required
-                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm"
-                                        placeholder="0812 3456 7890">
-                                    @error('no_hp')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <!-- Guests -->
-                                <div class="mb-4">
-                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                        Jumlah Tamu (Max: {{ $room->tamu_dewasa + $room->tamu_anak }})
-                                    </label>
-                                    <select name="jumlah_tamu" required
-                                        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
-                                        @for ($i = 1; $i <= $room->tamu_dewasa + $room->tamu_anak; $i++)
-                                            <option value="{{ $i }}">{{ $i }} Tamu</option>
-                                        @endfor
-                                    </select>
-                                    @error('jumlah_tamu')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Kapasitas Maksimal</span>
+                                <span class="font-medium text-slate-800">{{ $room->tamu_dewasa + $room->tamu_anak }} Orang</span>
                             </div>
-                            <!-- Dates -->
-                            <div class="grid grid-cols-2 gap-3 mb-4">
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                        Check-in
-                                    </label>
-                                    <input type="date" name="check_in" id="checkIn" required
-                                        class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
-                                    @error('check_in')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                        Check-out
-                                    </label>
-                                    <input type="date" name="check_out" id="checkOut" required
-                                        class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm">
-                                    @error('check_out')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Lantai / Kamar</span>
+                                <span class="font-medium text-slate-800">Lantai {{ $room->lantai }} / No. {{ $room->nomor_kamar }}</span>
                             </div>
+                        </div>
 
+                        <!-- CTA Button to open Modal -->
+                        <button type="button" onclick="openBookingModal()"
+                            class="w-full bg-brand text-white py-3.5 rounded-xl font-semibold hover:bg-brand-light transition-all shadow-md flex items-center justify-center gap-2">
+                            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                            Pesan Kamar Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                            <!-- Notes -->
-                            <div class="mb-5">
-                                <label class="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                                    Catatan (Opsional)
-                                </label>
-                                <textarea name="catatan" rows="3"
-                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all text-sm resize-none"
-                                    placeholder="Permintaan khusus..."></textarea>
-                                @error('catatan')
+    <!-- Sticky Mobile CTA Bar -->
+    <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-100 p-4 shadow-2xl flex items-center justify-between md:hidden">
+        <div class="flex flex-col">
+            <span class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Harga Kamar</span>
+            <div class="flex items-baseline gap-1">
+                <span class="text-lg font-bold text-brand">Rp {{ number_format($room->harga_per_malam, 0, ',', '.') }}</span>
+                <span class="text-[10px] text-slate-500">/malam</span>
+            </div>
+        </div>
+        <button type="button" onclick="openBookingModal()"
+            class="bg-brand text-white px-6 py-3 rounded-xl text-sm font-bold shadow-md hover:bg-brand-light transition-all flex items-center gap-1.5">
+            <i data-lucide="calendar-check" class="w-4 h-4"></i>
+            Booking
+        </button>
+    </div>
+
+    <!-- ==================== BOOKING FORM POPUP MODAL ==================== -->
+    <div id="bookingModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-xl shadow-2xl relative flex flex-col max-h-[90vh] transform scale-95 opacity-0 transition-all duration-200" id="bookingModalContent">
+            <!-- Modal Header -->
+            <div class="p-6 bg-brand text-white flex items-center justify-between shrink-0">
+                <h3 class="font-bold text-lg font-serif flex items-center gap-2">
+                    <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                    Formulir Booking Kamar
+                </h3>
+                <button type="button" onclick="closeBookingModal()" class="p-1 hover:bg-white/10 rounded-full transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="overflow-y-auto p-6 flex-1">
+                <form action="{{ route('booking.store', $room->slug) }}" method="POST" id="bookingForm">
+                    @csrf
+                    <!-- Hidden inputs -->
+                    <input type="hidden" name="ppn" id="ppnPercent" value="{{ $adminInfo->ppn ?? 0 }}" />
+                    <input type="hidden" name="admin_fee" id="adminFeePercent" value="{{ $adminInfo->admin_fee ?? 0 }}" />
+                    <input type="hidden" name="voucher_code" id="appliedVoucherCode" value="">
+
+                    <!-- Guest & Contact Info -->
+                    <div class="bg-slate-50 p-4 rounded-2xl mb-4 border border-slate-100">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Informasi Kontak & Tamu</h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Nama Tamu</label>
+                                <input type="text" name="nama_tamu" required value="{{ old('nama_tamu') }}"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-sm bg-white"
+                                    placeholder="Nama lengkap">
+                                @error('nama_tamu')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-
-                            <!-- Price Summary -->
-                            <div class="mb-5 p-4 bg-brand/5 rounded-xl border border-brand/10">
-                                <div class="hidden">
-                                    <input type="hidden" name="ppn" id="ppnPercent"
-                                        value="{{ $adminInfo->ppn ?? 0 }}" />
-                                    <input type="hidden" name="admin_fee" id="adminFeePercent"
-                                        value="{{ $adminInfo->admin_fee ?? 0 }}" />
-                                </div>
-
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-slate-600">Harga per malam</span>
-                                    <span class="text-slate-800">Rp
-                                        {{ number_format($room->harga_per_malam, 0, ',', '.') }}</span>
-                                </div>
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-slate-600">Jumlah malam</span>
-                                    <span class="text-slate-800" id="jumlahMalam">0 malam</span>
-                                </div>
-
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-slate-600">Subtotal</span>
-                                    <span class="text-slate-800" id="subtotalHarga">Rp 0</span>
-                                </div>
-
-                                <!-- Dynamic Discount Row -->
-                                <div id="discountRow" class="flex justify-between text-sm mb-2 text-rose-600 hidden">
-                                    <span class="inline-flex items-center gap-1.5">
-                                        Diskon (<span id="discountTypeLabel">none</span>)
-                                        <span id="discountBadge" class="hidden px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-semibold rounded-full uppercase tracking-wider">
-                                            Voucher Berhasil Dipasang
-                                        </span>
-                                    </span>
-                                    <span>-Rp <span id="discountAmount">0</span></span>
-                                </div>
-
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-slate-600">PPN ({{ $adminInfo->ppn ?? 0 }}%)</span>
-                                    <span class="text-slate-800" id="ppnAmount">Rp 0</span>
-                                </div>
-
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-slate-600">Admin Fee ({{ $adminInfo->admin_fee ?? 0 }}%)</span>
-                                    <span class="text-slate-800" id="adminFeeAmount">Rp 0</span>
-                                </div>
-
-                                <div class="flex justify-between text-base font-bold text-brand pt-2 border-t border-brand/10 mt-2">
-                                    <span>Total Pembayaran</span>
-                                    <span id="totalHarga">Rp 0</span>
-                                </div>
-
-                                <!-- Voucher Input Section -->
-                                <div class="mt-4 pt-4 border-t border-brand/10">
-                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Punya Kode Voucher?</label>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="voucherCodeInput" placeholder="Contoh: PROMO20" 
-                                            class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all uppercase font-mono">
-                                        <button type="button" id="applyVoucherBtn"
-                                            class="bg-brand text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-brand-light transition-colors whitespace-nowrap">
-                                            Terapkan
-                                        </button>
-                                    </div>
-                                    <div id="voucherMessage" class="text-xs mt-2 hidden"></div>
-                                    <input type="hidden" name="voucher_code" id="appliedVoucherCode" value="">
-                                </div>
-                            </div>
-
-
-                            <!-- Terms acceptance -->
-                            <div class="mb-4 text-sm text-slate-600">
-                                <label class="inline-flex items-start gap-3">
-                                    <input type="checkbox" id="termsCheckbox" name="is_terms_accepted" value="1"
-                                        class="mt-1 w-4 h-4" />
-                                    <span class="text-sm">Saya menyetujui <a href="{{ route('terms') }}" target="_blank"
-                                            rel="noopener noreferrer" class="text-blue-600 hover:underline">Syarat &amp;
-                                            Ketentuan</a> dan <a href="{{ route('terms') }}#privacy" target="_blank"
-                                            rel="noopener noreferrer" class="text-blue-600 hover:underline">Kebijakan
-                                            Privasi</a></span>
-                                </label>
-                                @error('is_terms_accepted')
-                                    <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Email</label>
+                                <input type="email" name="email_tamu" required value="{{ old('email_tamu') }}"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-sm bg-white"
+                                    placeholder="email@example.com">
+                                @error('email_tamu')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+                        </div>
 
-                            <!-- Submit -->
-                            <button type="submit" id="bookingSubmit"
-                                class="w-full bg-brand text-white py-3 rounded-xl font-medium hover:bg-brand-light transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                                disabled>
-                                <i data-lucide="calendar-check" class="w-4 h-4"></i>
-                                Booking Sekarang
-                            </button>
-                        </form>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">No. WhatsApp</label>
+                                <input type="tel" name="no_hp" required value="{{ old('no_hp') }}"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-sm bg-white"
+                                    placeholder="0812 3456 7890">
+                                @error('no_hp')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Jumlah Tamu (Max: {{ $room->tamu_dewasa + $room->tamu_anak }})</label>
+                                <select name="jumlah_tamu" required
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-sm bg-white">
+                                    @for ($i = 1; $i <= $room->tamu_dewasa + $room->tamu_anak; $i++)
+                                        <option value="{{ $i }}" {{ old('jumlah_tamu') == $i ? 'selected' : '' }}>{{ $i }} Tamu</option>
+                                    @endfor
+                                </select>
+                                @error('jumlah_tamu')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Catatan (Opsional)</label>
+                            <textarea name="catatan" rows="2"
+                                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-sm bg-white resize-none"
+                                placeholder="Permintaan khusus...">{{ old('catatan') }}</textarea>
+                            @error('catatan')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Booking Dates -->
+                    <div class="bg-slate-50 p-4 rounded-2xl mb-4 border border-slate-100">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Tanggal Menginap</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Check-in</label>
+                                <input type="date" name="check_in" id="checkIn" required value="{{ old('check_in') }}"
+                                    class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-sm bg-white">
+                                @error('check_in')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Check-out</label>
+                                <input type="date" name="check_out" id="checkOut" required value="{{ old('check_out') }}"
+                                    class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all text-sm bg-white">
+                                @error('check_out')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Summary -->
+                    <div class="mb-5 p-4 bg-brand/5 rounded-2xl border border-brand/10 text-sm">
+                        <h4 class="text-xs font-bold text-brand uppercase tracking-wider mb-3">Ringkasan Pembayaran</h4>
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Harga per malam</span>
+                                <span class="text-slate-800 font-semibold">Rp {{ number_format($room->harga_per_malam, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Jumlah malam</span>
+                                <span class="text-slate-800" id="jumlahMalam">0 malam</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Subtotal</span>
+                                <span class="text-slate-800" id="subtotalHarga">Rp 0</span>
+                            </div>
+
+                            <!-- Dynamic Discount Row -->
+                            <div id="discountRow" class="flex justify-between text-rose-600 hidden">
+                                <span class="inline-flex items-center gap-1.5">
+                                    Diskon (<span id="discountTypeLabel">none</span>)
+                                    <span id="discountBadge" class="hidden px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-semibold rounded-full uppercase">
+                                        Voucher Berhasil Dipasang
+                                    </span>
+                                </span>
+                                <span>-Rp <span id="discountAmount">0</span></span>
+                            </div>
+
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">PPN ({{ $adminInfo->ppn ?? 0 }}%)</span>
+                                <span class="text-slate-800" id="ppnAmount">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">Admin Fee ({{ $adminInfo->admin_fee ?? 0 }}%)</span>
+                                <span class="text-slate-800" id="adminFeeAmount">Rp 0</span>
+                            </div>
+                            
+                            <div class="flex justify-between text-base font-bold text-brand pt-2 border-t border-brand/10 mt-2">
+                                <span>Total Pembayaran</span>
+                                <span id="totalHarga">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <!-- Voucher Input Section -->
+                        <div class="mt-4 pt-4 border-t border-brand/10">
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Punya Kode Voucher?</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="voucherCodeInput" placeholder="Contoh: PROMO20" 
+                                    class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all uppercase font-mono">
+                                <button type="button" id="applyVoucherBtn"
+                                    class="bg-brand text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-brand-light transition-colors whitespace-nowrap">
+                                    Terapkan
+                                </button>
+                            </div>
+                            <div id="voucherMessage" class="text-xs mt-2 hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Terms acceptance -->
+                    <div class="mb-4 text-xs text-slate-600">
+                        <label class="inline-flex items-start gap-3">
+                            <input type="checkbox" id="termsCheckbox" name="is_terms_accepted" value="1"
+                                class="mt-1 w-4 h-4" />
+                            <span class="text-sm">Saya menyetujui <a href="{{ route('terms') }}" target="_blank"
+                                    rel="noopener noreferrer" class="text-blue-600 hover:underline">Syarat &amp;
+                                    Ketentuan</a> dan <a href="{{ route('terms') }}#privacy" target="_blank"
+                                    rel="noopener noreferrer" class="text-blue-600 hover:underline">Kebijakan
+                                    Privasi</a></span>
+                        </label>
+                        @error('is_terms_accepted')
+                            <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" id="bookingSubmit"
+                        class="w-full bg-brand text-white py-3 rounded-xl font-medium hover:bg-brand-light transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                        disabled>
+                        <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                        Booking Sekarang
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
             </div>
         </div>
     </section>
@@ -385,6 +428,38 @@
     </button>
 
     <script>
+        // Modal popup functions
+        window.openBookingModal = function() {
+            const modal = document.getElementById('bookingModal');
+            const content = document.getElementById('bookingModalContent');
+            
+            modal.classList.replace('hidden', 'flex');
+            setTimeout(() => {
+                content.classList.replace('scale-95', 'scale-100');
+                content.classList.replace('opacity-0', 'opacity-100');
+            }, 10);
+            
+            document.body.style.overflow = 'hidden';
+            
+            // Reinitialize lucide icons inside modal if needed
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        };
+
+        window.closeBookingModal = function() {
+            const modal = document.getElementById('bookingModal');
+            const content = document.getElementById('bookingModalContent');
+            
+            content.classList.replace('scale-100', 'scale-95');
+            content.classList.replace('opacity-100', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.replace('flex', 'hidden');
+            }, 150);
+            
+            document.body.style.overflow = '';
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             // Image slider init - make images global (safe init)
             window.apartmentImages = @json($room->gambar ?? []);
@@ -657,8 +732,12 @@
                 });
                 // ensure it's unchecked by default
                 termsCheckbox.checked = false;
-                bookingSubmit.disabled = true;
-            }
+                }
+
+            // Auto-open modal if validation errors exist on page load
+            @if ($errors->any())
+                openBookingModal();
+            @endif
         });
     </script>
     <script>

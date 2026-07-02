@@ -44,23 +44,42 @@
                         <span class="text-slate-800">Rp
                             {{ number_format($booking->harga_per_malam, 0, ',', '.') }}</span>
                     </div>
+                    <div class="border-t border-slate-200 my-3"></div>
                     <div class="flex justify-between text-sm">
                         @php
                             $checkIn = \Carbon\Carbon::parse($booking->check_in);
                             $checkOut = \Carbon\Carbon::parse($booking->check_out);
                             $jumlahMalam = $checkIn->diffInDays($checkOut);
+                            $total_ppn = $booking->harga_per_malam * $jumlahMalam * ($booking->ppn / 100);
+                            $total_admin = $booking->harga_per_malam * $jumlahMalam * ($booking->admin_fee / 100);
+                            $subtotal = $booking->harga_per_malam * $jumlahMalam;
                         @endphp
-                        <span class="text-slate-600">Sub Total</span>
-                        <span class="text-slate-800">Rp
-                            {{ number_format($booking->harga_per_malam * $jumlahMalam, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
+                        <span class="text-slate-600">Sub Total</span>
+                        <span class="text-slate-800">Rp
+                            {{ number_format($subtotal, 0, ',', '.') }}</span>
+                    </div>
+                    @if ($booking->discount_amount > 0)
+                        <div class="flex justify-between text-sm">
+                            <span class="text-emerald-600">Diskon
+                                @if ($booking->discount_type === 'Voucher')
+                                    ({{ $booking->voucher_code }})
+                                @endif
+                            </span>
+                            <span class="text-emerald-600">-Rp
+                                {{ number_format($booking->discount_amount, 0, ',', '.') }}</span>
+                        </div>
+                    @endif
+                    <div class="flex justify-between text-sm">
                         <span class="text-slate-600">PPN</span>
-                        <span class="text-slate-800">{{ $booking->ppn }}%</span>
+                        <span class="text-slate-800">Rp {{ number_format($total_ppn, 0, ',', '.') }}
+                            ({{ $booking->ppn }}%)</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-600">Admin Fee</span>
-                        <span class="text-slate-800">{{ $booking->admin_fee }}%</span>
+                        <span class="text-slate-800">Rp {{ number_format($total_admin, 0, ',', '.') }}
+                            ({{ $booking->admin_fee }}%)</span>
                     </div>
                     <div class="border-t border-slate-200 pt-2 mt-2">
                         <div class="flex justify-between">
