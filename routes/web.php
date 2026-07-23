@@ -145,3 +145,6 @@ Route::prefix('api')->group(function () {
     // Webhook endpoint for Doku - place here so it uses web middleware; you can also place in a dedicated api.php without CSRF
     Route::post('/doku/webhook', [\App\Http\Controllers\DokuWebhookController::class, 'handleNotification'])->name('api.doku.webhook');
 });
+
+// Dynamic SEO Sitemap Route
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
