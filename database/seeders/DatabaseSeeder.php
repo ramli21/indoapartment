@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         // Jika ApartmentSeeder membuat record, RoomSeeder sebelumnya akan di-update di sini.
         $this->call(AdminInfoSeeder::class);
         $this->call(RoomSeeder::class);
+        $this->call(FonnteSettingSeeder::class);
         // Seed inquiries and bookings
         // $this->call(InquirySeeder::class);
         // $this->call(BookingSeeder::class);

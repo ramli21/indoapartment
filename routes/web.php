@@ -119,6 +119,10 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     Route::get('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'edit'])->name('info.edit');
     Route::post('/admin-info', [\App\Http\Controllers\Admin\AdminInfoController::class, 'update'])->name('info.update');
 
+    // Fonnte WhatsApp Settings
+    Route::get('/fonnte', [\App\Http\Controllers\Admin\FonnteSettingController::class, 'edit'])->name('fonnte.edit');
+    Route::post('/fonnte', [\App\Http\Controllers\Admin\FonnteSettingController::class, 'update'])->name('fonnte.update');
+
     // Users/Admin management
     Route::get('/users', [\App\Http\Controllers\Admin\UserAdminController::class, 'index'])->name('users.index');
     Route::get('/users/create', [\App\Http\Controllers\Admin\UserAdminController::class, 'create'])->name('users.create');
